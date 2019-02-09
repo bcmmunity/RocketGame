@@ -7,7 +7,7 @@ namespace RocketGame.Models
 {
     public class Tick 
     {
-        public int id { get; set; }
+        public int TickId { get; set; }
         public long Start { get; set; }
         public long Finish { get; set; }
     }

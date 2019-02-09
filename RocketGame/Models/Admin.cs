@@ -8,8 +8,8 @@ namespace RocketGame.Models
     public class Admin
     {
         public int AdminID { get; set; }
-        public string password { get; set; }
-        public string mail { get; set; }
-        public string key { get; set; }
+        public string Password { get; set; }
+        public string Mail { get; set; }
+        public string Key { get; set; }
     }
 }

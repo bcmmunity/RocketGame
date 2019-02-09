@@ -1,0 +1,60 @@
+﻿@model IEnumerable<RocketGame.Models.User>
+
+@{
+    ViewData["Title"] = "ShowUsers";
+}
+
+<h2>ShowUsers</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<a asp-action="ShowUsers">Обновить</a>
+<table class="table" id="t">
+    <thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Name)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Intellect)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Power)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.InRocket)
+			</th>
+			<th>
+				Команда
+			</th>
+			<th></th>
+		</tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => item.Name)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.Intellect)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.Power)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.InRocket)
+			</td>
+			<td>
+				@item.Team.Name
+			</td>
+			<td>
+				<a asp-action="Edit" asp-route-id="@item.UserId">Edit</a> |
+				<a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
+				<a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
+			</td>
+		</tr>
+}
+    </tbody>
+</table>

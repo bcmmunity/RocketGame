@@ -7,6 +7,6 @@ namespace RocketGame.Models
 {
     public class Move 
     {
-        public int id { get; set; }
+        public int MoveId { get; set; }
     }
 }
