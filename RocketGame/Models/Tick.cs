@@ -8,7 +8,8 @@ namespace RocketGame.Models
     public class Tick 
     {
         public int TickId { get; set; }
-        public long Start { get; set; }
-        public long Finish { get; set; }
+        public int Number { get; set; }
+        public DateTime Start { get; set; }
+        public DateTime Finish { get; set; }
     }
 }

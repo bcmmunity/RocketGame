@@ -4,12 +4,9 @@
     ViewData["Title"] = "ShowUsers";
 }
 
-<h2>ShowUsers</h2>
+<h2>Секретный код - @ViewBag.Promo</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<a asp-action="ShowUsers">Обновить</a>
+<a href="/Home/ShowUsers?Key=@ViewBag.Key">Обновить</a>
 <table class="table" id="t">
     <thead>
 		<tr>
@@ -50,9 +47,7 @@
 				@item.Team.Name
 			</td>
 			<td>
-				<a asp-action="Edit" asp-route-id="@item.UserId">Edit</a> |
-				<a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
-				<a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
+		        <a href="/Home/EditUser?id=@item.UserId&key=@ViewBag.Key">Изменить</a>
 			</td>
 		</tr>
 }

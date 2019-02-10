@@ -55,7 +55,7 @@ namespace RocketGame.Controllers
         }
 
         [HttpPost]
-        public IActionResult Admin(Setting settings)
+        public IActionResult Admin(Setting settings, string Key)
         {
             if (settings.TeamCount > 5)
             {
@@ -65,7 +65,7 @@ namespace RocketGame.Controllers
 
             if (settings.TeamCount * settings.TeamSize > 35)
             {
-                ViewBag.msg = "Ошибка!/nДолжно быть не больше 35 игроков";
+                ViewBag.msg = "Ошибка!</br>Должно быть не больше 35 игроков";
                 return View();
             }
             string[] colors = { "Красные", "Синие", "Желтые", "Зеленые", "Оранжевые" };
@@ -79,16 +79,18 @@ namespace RocketGame.Controllers
 			settings.Promo = "КОД";
             db.Settings.Add(settings);
             db.SaveChanges();
+            ViewBag.Key = Key;
 
-            return RedirectToAction("ShowUsers");
+            return RedirectToAction("ShowUsers", new { Key = Key });
         }
 
-        public IActionResult ShowUsers()
+        public IActionResult ShowUsers(string Key)
         {
-			//if (db.Admins.FirstOrDefault().Key != Key)
-			//{
-			//	return View("Index");
-			//}
+			if (db.Admins.FirstOrDefault().Key != Key)
+			{
+				return View("Index");
+			}
+            ViewBag.Key = Key;
 			ViewBag.Promo = db.Settings.FirstOrDefault().Promo;
             return View(db.Users.Include(n => n.Team).ToList());
 		}
@@ -99,10 +101,17 @@ namespace RocketGame.Controllers
 			if (db.Settings.FirstOrDefault() == null)
 			{
 				ViewBag.msg = "Нет активных игр";
-				return View("Index");
+				return View("Index");   
 			}
 
-			if (db.Settings.FirstOrDefault().Promo == Promo)
+            if (db.Settings.FirstOrDefault().TeamCount * db.Settings.FirstOrDefault().TeamSize == db.Users.Count())
+            {
+                ViewBag.msg = "Все места заняты";
+                return View("Index");
+            }
+
+
+            if (db.Settings.FirstOrDefault().Promo == Promo)
 			{
 				User user = new User();
 
@@ -120,7 +129,7 @@ namespace RocketGame.Controllers
 				user.InRocket = false;
 				user.Intellect = 0;
 				user.Power = 0;
-				user.Name = "Игрок " + count;
+				user.Name = "Игрок " + (count + 1).ToString();
 				user.Key = id.ToString() + "СРКД" + count.ToString();
 
 				user.Team = db.Teams.Find(id);
@@ -144,11 +153,14 @@ namespace RocketGame.Controllers
 				ViewBag.msg = "Авторизация прошла с ошибкой, попробуйте еще раз";
 				return View("Index");
 			}
-			return View(db.Users.Find(id));
+            ViewBag.id = id;
+            ViewBag.tName = db.Users.Find(id).Team.Name;
+
+            return View(db.Teams.ToList());
         }
 
         [HttpPost]
-        public IActionResult EditUser(User user, string Key)
+        public IActionResult EditUser(Team team, string Key, int id)
 		{
 			if (db.Admins.FirstOrDefault().Key != Key)
 			{
@@ -156,7 +168,7 @@ namespace RocketGame.Controllers
 				return View("Index");
 			}
 
-			db.Users.Find(user.UserId).Team = user.Team;
+			db.Users.Find(id).Team = team;
 
             return RedirectToAction("ShowUsers");
         }
