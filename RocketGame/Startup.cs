@@ -59,6 +59,8 @@ namespace RocketGame
 
             app.UseMvc(routes =>
             {
+                //routes.MapRoute("api", "api/get", new { controller = "Game", action = "StartGame" });
+
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");

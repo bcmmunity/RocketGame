@@ -77,6 +77,7 @@ namespace RocketGame.Controllers
             }
 			Random a = new Random();
 			settings.Promo = "КОД";
+            settings.IsFinished = false;
             db.Settings.Add(settings);
             db.SaveChanges();
             ViewBag.Key = Key;

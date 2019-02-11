@@ -20,5 +20,6 @@ namespace RocketGame.Models
         public DbSet<Setting> Settings { get; set; }
         public DbSet<Tick> Ticks { get; set; }
         public DbSet<Admin> Admins { get; set; }
+        public DbSet<Log> Logs { get; set; }
     }
 }
