@@ -146,6 +146,40 @@ namespace RocketGame.Controllers
             //return "Игра закончилась!";
         }
 
+
+        public void AttackGroupResult(int attacker, int[] ids, int[] power, Team target)
+        {
+            int result = (power[attacker] - target.Power);
+            if (result > 0)
+            {
+                if (target.Fuel >= result * 2)
+                {
+                    db.Teams.Where(n => n.TeamId == ids[attacker]).FirstOrDefault().Fuel += result * 2;
+                    db.Teams.Find(target.TeamId).Fuel -= result * 2;
+                    db.SaveChanges();
+                }
+                else
+                {
+                    db.Teams.Where(n => n.TeamId == ids[attacker]).FirstOrDefault().Fuel += target.Fuel;
+                    db.Teams.Find(target.TeamId).Fuel = 0;
+                    db.SaveChanges();
+                }
+            }
+        }
+
+        public void AttackRocketResult(int attacker, int defender, int[] power, Team target)
+        {
+            List<User> Users = db.Users.ToList();
+            if ((power[attacker] - defender) > 0)
+            {
+                foreach (User user in db.Users.Where(n => n.Team.TeamId == target.TeamId))
+                {
+                    db.Users.Where(n => n.Team.TeamId == target.TeamId).FirstOrDefault().InRocket = false;
+                    db.SaveChanges();
+                }
+            }
+        }
+
         public void Update()
         {
             List<Move> Moves = db.Moves.Where(n => n.Tick == db.Ticks.Last()).Where(a => a.Type == "powerup").ToList();
@@ -185,40 +219,281 @@ namespace RocketGame.Controllers
                 }
             }
 
-            Moves = db.Moves.Where(n => n.Tick == db.Ticks.Last()).Where(a => a.Type == "attack").ToList();
-            foreach (Team team in Teams)
+            Moves = db.Moves.Where(n => n.Tick == db.Ticks.Last()).Where(a => a.Type == "attackgroup").ToList();
+            List<User> Users = db.Users.ToList();
+            foreach (Team target in Teams)
             {
-                int power = 0;
-                foreach (Team target in Teams)
+                if (Users.Where(b => b.Team == target).Where(a=> a.InRocket == false).Count() == db.Settings.FirstOrDefault().TeamSize)
                 {
-                    foreach (User attacker in db.Users.Where(n => n.Team == team).ToList())
+                    int i = 0;
+                    int[] power = new int[5]; //Сила Команд
+                    int[] ids = new int[5]; //ID Команд
+                    DateTime[] earlyuserid = new DateTime[5]; //Самый ранний ход команды
+
+                    foreach (Team team in Teams)
                     {
-                        if (Moves.Where(n => n.User.Team == team).FirstOrDefault().To == target)
+                        foreach (User attacker in db.Users.Where(n => n.Team == team).ToList())
                         {
-                            power += attacker.Power;
+                            earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
+                            if (Moves.Where(n => n.User.Team == team).FirstOrDefault().To == target)
+                            {
+                                if (Moves.Where(n => n.User.Team == team).FirstOrDefault().Time < earlyuserid[i])
+                                {
+                                    earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
+                                }
+                                ids[i] = team.TeamId;
+                                power[i] += attacker.Power;
+                            }
+                        }
+                        i++;
+                    }
+
+                    for (int j = 1; j < i; j++) //Проверить (Сортировка)
+                    {
+                        for (int k = 0; k < j; k++)
+                        {
+                            if (power[k] < power[j])
+                            {
+                                int n = power[j];
+                                power[j] = power[k];
+                                power[k] = n;
+
+                                n = ids[j];
+                                ids[j] = ids[k];
+                                ids[k] = n;
+
+                                DateTime t = earlyuserid[j];
+                                earlyuserid[j] = earlyuserid[k];
+                                earlyuserid[k] = t;
+                            }
                         }
                     }
-                    int result = (power - target.Power);
-                    if (result > 0)
+
+                    int equalcount = 1; //Количество самых сильных
+                    for (int j = 1; j < i; j++)
                     {
-                        if (target.Fuel >= result * 2)
+                        if (power[0] == power[j])
                         {
-                            db.Teams.Find(team.TeamId).Fuel += result * 2;
-                            db.Teams.Find(target.TeamId).Fuel -= result * 2;
-                            db.SaveChanges();
+                            equalcount++;
+                        }
+                    }
+
+                    if (equalcount == 1)
+                    {
+                        AttackGroupResult(0, ids, power, target);
+                    }
+
+                    if (equalcount == 2)
+                    {
+
+                        if (earlyuserid[0] < earlyuserid[1])
+                        {
+                            AttackGroupResult(0, ids, power, target);
                         }
                         else
                         {
-                            db.Teams.Find(team.TeamId).Fuel += target.Fuel;
-                            db.Teams.Find(target.TeamId).Fuel = 0;
-                            db.SaveChanges();
+                            AttackGroupResult(1, ids, power, target);
                         }
                     }
-                }
 
+                    if (equalcount == 3)
+                    {
+                        for (int j = 1; j < 3; j++) //Проверить (Сортировка на убывание времени)
+                        {
+                            for (int k = 0; k < j; k++)
+                            {
+                                if (earlyuserid[k] > earlyuserid[j])
+                                {
+                                    DateTime t = earlyuserid[j];
+                                    earlyuserid[j] = earlyuserid[k];
+                                    earlyuserid[k] = t;
+
+                                    int n = power[j];
+                                    power[j] = power[k];
+                                    power[k] = n;
+
+                                    n = ids[j];
+                                    ids[j] = ids[k];
+                                    ids[k] = n;
+                                }
+                            }
+                        }
+                        AttackGroupResult(0, ids, power, target);
+                    }
+
+                    if (equalcount == 4)
+                    {
+                        for (int j = 1; j < 4; j++) //Проверить (Сортировка на убывание времени)
+                        {
+                            for (int k = 0; k < j; k++)
+                            {
+                                if (earlyuserid[k] > earlyuserid[j])
+                                {
+                                    DateTime t = earlyuserid[j];
+                                    earlyuserid[j] = earlyuserid[k];
+                                    earlyuserid[k] = t;
+
+                                    int n = power[j];
+                                    power[j] = power[k];
+                                    power[k] = n;
+
+                                    n = ids[j];
+                                    ids[j] = ids[k];
+                                    ids[k] = n;
+                                }
+                            }
+                        }
+                        AttackGroupResult(0, ids, power, target);
+                    }
+                }
+            }
+
+            Moves = db.Moves.Where(n => n.Tick == db.Ticks.Last()).Where(a => a.Type == "getinrocket").ToList();
+            foreach (Team team in Teams)
+            {
+                if (Moves.Where(b => b.User.Team == team).Count() == db.Settings.FirstOrDefault().TeamSize
+                    && team.Fuel >= db.Settings.FirstOrDefault().RocketFuel)
+                {
+                    foreach (Team tocompare in Moves.FirstOrDefault().User.Team)
+                    {
+                        db.Users.Find(user.UserId).InRocket = true;
+                        db.SaveChanges();
+                    }
+                }
+            }
+            Moves = db.Moves.Where(n => n.Tick == db.Ticks.Last()).Where(a => a.Type == "attackrocket").ToList(); //Можно сократить
+            foreach (Team target in Teams)
+            {
+                if (Users.Where(b => b.Team == target).Where(a => a.InRocket == true).Count() == db.Settings.FirstOrDefault().RocketSize)
+                {
+                    int i = 0;
+                    int defendpower = 0;
+                    int[] power = new int[5]; //Сила Команд
+                    int[] ids = new int[5]; //ID Команд
+                    DateTime[] earlyuserid = new DateTime[5]; //Самый ранний ход команды
+
+                    foreach (Team team in Teams)
+                    {
+                        foreach (User attacker in db.Users.Where(n => n.Team == team).ToList())
+                        {
+                            earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
+                            if (Moves.Where(n => n.User.Team == team).FirstOrDefault().To == target)
+                            {
+                                if (Moves.Where(n => n.User.Team == team).FirstOrDefault().Time < earlyuserid[i])
+                                {
+                                    earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
+                                }
+                                ids[i] = team.TeamId;
+                                power[i] += attacker.Power;
+                            }
+                        }
+                        i++;
+                    }
+
+                    foreach (User defender in db.Users.Where(n => n.Team == target).Where(s => s.InRocket == true).ToList())
+                    {
+                        defendpower += defender.Power;
+                    }
+
+                    for (int j = 1; j < i; j++) //Проверить (Сортировка)
+                    {
+                        for (int k = 0; k < j; k++)
+                        {
+                            if (power[k] < power[j])
+                            {
+                                int n = power[j];
+                                power[j] = power[k];
+                                power[k] = n;
+
+                                n = ids[j];
+                                ids[j] = ids[k];
+                                ids[k] = n;
+
+                                DateTime t = earlyuserid[j];
+                                earlyuserid[j] = earlyuserid[k];
+                                earlyuserid[k] = t;
+                            }
+                        }
+                    }
+
+                    int equalcount = 1; //Количество самых сильных
+                    for (int j = 1; j < i; j++)
+                    {
+                        if (power[0] == power[j])
+                        {
+                            equalcount++;
+                        }
+                    }
+
+                    if (equalcount == 1)
+                    {
+                        AttackRocketResult(0, defendpower, power, target);
+                    }
+
+                    if (equalcount == 2)
+                    {
+
+                        if (earlyuserid[0] < earlyuserid[1])
+                        {
+                            AttackRocketResult(0, defendpower, power, target);
+                        }
+                        else
+                        {
+                            AttackRocketResult(1, defendpower, power, target);
+                        }
+                    }
+
+                    if (equalcount == 3)
+                    {
+                        for (int j = 1; j < 3; j++) //Проверить (Сортировка на убывание времени)
+                        {
+                            for (int k = 0; k < j; k++)
+                            {
+                                if (earlyuserid[k] > earlyuserid[j])
+                                {
+                                    DateTime t = earlyuserid[j];
+                                    earlyuserid[j] = earlyuserid[k];
+                                    earlyuserid[k] = t;
+
+                                    int n = power[j];
+                                    power[j] = power[k];
+                                    power[k] = n;
+
+                                    n = ids[j];
+                                    ids[j] = ids[k];
+                                    ids[k] = n;
+                                }
+                            }
+                        }
+                        AttackRocketResult(0, defendpower, power, target);
+                    }
+
+                    if (equalcount == 4)
+                    {
+                        for (int j = 1; j < 4; j++) //Проверить (Сортировка на убывание времени)
+                        {
+                            for (int k = 0; k < j; k++)
+                            {
+                                if (earlyuserid[k] > earlyuserid[j])
+                                {
+                                    DateTime t = earlyuserid[j];
+                                    earlyuserid[j] = earlyuserid[k];
+                                    earlyuserid[k] = t;
+
+                                    int n = power[j];
+                                    power[j] = power[k];
+                                    power[k] = n;
+
+                                    n = ids[j];
+                                    ids[j] = ids[k];
+                                    ids[k] = n;
+                                }
+                            }
+                        }
+                        AttackRocketResult(0, defendpower, power, target);
+                    }
+                }
             }
         }
-
-
     }
 }
