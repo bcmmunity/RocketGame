@@ -191,7 +191,7 @@ namespace RocketGame.Controllers
             }
 
             Moves = db.Moves.Where(n => n.Tick == db.Ticks.Last()).Where(a => a.Type == "intellectup").ToList();
-            foreach(Move item in Moves)
+            foreach (Move item in Moves)
             {
                 db.Users.Find(item.User.UserId).Intellect++;
                 db.SaveChanges();
@@ -221,27 +221,32 @@ namespace RocketGame.Controllers
 
             Moves = db.Moves.Where(n => n.Tick == db.Ticks.Last()).Where(a => a.Type == "attackgroup").ToList();
             List<User> Users = db.Users.ToList();
+            List<Team> Teams1 = db.Teams.ToList();
             foreach (Team target in Teams)
             {
-                if (Users.Where(b => b.Team == target).Where(a=> a.InRocket == false).Count() == db.Settings.FirstOrDefault().TeamSize)
+                if (Users.Where(b => b.Team == target).Where(a => a.InRocket == false).Count() != 0)
                 {
                     int i = 0;
                     int[] power = new int[5]; //Сила Команд
                     int[] ids = new int[5]; //ID Команд
                     DateTime[] earlyuserid = new DateTime[5]; //Самый ранний ход команды
 
-                    foreach (Team team in Teams)
+                    foreach (Team team in Teams1)
                     {
+                        db.Logs.Add(new Log { Msg = Moves.Where(n => n.User.Team == team).FirstOrDefault().MoveId.ToString() });//Moves.Where(n => n.User.Team == team).FirstOrDefault().Time.ToString() }); //LOGSSSSSSS
+                        db.SaveChanges();
+
+                        earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
+                        ids[i] = team.TeamId;
                         foreach (User attacker in db.Users.Where(n => n.Team == team).ToList())
                         {
-                            earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
+
                             if (Moves.Where(n => n.User.Team == team).FirstOrDefault().To == target)
                             {
                                 if (Moves.Where(n => n.User.Team == team).FirstOrDefault().Time < earlyuserid[i])
                                 {
                                     earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
                                 }
-                                ids[i] = team.TeamId;
                                 power[i] += attacker.Power;
                             }
                         }
@@ -349,18 +354,136 @@ namespace RocketGame.Controllers
             }
 
             Moves = db.Moves.Where(n => n.Tick == db.Ticks.Last()).Where(a => a.Type == "getinrocket").ToList();
-            foreach (Team team in Teams)
+            int count = 0;
+            int[] powint = new int[db.Settings.FirstOrDefault().TeamSize]; //Сила+Интеллект Игрока
+            int[] teamids = new int[5]; //ID Команд
+            int[] userid = new int[db.Settings.FirstOrDefault().TeamSize];
+            //            DateTime[] earlyteamid = new DateTime[5]; //Самый ранний ход КОМАНДЫ
+            DateTime[] earlyuser = new DateTime[db.Settings.FirstOrDefault().TeamSize]; //Время хода игрока
+
+            List<Team> Teams2 = db.Teams.ToList();
+            foreach (Team team in Teams2)
             {
-                if (Moves.Where(b => b.User.Team == team).Count() == db.Settings.FirstOrDefault().TeamSize
-                    && team.Fuel >= db.Settings.FirstOrDefault().RocketFuel)
+                if (Moves.Where(n => n.User.Team == team).Count() == db.Settings.FirstOrDefault().TeamSize)
                 {
-                    foreach (Team tocompare in Moves.FirstOrDefault().User.Team)
+                    teamids[count] = team.TeamId;
+                    count++;
+                }
+            }
+            count--;
+
+            int winner = 0;
+            bool fl = false;
+            foreach (Move move in Moves.OrderBy(n => n.Time).ToList())
+            {
+                for (int f = 0; f < count; f++)
+                {
+                    if (teamids[f] == move.User.Team.TeamId)
                     {
-                        db.Users.Find(user.UserId).InRocket = true;
-                        db.SaveChanges();
+                        winner = move.User.Team.TeamId;
+                        fl = true;
+                        return;
+                    }
+                    if (fl) return;
+                }
+                if (fl) return;
+            }
+
+            int countwinner = 0; //кол-во игроков в команде победивших
+            int c = db.Settings.FirstOrDefault().RocketSize;
+            foreach (Move move in Moves.Where(m => m.User.Team.TeamId == winner).OrderBy(k => k.Time).ToList())
+            {
+
+                powint[countwinner] += move.User.Power + move.User.Intellect;
+                countwinner++;
+            }
+
+            for (int p = 0; p < countwinner; p++)
+            {
+                for (int k = 0; k < p; k++)
+                {
+                    if (powint[k] < powint[p])
+                    {
+                        int t = powint[p];
+                        powint[p] = powint[k];
+                        powint[k] = t;
+
+                        t = userid[p];
+                        userid[p] = userid[k];
+                        userid[k] = t;
                     }
                 }
             }
+
+
+
+            int index = db.Settings.FirstOrDefault().RocketSize;
+            int borders = index - 1;
+            int borderf = index;
+            bool g = true;
+
+            db.Logs.Add(new Log{ Msg = borderf.ToString() + " " + borders.ToString()}); //LOGSSSSSSS
+            db.SaveChanges();
+
+            if (powint[index - 1] != powint[index])
+            {
+                g = false;
+                for (int s = 0; s < index; s++)
+                {
+                    db.Users.Where(m => m.UserId == userid[s]).FirstOrDefault().InRocket = true;
+                    db.SaveChanges();
+                }
+            }
+
+            if (g)
+            {
+                while (powint[index - 1] == powint[index])
+                {
+                    borders = index - 1;
+                    index--;
+                }
+                while (powint[index + 1] == powint[index])
+                {
+                    borderf = index + 1;
+                    index++;
+                }
+
+                for (int s = 0; s < borders; s++)
+                {
+                    db.Users.Where(m => m.UserId == userid[s]).FirstOrDefault().InRocket = true;
+                    db.SaveChanges();
+                }
+                for (int h = borders; h < borderf; h++)
+                {
+                    earlyuser[h] = db.Moves.Where(a => a.User.UserId == userid[h]).FirstOrDefault().Time;
+                }
+                for (int l = borders+1; l < borderf; l++) //Проверить (Сортировка на убывание времени)
+                {
+                    for (int z = borders; z < l; z++)
+                    {
+                        if (earlyuser[z] > earlyuser[l])
+                        {
+                            DateTime t = earlyuser[l];
+                            earlyuser[l] = earlyuser[z];
+                            earlyuser[z] = t;
+
+                            int n = powint[l];
+                            powint[l] = powint[z];
+                            powint[z] = n;
+
+                            n = userid[l];
+                            userid[l] = userid[z];
+                            userid[z] = n;
+                        }
+                    }
+                }
+                for (int b = 0; b < db.Settings.FirstOrDefault().RocketSize - borders; b++)
+                {
+                    db.Users.Where(m => m.UserId == userid[b]).FirstOrDefault().InRocket = true;
+                    db.SaveChanges();
+                }
+            }
+
             Moves = db.Moves.Where(n => n.Tick == db.Ticks.Last()).Where(a => a.Type == "attackrocket").ToList(); //Можно сократить
             foreach (Team target in Teams)
             {
@@ -374,9 +497,10 @@ namespace RocketGame.Controllers
 
                     foreach (Team team in Teams)
                     {
+                        earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
                         foreach (User attacker in db.Users.Where(n => n.Team == team).ToList())
                         {
-                            earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
+
                             if (Moves.Where(n => n.User.Team == team).FirstOrDefault().To == target)
                             {
                                 if (Moves.Where(n => n.User.Team == team).FirstOrDefault().Time < earlyuserid[i])
@@ -494,6 +618,163 @@ namespace RocketGame.Controllers
                     }
                 }
             }
+            if (db.Users.Where(n => n.InRocket == true).Count() == db.Settings.FirstOrDefault().RocketSize)
+            {
+                FinishGame(null);
+            }
+        }
+
+
+        public string Check()
+        {
+            Tick tick = new Tick();
+            Setting setting = new Setting();
+
+            //Настройки
+            setting.RocketFuel = 5;
+            setting.RocketSize = 2;
+            setting.TeamCount = 2;
+            setting.TeamSize = 3;
+            db.Settings.Add(setting);
+
+            //Добавление групп
+
+            //team.Name = "Красные";
+            //team.Power = 5;
+            //db.Teams.Add(team);
+
+            Team team1 = new Team();
+            team1.Name = "Blue";
+            team1.Power = 3;
+            db.Teams.Add(team1);
+            db.SaveChanges();
+
+            Team team2 = new Team();
+            team2.Name = "Yellow";
+            team2.Power = 7;
+            db.Teams.Add(team2);
+            db.SaveChanges();
+
+            //Добавлене игроков
+
+            User user1 = new User();
+
+            user1.Team = db.Teams.Where(b => b.Name == "Blue").FirstOrDefault();
+            user1.Name = "Player11";
+            user1.Power = 1;
+            user1.Intellect = 2;
+            db.Users.Add(user1);
+            db.SaveChanges();
+
+            User user2 = new User();
+            user2.Team = db.Teams.Where(b => b.Name == "Blue").FirstOrDefault();
+            user2.Name = "Player12";
+            user2.Power = 1;
+            user2.Intellect = 3;
+            db.Users.Add(user2);
+            db.SaveChanges();
+
+            User user3 = new User();
+            user3.Team = db.Teams.Where(b => b.Name == "Blue").FirstOrDefault();
+            user3.Name = "Player13";
+            user3.Power = 1;
+            user3.Intellect = 2;
+            db.Users.Add(user3);
+            db.SaveChanges();
+
+            User user4 = new User();
+            user4.Team = db.Teams.Where(b => b.Name == "Yellow").FirstOrDefault();
+            user4.Name = "Player21";
+            user4.Power = 1;
+            user4.Intellect = 3;
+            db.Users.Add(user4);
+            db.SaveChanges();
+
+            User user5 = new User();
+            user5.Team = db.Teams.Where(b => b.Name == "Yellow").FirstOrDefault();
+            user5.Name = "Player22";
+            user5.Power = 4;
+            user5.Intellect = 1;
+            db.Users.Add(user5);
+
+            User user6 = new User();
+            user6.Team = db.Teams.Where(b => b.Name == "Yellow").FirstOrDefault();
+            user6.Name = "Player23";
+            user6.Power = 2;
+            user6.Intellect = 2;
+            db.Users.Add(user6);
+
+            db.SaveChanges();
+
+            //Добавление Тактов
+            tick.Number = 1;
+            db.Ticks.Add(tick);
+
+            db.SaveChanges();
+
+            //Добавление действий
+            Move move1 = new Move();
+            move1.Tick = db.Ticks.Where(s => s.Number == 1).FirstOrDefault();
+            move1.User = db.Users.Where(m => m.Name == "Player11").FirstOrDefault();
+            move1.Type = "intellectup";
+            move1.Time = DateTime.Now;
+            db.Moves.Add(move1);
+            db.SaveChanges();
+
+            Move move2 = new Move();
+            move2.Tick = db.Ticks.Where(s => s.Number == 1).FirstOrDefault();
+            move2.User = db.Users.Where(m => m.Name == "Player12").FirstOrDefault();
+            move2.Type = "gather";
+            move2.Time = DateTime.Now;
+            db.Moves.Add(move2);
+            db.SaveChanges();
+
+            Move move3 = new Move();
+            move3.Tick = db.Ticks.Where(s => s.Number == 1).FirstOrDefault();
+            move3.User = db.Users.Where(m => m.Name == "Player13").FirstOrDefault();
+            move3.Type = "gift";
+            move3.To = db.Teams.Where(c => c.Name == "Yellow").FirstOrDefault();
+            move3.Time = DateTime.Now;
+            db.Moves.Add(move3);
+            db.SaveChanges();
+
+            Move move4 = new Move();
+            move4.Tick = db.Ticks.Where(s => s.Number == 1).FirstOrDefault();
+            move4.User = db.Users.Where(m => m.Name == "Player21").FirstOrDefault();
+            move4.Type = "getinrocket";
+            move4.Time = DateTime.Now;
+            db.Moves.Add(move4);
+            db.SaveChanges();
+
+            Move move5 = new Move();
+            move5.Tick = db.Ticks.Where(s => s.Number == 1).FirstOrDefault();
+            move5.User = db.Users.Where(m => m.Name == "Player22").FirstOrDefault();
+            move5.Type = "attackgroup";
+            move5.To = db.Teams.Where(c => c.Name == "Blue").FirstOrDefault();
+            move5.Time = DateTime.Now;
+            db.Moves.Add(move5);
+            db.SaveChanges();
+
+            Move move6 = new Move();
+            move6.Tick = db.Ticks.Where(s => s.Number == 1).FirstOrDefault();
+            move6.User = db.Users.Where(m => m.Name == "Player23").FirstOrDefault();
+            move6.Type = "powerup";
+            move6.Time = DateTime.Now;
+            db.Moves.Add(move6);
+            db.SaveChanges();
+
+            Update();
+
+            //tick.Number = 2;
+            //db.Ticks.Add(tick);
+
+            //Update();
+
+            //tick.Number = 3;
+            //db.Ticks.Add(tick);
+            //Update();
+
+            return "Все хорошо!";
         }
     }
 }
