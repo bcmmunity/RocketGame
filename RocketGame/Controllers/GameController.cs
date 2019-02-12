@@ -76,7 +76,7 @@ namespace RocketGame.Controllers
             db1.Logs.Add(new Log { Msg = "T" + db1.Ticks.Last().Number.ToString()});
             db1.SaveChanges();
             TimerCallback tm = new TimerCallback(TickChecker);
-            timer = new Timer(tm, db1.Ticks.Last().Number, 60000 * db1.Settings.FirstOrDefault().TimeTick, 30000);
+            timer = new Timer(tm, db1.Ticks.Last().Number, 6000 * db1.Settings.FirstOrDefault().TimeTick, Timeout.Infinite);
         }
 
         public void FTimer()
@@ -85,7 +85,7 @@ namespace RocketGame.Controllers
             db1.Logs.Add(new Log { Msg = "FT" });
             db1.SaveChanges();
             TimerCallback tm = new TimerCallback(FinishGame);
-            timer = new Timer(tm, null, 100 + 60000 * db1.Settings.FirstOrDefault().TimeGame, 3000000000);
+            ftimer = new Timer(tm, null, 6000 * db1.Settings.FirstOrDefault().TimeGame, Timeout.Infinite);
         }
 
         static MyContext db1;
@@ -133,12 +133,12 @@ namespace RocketGame.Controllers
         }
 
         public void FinishGame(object o)
-        {
-            db1.Logs.Add(new Log { Msg = "Dispose FTimer" });
-            ftimer.Dispose();
+		{
+			Unit();
+			db1.Logs.Add(new Log { Msg = "Dispose FTimer" });
+            //ftimer.Dispose();
             db1.Logs.Add(new Log { Msg = "Dispose Timer" });
-            timer.Dispose();
-            Unit();
+            //timer.Dispose();
             db1.Ticks.Last().Finish = DateTime.Now;
             db1.Settings.Last().IsFinished = true;
             db1.SaveChanges();
