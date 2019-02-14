@@ -23,19 +23,20 @@ namespace RocketGame.Controllers
             db = context;
         }
 
-        public string Make(Move Move, string Key, int TeamId)
+        public static string Make(Move Move, string Key, int TeamId)
         {
-            if (Move.Type == "powerup" || Move.Type == "intellectuP" || Move.Type == "gather" || Move.Type == "gift" || Move.Type == "attack")
+			Unit();
+            if (Move.Type == "powerup" || Move.Type == "intellectup" || Move.Type == "gather" || Move.Type == "gift" || Move.Type == "attack")
             {
-                Move.User = db.Users.Where(n => n.Key == Key).FirstOrDefault();
-                Move.Tick = db.Ticks.Last();
+                Move.User = db1.Users.Where(n => n.Key == Key).FirstOrDefault();
+                Move.Tick = db1.Ticks.Last();
                 Move.Time = DateTime.Now;
-                Move.To = db.Teams.Find(TeamId);
-                db.SaveChanges();
+                Move.To = db1.Teams.Find(TeamId);
+                db1.SaveChanges();
 
-                Tick LastTick = db.Ticks.Last();
+                Tick LastTick = db1.Ticks.Last();
 
-                if (db.Settings.FirstOrDefault().TeamCount * db.Settings.FirstOrDefault().TeamSize == db.Moves.Where(n => n.Tick == LastTick).Count())
+                if (db1.Settings.FirstOrDefault().TeamCount * db1.Settings.FirstOrDefault().TeamSize == db1.Moves.Where(n => n.Tick == LastTick).Count())
                 {
 
                     AddTick();
@@ -49,7 +50,7 @@ namespace RocketGame.Controllers
             }
         }
 
-        public void TickChecker(object x)
+        public static void TickChecker(object x)
         {
             int number = (int)x;
             Unit();
@@ -69,10 +70,10 @@ namespace RocketGame.Controllers
             }
         }
 
-        public Timer timer;
+        public static Timer timer;
         public Timer ftimer;
 
-        public void Timer()
+        public static void Timer()
         {
             Unit();
 
@@ -119,7 +120,7 @@ namespace RocketGame.Controllers
             return "Игра началась";
         }
 
-        public string AddTick()
+        public static string AddTick()
         {
             Unit();
             if (db1.Settings.Last().IsFinished)

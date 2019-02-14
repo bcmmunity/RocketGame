@@ -73,7 +73,6 @@ C:\Users\Никита Кураев\Desktop\RocketGame\RocketGame\obj\Debug\netco
 C:\Users\Никита Кураев\Desktop\RocketGame\RocketGame\obj\Debug\netcoreapp2.1\RocketGame.TagHelpers.input.cache
 C:\Users\Никита Кураев\Desktop\RocketGame\RocketGame\obj\Debug\netcoreapp2.1\RocketGame.TagHelpers.output.cache
 C:\Users\Никита Кураев\Desktop\RocketGame\RocketGame\obj\Debug\netcoreapp2.1\RocketGame.RazorCoreGenerate.cache
-C:\Users\Никита Кураев\Desktop\RocketGame\RocketGame\obj\Debug\netcoreapp2.1\Razor\Views\Home\Admin.g.cshtml.cs
 C:\Users\Никита Кураев\Desktop\RocketGame\RocketGame\obj\Debug\netcoreapp2.1\Razor\Views\Home\Index.g.cshtml.cs
 C:\Users\Никита Кураев\Desktop\RocketGame\RocketGame\obj\Debug\netcoreapp2.1\Razor\Views\Shared\Error.g.cshtml.cs
 C:\Users\Никита Кураев\Desktop\RocketGame\RocketGame\obj\Debug\netcoreapp2.1\Razor\Views\Shared\_CookieConsentPartial.g.cshtml.cs
@@ -123,3 +122,5 @@ C:\Users\Никита\Desktop\RocketGame1\RocketGame\RocketGame\obj\Debug\netcor
 C:\Users\Никита\Desktop\RocketGame1\RocketGame\RocketGame\obj\Debug\netcoreapp2.1\RocketGame.csproj.CopyComplete
 C:\Users\Никита\Desktop\RocketGame1\RocketGame\RocketGame\obj\Debug\netcoreapp2.1\Razor\Views\Home\EditUser.g.cshtml.cs
 C:\Users\Никита Кураев\Desktop\RocketGame\RocketGame\obj\Debug\netcoreapp2.1\Razor\Views\Home\EditUser.g.cshtml.cs
+C:\Users\Никита Кураев\Desktop\RocketGame\RocketGame\obj\Debug\netcoreapp2.1\Razor\Views\Home\Setting.g.cshtml.cs
+C:\Users\Никита Кураев\Desktop\RocketGame\RocketGame\obj\Debug\netcoreapp2.1\Razor\Views\Home\Admin.g.cshtml.cs

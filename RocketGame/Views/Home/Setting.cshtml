@@ -1,0 +1,46 @@
+﻿@model RocketGame.Models.Setting
+@{
+	ViewData["Title"] = "Настройки игры";
+}
+
+<div class="container">
+	<div class="row">
+		<col-6>
+			<h1>@ViewBag.msg</h1>
+			<form asp-controller="Home" asp-action="Setting" asp-route-key="@ViewBag.Key" method="post" >
+
+				</br>
+				<label>Время одного такта в минутах</label>
+				</br>
+				@Html.TextBoxFor(n => n.TimeTick)
+				</br>
+				<label>Время игры в минутах</label>
+				</br>
+				@Html.TextBoxFor(n => n.TimeGame)
+				</br>
+				<label>Количество команд</label>
+				</br>
+				@Html.TextBoxFor(n => n.TeamCount)
+				</br>
+				<label>Размер команд</label>
+				</br>
+				@Html.TextBoxFor(n => n.TeamSize)
+				</br>
+				<label>Количество мест в ракете</label>
+				</br>
+				@Html.TextBoxFor(n => n.RocketSize)
+				</br>
+				<label>Необходимое для ракеты топливо</label>
+				</br>
+				@Html.TextBoxFor(n => n.RocketFuel)
+				</br>
+
+				<input type="submit" value="Отправить" class="btn" />
+			</form>
+		</col-6>
+	</div>
+</div>
+
+<script>
+	localStorage.setItem("Key", @ViewBag.Key);
+</script>

@@ -1,23 +1,12 @@
 ﻿@{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Войти в игру";
 }
 
 <div class="container">
 	<div class="row">
 		<col-6>
 			<h1>@ViewBag.msg</h1>
-			<h2>Вход для админа</h2>
 			<form asp-controller="Home" asp-action="Index" method="post">
-				<label>Логин:</label><br />
-				<input type="text" name="Mail" /><br /><br />
-				<label>Пароль:</label><br />
-				<input type="text" name="Password" /><br /><br />
-				<input type="submit" value="Войти" class="btn" />
-			</form>
-		</col-6>
-		<col-6>
-			<h2>Вход для пользователя</h2>
-			<form asp-controller="Home" asp-action="Login" method="post">
 				<label>Ваш код:</label><br />
 				<input type="text" name="Promo" /><br /><br />
 				<input type="submit" value="Войти" class="btn" />
