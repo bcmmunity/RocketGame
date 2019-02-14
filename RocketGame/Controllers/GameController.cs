@@ -25,7 +25,7 @@ namespace RocketGame.Controllers
 
         public string Make(Move Move, string Key, int TeamId)
         {
-            if (Move.Type == "PowerUp" || Move.Type == "IntellectUP" || Move.Type == "Gather" || Move.Type == "Gift" || Move.Type == "Attack")
+            if (Move.Type == "powerup" || Move.Type == "intellectuP" || Move.Type == "gather" || Move.Type == "gift" || Move.Type == "attack")
             {
                 Move.User = db.Users.Where(n => n.Key == Key).FirstOrDefault();
                 Move.Tick = db.Ticks.Last();
@@ -62,6 +62,11 @@ namespace RocketGame.Controllers
             {
                 AddTick();
             }
+            else
+            {
+                db1.Logs.Add(new Log { Msg = "ERRORRRR " + number.ToString() });
+                db1.SaveChanges();
+            }
         }
 
         public Timer timer;
@@ -75,7 +80,7 @@ namespace RocketGame.Controllers
             //db1.SaveChanges();
 
             TimerCallback tm = new TimerCallback(TickChecker);
-            timer = new Timer(tm, db1.Ticks.Last().Number, 60000 * db1.Settings.FirstOrDefault().TimeTick, 30000);
+            timer = new Timer(tm, db1.Ticks.Last().Number, 60000 * db1.Settings.FirstOrDefault().TimeTick, Timeout.Infinite);
         }
 
         public void FTimer()
@@ -86,7 +91,7 @@ namespace RocketGame.Controllers
             //db1.SaveChanges();
 
             TimerCallback tm = new TimerCallback(FinishGame);
-            timer = new Timer(tm, null, 100 + 60000 * db1.Settings.FirstOrDefault().TimeGame, 3000000000);
+            ftimer = new Timer(tm, null, 6000 * db1.Settings.FirstOrDefault().TimeGame, Timeout.Infinite);
         }
 
         static MyContext db1;
@@ -135,11 +140,7 @@ namespace RocketGame.Controllers
 
         public void FinishGame(object o)
         {
-            //db1.Logs.Add(new Log { Msg = "Dispose FTimer" });
-            ftimer.Dispose();
-            //db1.Logs.Add(new Log { Msg = "Dispose Timer" });
-            timer.Dispose();
-            Unit();
+			Unit();
             db1.Ticks.Last().Finish = DateTime.Now;
             db1.Settings.Last().IsFinished = true;
             db1.SaveChanges();
@@ -738,6 +739,8 @@ namespace RocketGame.Controllers
             setting.RocketFuel = 2;
             setting.RocketSize = 3;
             setting.TeamCount = 2;
+            setting.TimeTick = 1;
+            setting.TimeGame = 2;
             setting.TeamSize = 3;
             db.Settings.Add(setting);
 
@@ -812,9 +815,11 @@ namespace RocketGame.Controllers
 
             db.SaveChanges();
 
+            StartGame();
+
             //Добавление Тактов
-            tick.Number = 1;
-            db.Ticks.Add(tick);
+            //tick.Number = 1;
+            //db.Ticks.Add(tick);
 
             db.SaveChanges();
 
