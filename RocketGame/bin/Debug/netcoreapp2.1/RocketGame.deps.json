@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.1",
-    "signature": "1f5da74c73bcd40a876f54e3c32d49fdb295924e"
+    "signature": "52e5e172d28cf35286f33863c0511e2a9fc1525a"
   },
   "compilationOptions": {
     "defines": [
@@ -24,6 +24,7 @@
     ".NETCoreApp,Version=v2.1": {
       "RocketGame/1.0.0": {
         "dependencies": {
+          "Google.Apis.Sheets.v4": "1.38.0.1495",
           "Microsoft.AspNetCore.App": "2.1.1",
           "Microsoft.AspNetCore.Razor.Design": "2.1.2",
           "Microsoft.NETCore.App": "2.1.0",
@@ -34,6 +35,70 @@
         },
         "compile": {
           "RocketGame.dll": {}
+        }
+      },
+      "Google.Apis/1.38.0": {
+        "dependencies": {
+          "Google.Apis.Core": "1.38.0",
+          "Newtonsoft.Json": "11.0.2"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Google.Apis.dll": {
+            "assemblyVersion": "1.38.0.0",
+            "fileVersion": "1.38.0.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Google.Apis.dll": {}
+        }
+      },
+      "Google.Apis.Auth/1.38.0": {
+        "dependencies": {
+          "Google.Apis": "1.38.0",
+          "Google.Apis.Core": "1.38.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Google.Apis.Auth.PlatformServices.dll": {
+            "assemblyVersion": "1.38.0.0",
+            "fileVersion": "1.38.0.0"
+          },
+          "lib/netstandard2.0/Google.Apis.Auth.dll": {
+            "assemblyVersion": "1.38.0.0",
+            "fileVersion": "1.38.0.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Google.Apis.Auth.PlatformServices.dll": {},
+          "lib/netstandard2.0/Google.Apis.Auth.dll": {}
+        }
+      },
+      "Google.Apis.Core/1.38.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "11.0.2"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Google.Apis.Core.dll": {
+            "assemblyVersion": "1.38.0.0",
+            "fileVersion": "1.38.0.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Google.Apis.Core.dll": {}
+        }
+      },
+      "Google.Apis.Sheets.v4/1.38.0.1495": {
+        "dependencies": {
+          "Google.Apis": "1.38.0",
+          "Google.Apis.Auth": "1.38.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Google.Apis.Sheets.v4.dll": {
+            "assemblyVersion": "1.38.0.1495",
+            "fileVersion": "1.38.0.1495"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Google.Apis.Sheets.v4.dll": {}
         }
       },
       "Microsoft.AspNetCore.Razor.Design/2.1.2": {},
@@ -3461,6 +3526,34 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Google.Apis/1.38.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-sDcc3qVHkgQfmrW4HFPiRs9EXf8ohj7nS6QMKRirY8gtKOtv7zAGJldOxRW07soh9O476H711qPRt+mddiOZPg==",
+      "path": "google.apis/1.38.0",
+      "hashPath": "google.apis.1.38.0.nupkg.sha512"
+    },
+    "Google.Apis.Auth/1.38.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OJXWXIFTNkmlYsiEdralgYNKS0qMsFFRR4J2si1BWWlb3VsSIvQwci5w9yF4cvkX+eP7qu9oh1+GLNVjkCOm6w==",
+      "path": "google.apis.auth/1.38.0",
+      "hashPath": "google.apis.auth.1.38.0.nupkg.sha512"
+    },
+    "Google.Apis.Core/1.38.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-0AhG8lpdjaEXCkKyI6A7U5BeGRZSYMMdJ+eYZR3bvnA4ruXmCvBKsKhvKWh7RZmeTlxMImhBDGwGAQx/g1Q79A==",
+      "path": "google.apis.core/1.38.0",
+      "hashPath": "google.apis.core.1.38.0.nupkg.sha512"
+    },
+    "Google.Apis.Sheets.v4/1.38.0.1495": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rbIUpwLEwimuDzCSXJ78twKmANnihSAp1aESn5QkbNSFaFXbtrAasIXkvR1ofVEYYgCti2bX/wiAefjYdS5egA==",
+      "path": "google.apis.sheets.v4/1.38.0.1495",
+      "hashPath": "google.apis.sheets.v4.1.38.0.1495.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Razor.Design/2.1.2": {
       "type": "package",

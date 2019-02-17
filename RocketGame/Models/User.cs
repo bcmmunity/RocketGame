@@ -5,15 +5,16 @@ using System.Threading.Tasks;
 
 namespace RocketGame.Models
 {
-    public class User 
+    public class User
     {
         public Team Team { get; set; }
         public int UserId { get; set; }
         public string Name { get; set; }
-		public string Key { get; set; }
-		public int Intellect { get; set; }
+        public string Key { get; set; }
+        public int Intellect { get; set; }
         public int Power { get; set; }
         public bool InRocket { get; set; }
         public string EMail { get; set; }
+        public string RealName { get; set; }
     }
 }

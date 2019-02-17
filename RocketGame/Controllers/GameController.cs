@@ -25,7 +25,7 @@ namespace RocketGame.Controllers
 
         public string Make(Move Move, string Key, int TeamId)
         {
-            if (Move.Type == "powerup" || Move.Type == "intellectuP" || Move.Type == "gather" || Move.Type == "gift" || Move.Type == "attack")
+            if (Move.Type == "powerup" || Move.Type == "intellectup" || Move.Type == "gather" || Move.Type == "gift" || Move.Type == "attack")
             {
                 Move.User = db.Users.Where(n => n.Key == Key).FirstOrDefault();
                 Move.Tick = db.Ticks.Last();
@@ -104,8 +104,6 @@ namespace RocketGame.Controllers
             db1 = new MyContext(optionsBuilder.Options);
         }
 
-
-
         public string StartGame()
         {
             Tick Tick = new Tick();
@@ -115,6 +113,7 @@ namespace RocketGame.Controllers
             db.SaveChanges();
             Timer();
             FTimer();
+            
 
             return "Игра началась";
         }
@@ -158,18 +157,30 @@ namespace RocketGame.Controllers
                 {
                     db.Teams.Where(n => n.TeamId == ids[attacker]).FirstOrDefault().Fuel += result * 2;
                     db.Teams.Where(m => m.TeamId == target.TeamId).FirstOrDefault().Fuel = target.Fuel - result * 2;
-//                    db.SaveChanges();
+                    foreach (Move move in db.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).ToList())
+                    {
+                        db.Moves.Find(move.MoveId).Result = "Победа";
+                    }
+
+                    //db.SaveChanges();
                 }
                 else
                 {
                     db.Teams.Where(n => n.TeamId == ids[attacker]).FirstOrDefault().Fuel += target.Fuel;
                     db.Teams.Find(target.TeamId).Fuel = 0;
-//                    db.SaveChanges();
+                    //db.SaveChanges();
+                }
+            }
+            else
+            {
+                foreach (Move move in db.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).ToList())
+                {
+                    db.Moves.Find(move.MoveId).Result = "Проигрыш";
                 }
             }
         }
 
-        public void AttackRocketResult(int attacker, int defender, int[] power, Team target)
+        public void AttackRocketResult(int attacker, int defender, int[] ids, int[] power, Team target)
         {
             List<User> Users = db.Users.ToList();
             if ((power[attacker] - defender) > 0)
@@ -177,8 +188,17 @@ namespace RocketGame.Controllers
                 foreach (User user in db.Users.Where(n => n.Team.TeamId == target.TeamId))
                 {
                     db.Users.Where(n => n.Team.TeamId == target.TeamId).FirstOrDefault().InRocket = false;
-//                    db.SaveChanges();
+                    db.Moves.Where(m => m.User == user).FirstOrDefault().Result = "Выбиты";
+                    //db.SaveChanges();
                 }
+                foreach (Move move in db.Moves.Where(x => x.Type == "attackrocket").Where(c => c.User.Team.TeamId == ids[attacker]).ToList())
+                {
+                    db.Moves.Find(move.MoveId).Result = "Победа";
+                }
+            }
+            foreach (Move move in db.Moves.Where(x => x.Type == "attackrocket").Where(c => c.User.Team.TeamId == ids[attacker]).ToList())
+            {
+                db.Moves.Find(move.MoveId).Result = "Проигрыш";
             }
         }
 
@@ -210,13 +230,25 @@ namespace RocketGame.Controllers
             List<Team> Teams = db.Teams.ToList();
             foreach (Team item in Teams)
             {
-                foreach (Team item1 in Teams)
+                foreach (Team target in Teams)
                 {
-                    if (Moves.Where(n => n.User.Team == item).Where(b => b.To == item1).Count() == db.Settings.FirstOrDefault().TeamSize)
+                    if (Moves.Where(n => n.User.Team == item).Where(b => b.To == target).Count() == db.Settings.FirstOrDefault().TeamSize)
                     {
-                        db.Teams.Find(item1.TeamId).Fuel += db.Teams.Find(item.TeamId).Fuel;
+                        db.Teams.Find(target.TeamId).Fuel += db.Teams.Find(item.TeamId).Fuel;
                         db.Teams.Find(item.TeamId).Fuel = 0;
+                        foreach (Move move in db.Moves.Where(x => x.Type == "gift").Where(c => c.User.Team == item).ToList())
+                        {
+                            db.Moves.Find(move.MoveId).Result = "Подарили";
+                        }
+                        //db.Moves.Where(n => n.User.Team == item1).FirstOrDefault().
                         db.SaveChanges();
+                    }
+                    else
+                    {
+                        foreach (Move move in db.Moves.Where(x => x.Type == "gift").Where(c => c.User.Team == item).ToList())
+                        {
+                            db.Moves.Find(move.MoveId).Result = "Неудача";
+                        }
                     }
                 }
             }
@@ -316,19 +348,19 @@ namespace RocketGame.Controllers
                         }
                     }
 
-                    db.Logs.Add(new Log { Msg = userid[0].ToString() + " " + powint[0] }); //LOGSSSSSSS
-                    db.SaveChanges();
+                    //db.Logs.Add(new Log { Msg = userid[0].ToString() + " " + powint[0] }); //LOGSSSSSSS
+                    //db.SaveChanges();
 
-                    db.Logs.Add(new Log { Msg = userid[2].ToString() + " " + powint[2] }); //LOGSSSSSSS
-                    db.SaveChanges();
+                    //db.Logs.Add(new Log { Msg = userid[2].ToString() + " " + powint[2] }); //LOGSSSSSSS
+                    //db.SaveChanges();
 
                     int index = db.Settings.FirstOrDefault().RocketSize;
                     int borders = index - 1;
                     int borderf = index;
                     bool g = true;
 
-                    db.Logs.Add(new Log { Msg = "Finish " + borderf.ToString() + " Start" + borders.ToString() }); //LOGSSSSSSS
-                    db.SaveChanges();
+                    //db.Logs.Add(new Log { Msg = "Finish " + borderf.ToString() + " Start" + borders.ToString() }); //LOGSSSSSSS
+                    //db.SaveChanges();
 
                     if (powint[index - 1] != powint[index])
                     {
@@ -650,7 +682,7 @@ namespace RocketGame.Controllers
 
                     if (equalcount == 1)
                     {
-                        AttackRocketResult(0, defendpower, power, target);
+                        AttackRocketResult(0, defendpower, ids, power, target);
                         db.SaveChanges();
                     }
 
@@ -659,12 +691,12 @@ namespace RocketGame.Controllers
 
                         if (earlyuserid[0] < earlyuserid[1])
                         {
-                            AttackRocketResult(0, defendpower, power, target);
+                            AttackRocketResult(0, defendpower, ids, power, target);
                             db.SaveChanges();
                         }
                         else
                         {
-                            AttackRocketResult(1, defendpower, power, target);
+                            AttackRocketResult(1, defendpower, ids, power, target);
                             db.SaveChanges();
                         }
                     }
@@ -691,7 +723,7 @@ namespace RocketGame.Controllers
                                 }
                             }
                         }
-                        AttackRocketResult(0, defendpower, power, target);
+                        AttackRocketResult(0, defendpower, ids, power, target);
                         db.SaveChanges();
                     }
 
@@ -717,7 +749,7 @@ namespace RocketGame.Controllers
                                 }
                             }
                         }
-                        AttackRocketResult(0, defendpower, power, target);
+                        AttackRocketResult(0, defendpower, ids, power, target);
                         db.SaveChanges();
                     }
                 }
@@ -740,7 +772,7 @@ namespace RocketGame.Controllers
             setting.RocketSize = 3;
             setting.TeamCount = 2;
             setting.TimeTick = 1;
-            setting.TimeGame = 2;
+            setting.TimeGame = 4;
             setting.TeamSize = 3;
             db.Settings.Add(setting);
 
@@ -879,6 +911,7 @@ namespace RocketGame.Controllers
 
             Update();
 
+            
             //tick.Number = 2;
             //db.Ticks.Add(tick);
 
