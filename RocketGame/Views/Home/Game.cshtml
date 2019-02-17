@@ -1,5 +1,40 @@
 ﻿
 @{
-    ViewData["Title"] = "Game";
+	ViewData["Title"] = "Игра";
 }
 
+<div class="container">
+	<div class="row">
+		<col-6>
+
+
+			@*<input name="type" type="radio" value="red" />
+		<span>красный</span> <br />
+		<input name="type" type="radio" value="blue" />
+		<span>синий</span> <br />
+		<input name="type" type="radio" value="blue" />
+		<span>синий</span> <br />
+		<input checked="checked" name="type" type="radio" value="green" />
+		<span>зеленый</span>*@
+
+			<h1>@ViewBag.msg</h1>
+			<form asp-controller="Home" asp-action="Game">
+				<input type="submit" value="Прокачать силу" class="btn" />
+			</form>
+			</br>
+			<form asp-controller="Home" asp-action="Game" method="post">
+				<input type="submit" value="Прокачать интеллект" class="btn" />
+			</form>
+			</br>
+			<form asp-controller="Home" asp-action="Game" method="post">
+				<input type="submit" value="Атаковать команду" class="btn" />
+			</form>
+			</br>
+			<form asp-controller="Home" asp-action="Game" method="post">
+				<input type="submit" value="Дарить" class="btn" />
+			</form>
+		</col-6>
+	</div>
+</div>
+<div id="ajaxresult">
+</div>

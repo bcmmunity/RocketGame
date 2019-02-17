@@ -18,44 +18,38 @@ namespace RocketGame.Controllers
             db = context;
         }
 
-        public IActionResult Game()
-        {
-            return View();
-        }
+		#region Админ часть
 
-        [HttpGet]
-        public IActionResult Index()
-        {
+		public IActionResult Admin()
+		{
+			return View();
+		}
 
-            return View();
-        }
+		[HttpPost]
+		public IActionResult Admin(AdminView data)
+		{
+			if (db.Admins.Where(a => a.Mail == data.Mail).FirstOrDefault() != null)
+			{
+				if (db.Admins.Where(a => a.Mail == data.Mail).FirstOrDefault().Password == data.Password)
+				{
+					ViewBag.Key = db.Admins.Where(a => a.Mail == data.Mail).FirstOrDefault().Key;
+					return View("Setting");
+				}
 
-        [HttpPost]
-        public IActionResult Index(AdminView data)
-        {
-            if (db.Admins.Where(a => a.Mail == data.Mail).FirstOrDefault() != null)
-            {
-                if (db.Admins.Where(a => a.Mail == data.Mail).FirstOrDefault().Password == data.Password)
-                {
-                    ViewBag.Key = db.Admins.Where(a => a.Mail == data.Mail).FirstOrDefault().Key;
-                    return View("Admin");
-                }
+				ViewBag.msg = "Неверный пароль";
+				return View();
+			}
+			ViewBag.msg = "Неверный логин";
+			return View();
+		}
 
-                ViewBag.msg = "Неверный пароль";
-                return View();
-            }
-            ViewBag.msg = "Неверный логин";
-            return View();
-        }
+		public IActionResult Setting(string Key)
+		{
+			return View();
+		}
 
-        public IActionResult Admin()
-        {
-
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult Admin(Setting settings, string Key)
+		[HttpPost]
+        public IActionResult Setting(Setting settings, string Key)
         {
             if (settings.TeamCount > 5)
             {
@@ -96,8 +90,56 @@ namespace RocketGame.Controllers
             return View(db.Users.Include(n => n.Team).ToList());
 		}
 
+		[HttpGet]
+		public IActionResult EditUser(int id, string Key)
+		{
+			if (db.Admins.FirstOrDefault().Key != Key)
+			{
+				ViewBag.msg = "Авторизация прошла с ошибкой, попробуйте еще раз";
+				return View("Index");
+			}
+			ViewBag.id = id;
+			ViewBag.tName = db.Users.Find(id).Team.Name;
+
+			return View(db.Teams.ToList());
+		}
+
 		[HttpPost]
-		public IActionResult Login(string Promo)
+		public IActionResult EditUser(Team team, string Key, int id)
+		{
+			if (db.Admins.FirstOrDefault().Key != Key)
+			{
+				ViewBag.msg = "Авторизация прошла с ошибкой, попробуйте еще раз";
+				return View("Index");
+			}
+
+			db.Users.Find(id).Team = team;
+
+			return RedirectToAction("ShowUsers");
+		}
+
+		#endregion
+
+		#region Пользовательская часть
+
+		[HttpPost]
+		public IActionResult Game(string type, string key, int teamId)
+		{
+			Move nwMove = new Move { Type = type };
+
+			GameController.Make(nwMove, key, teamId);
+
+			return View();
+		}
+
+		[HttpGet]
+		public IActionResult Index()
+		{
+			return View();
+		}
+
+		[HttpPost]
+		public IActionResult Index(string Promo)
 		{
 			if (db.Settings.FirstOrDefault() == null)
 			{
@@ -146,32 +188,7 @@ namespace RocketGame.Controllers
 			return View("Index");
 		}
 
-		[HttpGet]
-        public IActionResult EditUser(int id, string Key)
-		{
-			if (db.Admins.FirstOrDefault().Key != Key)
-			{
-				ViewBag.msg = "Авторизация прошла с ошибкой, попробуйте еще раз";
-				return View("Index");
-			}
-            ViewBag.id = id;
-            ViewBag.tName = db.Users.Find(id).Team.Name;
-
-            return View(db.Teams.ToList());
-        }
-
-        [HttpPost]
-        public IActionResult EditUser(Team team, string Key, int id)
-		{
-			if (db.Admins.FirstOrDefault().Key != Key)
-			{
-				ViewBag.msg = "Авторизация прошла с ошибкой, попробуйте еще раз";
-				return View("Index");
-			}
-
-			db.Users.Find(id).Team = team;
-
-            return RedirectToAction("ShowUsers");
-        }
+		#endregion
+		
     }    
 }
