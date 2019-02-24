@@ -3,38 +3,143 @@
 	ViewData["Title"] = "Игра";
 }
 
-<div class="container">
-	<div class="row">
-		<col-6>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
-
-			@*<input name="type" type="radio" value="red" />
-		<span>красный</span> <br />
-		<input name="type" type="radio" value="blue" />
-		<span>синий</span> <br />
-		<input name="type" type="radio" value="blue" />
-		<span>синий</span> <br />
-		<input checked="checked" name="type" type="radio" value="green" />
-		<span>зеленый</span>*@
-
-			<h1>@ViewBag.msg</h1>
-			<form asp-controller="Home" asp-action="Game">
-				<input type="submit" value="Прокачать силу" class="btn" />
-			</form>
-			</br>
-			<form asp-controller="Home" asp-action="Game" method="post">
-				<input type="submit" value="Прокачать интеллект" class="btn" />
-			</form>
-			</br>
-			<form asp-controller="Home" asp-action="Game" method="post">
-				<input type="submit" value="Атаковать команду" class="btn" />
-			</form>
-			</br>
-			<form asp-controller="Home" asp-action="Game" method="post">
-				<input type="submit" value="Дарить" class="btn" />
-			</form>
-		</col-6>
-	</div>
+<div id="moves">
+	<span class="btn" onclick="move = 'powerup'; makeMove()">Усилиться</span>
+	</br>
+	</br>
+	<span class="btn" onclick="move = 'intellectup'; makeMove()">Усилить интеллект</span>
+	</br>
+	</br>
+	<span class="btn" onclick="move = 'gather'; makeMove()">Добыть</span>
+	</br>
+	</br>
+	<span class="btn" onclick="move = 'attackgroup'; selectTeam()">Атаковать</span>
+	</br>
+	</br>
+	<span class="btn" onclick="move = 'attackrocket'; selectTeam()">Атаковать ракету</span>
+	</br>
+	</br>
+	<span class="btn" onclick="move = 'gift'; selectTeam()">Дарить</span>
+	</br>
+	</br>
+	<span id="getinrocket" class='btn' onclick="move = 'getinrocket'; makeMove()">Сесть в ракету</span>
+	</br>
+	</br>
 </div>
-<div id="ajaxresult">
+<div id="teams">
 </div>
+<div id="res">
+	<h1 id="msg">Ваш ход сделан</h1>
+</div>
+
+<script type="text/javascript">
+	var move = "s";
+	var opt = "";
+	var team = "0";
+
+	var proces = true;
+
+	$("#moves").hide();
+	$("#teams").hide();
+	$("#msg").empty();
+	$("#msg").append("Игра еще не началась");
+	
+	setInterval(check, 5000);
+
+	function check()
+	{
+		
+		$.ajax({
+			type: "GET",
+			url: "/Game/RocketCheck",
+			data: { Key: localStorage["Key"] },
+			
+			success: function(result) {
+				if (result)
+				{
+					$("#getinrocket").show();
+				}
+				else
+				{
+					$("#getinrocket").hide();
+				}
+			}
+		});
+
+		$.ajax({
+			type: "GET",
+			url: "/Game/MoveCheck",
+			data: { Key: localStorage["Key"] },
+			
+			success: function(result) {
+				if (result == "Ход не сделан")
+				{
+					$("#msg").hide();
+					$("#teams").hide();
+					$("#moves").show();
+				}
+				else
+				{
+					$("#msg").empty();
+					$("#msg").append(result);
+					$("#msg").show();
+					$("#teams").hide();
+					$("#moves").hide();
+				}
+			}
+		});
+	}	
+
+	function selectTeam()
+	{
+		$.ajax({
+			type: "GET",
+			url: "/Game/GroupList",
+			
+			success: function(result) {
+				$("#moves").hide();
+				$("#msg").hide();
+				
+				$("#teams").empty();
+				$("#teams").show();
+				//$("#teams").append(result);
+
+				for (var item in result) {
+					$("#teams").append("<span class='btn' onclick='team = " + result[item].teamId + "; makeMove()" + result[item].name + "</span>");
+				}
+			}
+		});
+	}	
+
+	function makeMove()
+	{
+		$.ajax({
+			type: "GET",
+			url: "/Game/Make",
+			data: { Type: move, Key: localStorage["Key"], TeamId: team },
+			
+			success: function(result) {
+				$("#moves").hide();
+				$("#teams").hide();
+
+				$("#msg").empty();
+				$("#msg").show();
+				$("#msg").append(result);
+			}
+		});
+	}
+</script>
+
+<style type="text/css">
+	.btn {
+		width: 20%;
+		min-height: 20px;
+		background-color: gray;
+		border-radius: 200px;
+		padding: 5px;
+		float: left;
+		color: white;
+	}
+</style>

@@ -15,6 +15,7 @@ namespace RocketGame.Models
         public int TeamCount { get; set; }
         public int TeamSize { get; set; }
         public string Promo { get; set; }
+        public bool IsStarted { get; set; }
         public bool IsFinished { get; set; }
     }
 }

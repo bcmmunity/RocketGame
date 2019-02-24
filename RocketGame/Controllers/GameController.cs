@@ -16,6 +16,8 @@ namespace RocketGame.Controllers
     //[ApiController]
     public class GameController : ControllerBase
     {
+        //Настройки Google Sheets
+
         private MyContext db;
 
         public GameController(MyContext context)
@@ -23,19 +25,27 @@ namespace RocketGame.Controllers
             db = context;
         }
 
-        public string Make(Move Move, string Key, int TeamId)
+        GSheetsController gsheets = new GSheetsController(db1);
+
+        public List<Team> GroupList()
         {
-            if (Move.Type == "powerup" || Move.Type == "intellectup" || Move.Type == "gather" || Move.Type == "gift" || Move.Type == "attack")
+            return db.Teams.ToList();
+        }
+
+        public static string Make(Move Move, string Key, int TeamId)
+        {
+            Unit();
+            if (Move.Type == "powerup" || Move.Type == "intellectup" || Move.Type == "gather" || Move.Type == "gift" || Move.Type == "attackgroup" || Move.Type == "attackrocket" || Move.Type == "getinrocket")
             {
-                Move.User = db.Users.Where(n => n.Key == Key).FirstOrDefault();
-                Move.Tick = db.Ticks.Last();
+                Move.User = db1.Users.Where(n => n.Key == Key).FirstOrDefault();
+                Move.Tick = db1.Ticks.Last();
                 Move.Time = DateTime.Now;
-                Move.To = db.Teams.Find(TeamId);
-                db.SaveChanges();
+                Move.To = db1.Teams.Find(TeamId);
+                db1.SaveChanges();
 
-                Tick LastTick = db.Ticks.Last();
+                Tick LastTick = db1.Ticks.Last();
 
-                if (db.Settings.FirstOrDefault().TeamCount * db.Settings.FirstOrDefault().TeamSize == db.Moves.Where(n => n.Tick == LastTick).Count())
+                if (db1.Settings.FirstOrDefault().TeamCount * db1.Settings.FirstOrDefault().TeamSize == db1.Moves.Where(n => n.Tick == LastTick).Count())
                 {
 
                     AddTick();
@@ -49,7 +59,7 @@ namespace RocketGame.Controllers
             }
         }
 
-        public void TickChecker(object x)
+        public static void TickChecker(object x)
         {
             int number = (int)x;
             Unit();
@@ -69,10 +79,10 @@ namespace RocketGame.Controllers
             }
         }
 
-        public Timer timer;
+        public static Timer timer;
         public Timer ftimer;
 
-        public void Timer()
+        public static void Timer()
         {
             Unit();
 
@@ -85,13 +95,11 @@ namespace RocketGame.Controllers
 
         public void FTimer()
         {
-            Unit();
-
             //db1.Logs.Add(new Log { Msg = "FT" });
             //db1.SaveChanges();
 
             TimerCallback tm = new TimerCallback(FinishGame);
-            ftimer = new Timer(tm, null, 6000 * db1.Settings.FirstOrDefault().TimeGame, Timeout.Infinite);
+            ftimer = new Timer(tm, null, 60000 * db.Settings.FirstOrDefault().TimeGame, Timeout.Infinite);
         }
 
         static MyContext db1;
@@ -110,17 +118,64 @@ namespace RocketGame.Controllers
             Tick.Number = 1;
             Tick.Start = DateTime.Now;
             db.Ticks.Add(Tick);
+            db.Settings.FirstOrDefault().IsStarted = true;
             db.SaveChanges();
             Timer();
             FTimer();
-            
+            gsheets.InsertUsers();
+
 
             return "Игра началась";
         }
 
-        public string AddTick()
+        public string GameCheck()
+        {
+            if(db.Settings.FirstOrDefault().IsStarted == false)
+            {
+                return "Игра еще не началась";
+            }
+            return "Игра началась";
+        }
+
+        public string MoveCheck(string Key)
+        {
+            if (db.Settings.FirstOrDefault().IsFinished)
+            {
+                return "Игра окончена";
+            }
+
+            if (db.Settings.FirstOrDefault().IsStarted == false)
+            {
+                return "Игра еще не началась";
+            }
+
+            if (db.Ticks.Last().Number == db.Moves.Where(n => n.User.Key == Key).FirstOrDefault().Tick.Number)
+            {
+                return "Ход сделан";
+            }
+            else
+            {
+                return "Ход не сделан";
+            }
+        }
+
+        public bool RocketCheck(string Key)
+        {
+            if (db.Users.Where(n => n.Key == Key).FirstOrDefault().Team.Fuel == db.Settings.FirstOrDefault().RocketFuel)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static string AddTick()
         {
             Unit();
+            GSheetsController gsheets = new GSheetsController(db1);
+            gsheets.InsertTickResult();
             if (db1.Settings.Last().IsFinished)
             {
                 return "Игра окончена";
@@ -139,11 +194,10 @@ namespace RocketGame.Controllers
 
         public void FinishGame(object o)
         {
-			Unit();
-            db1.Ticks.Last().Finish = DateTime.Now;
-            db1.Settings.Last().IsFinished = true;
-            db1.SaveChanges();
-
+            db.Ticks.Last().Finish = DateTime.Now;
+            db.Settings.Last().IsFinished = true;
+            db.SaveChanges();
+            gsheets.InsertTickResult();
             //return "Игра закончилась!";
         }
 
@@ -758,11 +812,10 @@ namespace RocketGame.Controllers
             {
                 FinishGame(null);
             }
-
         }
 
 
-        public string Check()
+        public string Debag()
         {
             Tick tick = new Tick();
             Setting setting = new Setting();
@@ -770,7 +823,7 @@ namespace RocketGame.Controllers
             //Настройки
             setting.RocketFuel = 2;
             setting.RocketSize = 3;
-            setting.TeamCount = 2;
+            setting.TeamCount = 4;
             setting.TimeTick = 1;
             setting.TimeGame = 4;
             setting.TeamSize = 3;
@@ -796,10 +849,23 @@ namespace RocketGame.Controllers
             db.Teams.Add(team2);
             db.SaveChanges();
 
+            Team team3 = new Team();
+            team3.Name = "Green";
+            team3.Power = 3;
+            team3.Fuel = 9;
+            db.Teams.Add(team3);
+            db.SaveChanges();
+
+            Team team4 = new Team();
+            team4.Name = "Red";
+            team4.Power = 3;
+            team4.Fuel = 5;
+            db.Teams.Add(team4);
+            db.SaveChanges();
+
             //Добавлене игроков
 
             User user1 = new User();
-
             user1.Team = db.Teams.Where(b => b.Name == "Blue").FirstOrDefault();
             user1.Name = "Player11";
             user1.Power = 1;
@@ -837,6 +903,7 @@ namespace RocketGame.Controllers
             user5.Power = 4;
             user5.Intellect = 1;
             db.Users.Add(user5);
+            db.SaveChanges();
 
             User user6 = new User();
             user6.Team = db.Teams.Where(b => b.Name == "Yellow").FirstOrDefault();
@@ -844,7 +911,54 @@ namespace RocketGame.Controllers
             user6.Power = 2;
             user6.Intellect = 2;
             db.Users.Add(user6);
+            db.SaveChanges();
 
+            User user7 = new User();
+            user7.Team = db.Teams.Where(b => b.Name == "Green").FirstOrDefault();
+            user7.Name = "Player31";
+            user7.Power = 1;
+            user7.Intellect = 2;
+            db.Users.Add(user7);
+            db.SaveChanges();
+
+            User user8 = new User();
+            user8.Team = db.Teams.Where(b => b.Name == "Green").FirstOrDefault();
+            user8.Name = "Player32";
+            user8.Power = 1;
+            user8.Intellect = 1;
+            db.Users.Add(user8);
+            db.SaveChanges();
+
+            User user9 = new User();
+            user9.Team = db.Teams.Where(b => b.Name == "Green").FirstOrDefault();
+            user9.Name = "Player33";
+            user9.Power = 1;
+            user9.Intellect = 5;
+            db.Users.Add(user9);
+            db.SaveChanges();
+
+            User user10 = new User();
+            user10.Team = db.Teams.Where(b => b.Name == "Red").FirstOrDefault();
+            user10.Name = "Player41";
+            user10.Power = 1;
+            user10.Intellect = 2;
+            db.Users.Add(user10);
+            db.SaveChanges();
+
+            User user11 = new User();
+            user11.Team = db.Teams.Where(b => b.Name == "Red").FirstOrDefault();
+            user11.Name = "Player42";
+            user11.Power = 1;
+            user11.Intellect = 3;
+            db.Users.Add(user11);
+            db.SaveChanges();
+
+            User user12 = new User();
+            user12.Team = db.Teams.Where(b => b.Name == "Red").FirstOrDefault();
+            user12.Name = "Player43";
+            user12.Power = 1;
+            user12.Intellect = 6;
+            db.Users.Add(user12);
             db.SaveChanges();
 
             StartGame();
@@ -852,8 +966,6 @@ namespace RocketGame.Controllers
             //Добавление Тактов
             //tick.Number = 1;
             //db.Ticks.Add(tick);
-
-            db.SaveChanges();
 
             //Добавление действий
             Move move1 = new Move();

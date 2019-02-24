@@ -18,9 +18,9 @@ namespace RocketGame.Controllers
             db = context;
         }
 
-		#region Админ часть
+        #region Админ часть
 
-		public IActionResult Admin()
+        public IActionResult Admin()
 		{
 			return View();
 		}
@@ -72,6 +72,7 @@ namespace RocketGame.Controllers
 			Random a = new Random();
 			settings.Promo = "КОД";
             settings.IsFinished = false;
+            settings.IsStarted = false;
             db.Settings.Add(settings);
             db.SaveChanges();
             ViewBag.Key = Key;
@@ -99,7 +100,11 @@ namespace RocketGame.Controllers
 				return View("Index");
 			}
 			ViewBag.id = id;
-			ViewBag.tName = db.Users.Find(id).Team.Name;
+            List<User> user = db.Users.Where(n => n.UserId == id).ToList();
+            db.Logs.Add(new Log { Msg = user.FirstOrDefault().Team.TeamId.ToString() });
+            db.SaveChanges();
+
+            ViewBag.tName = db.Users.Where(n => n.UserId == id).FirstOrDefault().Team.Name;
 
 			return View(db.Teams.ToList());
 		}
@@ -125,7 +130,7 @@ namespace RocketGame.Controllers
 		[HttpPost]
 		public IActionResult Game(string type, string key, int teamId)
 		{
-			Move nwMove = new Move { Type = type };
+            Move nwMove = new Move { Type = type };
 
 			GameController.Make(nwMove, key, teamId);
 

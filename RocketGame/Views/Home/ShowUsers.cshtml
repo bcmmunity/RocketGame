@@ -30,26 +30,26 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-		<tr>
-			<td>
-				@Html.DisplayFor(modelItem => item.Name)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.Intellect)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.Power)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.InRocket)
-			</td>
-			<td>
-				@item.Team.Name
-			</td>
-			<td>
-		        <a href="/Home/EditUser?id=@item.UserId&key=@ViewBag.Key">Изменить</a>
-			</td>
-		</tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Intellect)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Power)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InRocket)
+            </td>
+            <td>
+                @item.Team.Name
+            </td>
+            <td>
+                <a href="/Home/EditUser?id=@item.UserId&key=@ViewBag.Key">Изменить</a>
+            </td>
+        </tr>
 }
     </tbody>
 </table>
