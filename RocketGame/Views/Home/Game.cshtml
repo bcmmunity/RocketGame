@@ -34,10 +34,13 @@
 	<h1 id="msg">Ваш ход сделан</h1>
 </div>
 
+<input id="k" type="text"/>
+
 <script type="text/javascript">
 	var move = "s";
 	var opt = "";
 	var team = "0";
+	var checkk = true;
 
 	var proces = true;
 
@@ -50,43 +53,58 @@
 
 	function check()
 	{
-		
 		$.ajax({
 			type: "GET",
-			url: "/Game/RocketCheck",
-			data: { Key: localStorage["Key"] },
-			
-			success: function(result) {
-				if (result)
-				{
-					$("#getinrocket").show();
-				}
-				else
-				{
-					$("#getinrocket").hide();
-				}
-			}
-		});
+			url: "/Game/KeyCheck",
+			data: { Key: $("#k").val() },
 
-		$.ajax({
-			type: "GET",
-			url: "/Game/MoveCheck",
-			data: { Key: localStorage["Key"] },
-			
-			success: function(result) {
-				if (result == "Ход не сделан")
-				{
-					$("#msg").hide();
-					$("#teams").hide();
-					$("#moves").show();
+			success: function (result) {
+				if (result) {
+
+					if (!checkk) return;
+					$.ajax({
+						type: "GET",
+						url: "/Game/RocketCheck",
+						data: { Key: $("#k").val() },
+
+						success: function (result) {
+							if (result) {
+								$("#getinrocket").show();
+							}
+							else {
+								$("#getinrocket").hide();
+							}
+						}
+					});
+
+					$.ajax({
+						type: "GET",
+						url: "/Game/MoveCheck",
+						data: { Key: $("#k").val() },
+
+						success: function (result) {
+							if (result == "Ход не сделан") {
+								$("#msg").hide();
+								$("#teams").hide();
+								$("#moves").show();
+							}
+							else {
+								$("#msg").empty();
+								$("#msg").append(result);
+								$("#msg").show();
+								$("#teams").hide();
+								$("#moves").hide();
+							}
+						}
+					});
 				}
 				else
 				{
-					$("#msg").empty();
-					$("#msg").append(result);
-					$("#msg").show();
 					$("#teams").hide();
 					$("#moves").hide();
+					$("#msg").empty();
+					$("#msg").show();
+					$("#msg").append("Неверный код");
 				}
 			}
 		});
@@ -98,7 +116,8 @@
 			type: "GET",
 			url: "/Game/GroupList",
 			
-			success: function(result) {
+			success: function (result) {
+				checkk = false;
 				$("#moves").hide();
 				$("#msg").hide();
 				
@@ -106,8 +125,12 @@
 				$("#teams").show();
 				//$("#teams").append(result);
 
+				//alert(result[1].teamId);
+
+				var i = 0;
 				for (var item in result) {
-					$("#teams").append("<span class='btn' onclick='team = " + result[item].teamId + "; makeMove()" + result[item].name + "</span>");
+					$("#teams").append("<span class='btn' onclick='team = " + result[i].teamId + "; checkk = true; makeMove()'>" + result[i].name + "</span></br></br>");
+					i++;
 				}
 			}
 		});
@@ -118,7 +141,7 @@
 		$.ajax({
 			type: "GET",
 			url: "/Game/Make",
-			data: { Type: move, Key: localStorage["Key"], TeamId: team },
+			data: { Type: move, Key: $("#k").val(), TeamId: team },
 			
 			success: function(result) {
 				$("#moves").hide();

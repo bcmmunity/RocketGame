@@ -132,8 +132,14 @@ namespace RocketGame.Controllers
 		{
             Move nwMove = new Move { Type = type };
 
-			GameController.Make(nwMove, key, teamId);
+			//GameController.Make(nwMove, key, teamId);
 
+			return View();
+		}
+
+		[HttpGet]
+		public IActionResult Game(string key)
+		{
 			return View();
 		}
 

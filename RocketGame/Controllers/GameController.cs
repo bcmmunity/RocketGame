@@ -32,7 +32,7 @@ namespace RocketGame.Controllers
             return db.Teams.ToList();
         }
 
-        public static string Make(Move Move, string Key, int TeamId)
+        public string Make(Move Move, string Key, int TeamId)
         {
             Unit();
             if (Move.Type == "powerup" || Move.Type == "intellectup" || Move.Type == "gather" || Move.Type == "gift" || Move.Type == "attackgroup" || Move.Type == "attackrocket" || Move.Type == "getinrocket")
@@ -41,6 +41,7 @@ namespace RocketGame.Controllers
                 Move.Tick = db1.Ticks.Last();
                 Move.Time = DateTime.Now;
                 Move.To = db1.Teams.Find(TeamId);
+				db1.Moves.Add(Move);
                 db1.SaveChanges();
 
                 Tick LastTick = db1.Ticks.Last();
@@ -126,9 +127,18 @@ namespace RocketGame.Controllers
 
 
             return "Игра началась";
-        }
+		}
 
-        public string GameCheck()
+		public bool KeyCheck(string Key)
+		{
+			if (db.Users.Where(n => n.Key == Key).FirstOrDefault() != null)
+			{
+				return true;
+			}
+			return false;
+		}
+
+		public string GameCheck()
         {
             if(db.Settings.FirstOrDefault().IsStarted == false)
             {
@@ -149,7 +159,7 @@ namespace RocketGame.Controllers
                 return "Игра еще не началась";
             }
 
-            if (db.Ticks.Last().Number == db.Moves.Where(n => n.User.Key == Key).FirstOrDefault().Tick.Number)
+            if (db.Moves.Where(n => n.User.Key == Key).Where(l => l.Tick.Number == db.Ticks.Last().Number).FirstOrDefault() != null)
             {
                 return "Ход сделан";
             }
@@ -161,7 +171,7 @@ namespace RocketGame.Controllers
 
         public bool RocketCheck(string Key)
         {
-            if (db.Users.Where(n => n.Key == Key).FirstOrDefault().Team.Fuel == db.Settings.FirstOrDefault().RocketFuel)
+            if (db.Users.Where(n => n.Key == Key).Include(l => l.Team).FirstOrDefault().Team.Fuel == db.Settings.FirstOrDefault().RocketFuel)
             {
                 return true;
             }
