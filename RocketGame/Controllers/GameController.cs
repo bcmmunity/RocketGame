@@ -48,7 +48,7 @@ namespace RocketGame.Controllers
 
                 if (db1.Settings.FirstOrDefault().TeamCount * db1.Settings.FirstOrDefault().TeamSize == db1.Moves.Where(n => n.Tick == LastTick).Count())
                 {
-
+                    Update();
                     AddTick();
                 }
 
@@ -71,6 +71,8 @@ namespace RocketGame.Controllers
             timer.Dispose();
             if (db1.Ticks.Last().Number == number)
             {
+                GameController g = new GameController(db1);
+                g.Update();
                 AddTick();
             }
             else
@@ -124,7 +126,6 @@ namespace RocketGame.Controllers
             Timer();
             FTimer();
             gsheets.InsertUsers();
-
 
             return "Игра началась";
 		}
@@ -207,6 +208,7 @@ namespace RocketGame.Controllers
             db.Ticks.Last().Finish = DateTime.Now;
             db.Settings.Last().IsFinished = true;
             db.SaveChanges();
+            Update();
             gsheets.InsertTickResult();
             //return "Игра закончилась!";
         }
@@ -334,16 +336,8 @@ namespace RocketGame.Controllers
 
                     teamids[count] = team.TeamId;
                     count++;
-                    //db.Logs.Add(new Log { Msg = "count method " + count.ToString() }); //LOGSSSSSSS
-                    //db.SaveChanges();
                 }
             }
-
-            //db.Logs.Add(new Log { Msg = "count result " + count.ToString() }); //LOGSSSSSSS
-            //db.SaveChanges();
-
-            //db.Logs.Add(new Log { Msg = "TeamID = " + teamids[count - 1].ToString() }); //LOGSSSSSSS
-            //db.SaveChanges();
 
             if (count > 0)
             {
@@ -351,8 +345,6 @@ namespace RocketGame.Controllers
                 bool fl = false;
                 foreach (Move move in Moves.OrderBy(n => n.Time).ToList())
                 {
-                    //db.Logs.Add(new Log { Msg = "Moves exist " + move.ToString() }); //LOGSSSSSSS
-                    //db.SaveChanges();
 
                     for (int f = 0; f < count; f++)
                     {
@@ -368,9 +360,6 @@ namespace RocketGame.Controllers
                     }
                     if (fl) break;
                 }
-
-                //db.Logs.Add(new Log { Msg = "Победитель " + winner.ToString() }); //LOGSSSSSSS
-                //db.SaveChanges();
 
                 if (Moves.Where(m => m.User.Team.TeamId == winner).Count() == db.Settings.FirstOrDefault().RocketSize)
                 {
@@ -392,9 +381,6 @@ namespace RocketGame.Controllers
                         countwinner++;
                     }
 
-                    //db.Logs.Add(new Log { Msg = "Людей " + countwinner.ToString() }); //LOGSSSSSSS
-                    //db.SaveChanges();
-
                     for (int p = 0; p < countwinner; p++)
                     {
                         for (int k = 0; k < p; k++)
@@ -412,19 +398,10 @@ namespace RocketGame.Controllers
                         }
                     }
 
-                    //db.Logs.Add(new Log { Msg = userid[0].ToString() + " " + powint[0] }); //LOGSSSSSSS
-                    //db.SaveChanges();
-
-                    //db.Logs.Add(new Log { Msg = userid[2].ToString() + " " + powint[2] }); //LOGSSSSSSS
-                    //db.SaveChanges();
-
                     int index = db.Settings.FirstOrDefault().RocketSize;
                     int borders = index - 1;
                     int borderf = index;
                     bool g = true;
-
-                    //db.Logs.Add(new Log { Msg = "Finish " + borderf.ToString() + " Start" + borders.ToString() }); //LOGSSSSSSS
-                    //db.SaveChanges();
 
                     if (powint[index - 1] != powint[index])
                     {
@@ -444,9 +421,6 @@ namespace RocketGame.Controllers
                             index--;
                         }
 
-                        //db.Logs.Add(new Log { Msg = "S" + borders.ToString() }); //LOGSSSSSSS
-                        //db.SaveChanges();
-
                         while (powint[index + 1] == powint[index])
                         {
                             if (index + 1 > powint.Length)
@@ -456,15 +430,6 @@ namespace RocketGame.Controllers
                             }
                             break;
                         }
-
-                        //db.Logs.Add(new Log { Msg = "F" + borderf.ToString() }); //LOGSSSSSSS
-                        //db.SaveChanges();
-
-                        //db.Logs.Add(new Log { Msg = "UserID[0] = " + userid[0].ToString() }); //LOGSSSSSSS
-                        //db.SaveChanges();
-
-                        //db.Logs.Add(new Log { Msg = "UserID[1] = " + userid[1].ToString() }); //LOGSSSSSSS
-                        //db.SaveChanges();
 
                         for (int s = 0; s <= borders; s++)
                         {
@@ -509,9 +474,6 @@ namespace RocketGame.Controllers
             List<Team> Teams1 = db.Teams.ToList();
             foreach (Team target in Teams)
             {
-                db.Logs.Add(new Log { Msg = target.Name });
-                db.SaveChanges();
-
                 if (Users.Where(b => b.Team == target).Where(a => a.InRocket == false).Count() != 0 )
                 {
                     int i = 0; //кол-во атакующих команд
@@ -526,29 +488,11 @@ namespace RocketGame.Controllers
 
                         if (Moves.Where(n => n.User.Team == team).Where(n => n.To == target).FirstOrDefault() != null)
                         {
-                            db.Logs.Add(new Log { Msg = team.Name });
-                            db.SaveChanges();
-
-                            //db.Logs.Add(new Log { Msg = "Exist Check: null" });//Moves.Where(n => n.User.Team == team).FirstOrDefault().Time.ToString() }); //LOGSSSSSSS
-                            //db.SaveChanges();
-
-                            //db.Logs.Add(new Log { Msg = "Exist Check: exist" });//Moves.Where(n => n.User.Team == team).FirstOrDefault().Time.ToString() }); //LOGSSSSSSS
-                            //db.SaveChanges();
-
                             earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
                             ids[i] = team.TeamId;
 
                             foreach (Move attacker in Moves.Where(n => n.User.Team == team).Where(m => m.To == target).ToList())
                             {
-                                db.Logs.Add(new Log { Msg = "To = " + attacker.To.Name.ToString() });//Moves.Where(n => n.User.Team == team).FirstOrDefault().Time.ToString() }); //LOGSSSSSSS
-                                db.SaveChanges();
-
-                                db.Logs.Add(new Log { Msg = "User " + attacker.User.Name.ToString() + " P = " + attacker.User.Power.ToString() });//Moves.Where(n => n.User.Team == team).FirstOrDefault().Time.ToString() }); //LOGSSSSSSS
-                                db.SaveChanges();
-
-                                db.Logs.Add(new Log { Msg = "It works" });
-                                db.SaveChanges();
-
                                 if (attacker.Time < earlyuserid[i])
                                 {
                                     earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
@@ -558,19 +502,11 @@ namespace RocketGame.Controllers
                                 db.Logs.Add(new Log { Msg = "power[" + i + "] = " + power[i].ToString() });
                                 db.SaveChanges();
                             }
-                            //}
                             i++;
                         }
                     }
-                       
 
-                    db.Logs.Add(new Log { Msg = i.ToString() });
-                    db.SaveChanges();
-
-                    db.Logs.Add(new Log { Msg = "Power = " + power[0].ToString() + " Time = " + earlyuserid[0] });//Moves.Where(n => n.User.Team == team).FirstOrDefault().Time.ToString() }); //LOGSSSSSSS
-                    db.SaveChanges();
-
-                    for (int j = 1; j < i; j++) //Проверить (Сортировка)
+                    for (int j = 1; j < i; j++)
                     {
                         for (int k = 0; k < j; k++)
                         {
