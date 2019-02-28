@@ -6,210 +6,210 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAW+7x3unuH0e7oGqAVYdgVQAAAAACAAAAAAAQZgAAAAEAACAAAAC5BTj87FsLvvml+ak4zBfr/Fa+4JV2Z6pbpTCwlFHyEwAAAAAOgAAAAAIAACAAAABzasIyLom9sltB+tqkbz98friaEOjiMyWcztHnZi8tHiAAAACVE+Glh34lt9lnyJ/QuPVzIvQW2b4yEnmcrpVCE2m+HUAAAABkTE0xbs9HzocendeAg85/nX+jpzo9Mith3bcPPEHAdMztjTUGjX851sURzFMLKcGQamyxPA7qUA3qt0wg/ifP</EncryptedPassword>
-    <_PublishTargetUrl>ftp://31.31.196.160/httpdocs/studystat.ru</_PublishTargetUrl>
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAWt4kkz09AUGNcvf7jh9BywAAAAACAAAAAAAQZgAAAAEAACAAAADTovcT6gNGrB/bW4ArDEhkbw5SsMR25CZRSJD6/wUbbQAAAAAOgAAAAAIAACAAAAAbRmDta3syo36MGkUcHnW7nVkOpjv/o+3RgRN8/UAYHiAAAABYiyv9d0USoPYg59vLIKWxQyjMmwJVpqoieGdxYWNeZEAAAACvdZ5Rg24u2jaif9Yw+Xv5Ty35S3S5ZfHzzt+a0HVrii0PGiaJ7NtRc/RmeFzGaIL76YqIs2lXGuKtvhY8r42u</EncryptedPassword>
+    <_PublishTargetUrl>ftp://31.31.196.160/httpdocs/rocketbot.diffind.com</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="appsettings.Development.json">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="appsettings.json">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/28/2019 22:10:24</publishTime>
     </File>
     <File Include="credentials.json">
-      <publishTime>02/14/2019 23:51:21</publishTime>
+      <publishTime>02/26/2019 21:30:25</publishTime>
     </File>
     <File Include="dotnet-aspnet-codegenerator-design.dll">
-      <publishTime>06/07/2018 00:27:02</publishTime>
+      <publishTime>07/06/2018 00:27:02</publishTime>
     </File>
     <File Include="Google.Apis.Auth.dll">
-      <publishTime>01/31/2019 11:25:22</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="Google.Apis.Auth.PlatformServices.dll">
       <publishTime>01/31/2019 11:25:22</publishTime>
     </File>
     <File Include="Google.Apis.Core.dll">
-      <publishTime>01/31/2019 11:25:12</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="Google.Apis.dll">
-      <publishTime>01/31/2019 11:25:14</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="Google.Apis.Sheets.v4.dll">
-      <publishTime>02/07/2019 08:14:46</publishTime>
+      <publishTime>07/02/2019 08:14:46</publishTime>
     </File>
     <File Include="Microsoft.CodeAnalysis.CSharp.Workspaces.dll">
-      <publishTime>02/07/2019 16:53:02</publishTime>
+      <publishTime>01/11/2018 17:02:34</publishTime>
     </File>
     <File Include="Microsoft.CodeAnalysis.Workspaces.dll">
-      <publishTime>02/07/2019 16:53:12</publishTime>
+      <publishTime>01/11/2018 17:02:34</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.Contracts.dll">
-      <publishTime>06/07/2018 00:27:00</publishTime>
+      <publishTime>07/06/2018 00:27:00</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.Core.dll">
-      <publishTime>06/07/2018 00:26:58</publishTime>
+      <publishTime>07/06/2018 00:26:58</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.dll">
-      <publishTime>06/07/2018 00:26:54</publishTime>
+      <publishTime>07/06/2018 00:26:54</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore.dll">
-      <publishTime>06/07/2018 00:26:56</publishTime>
+      <publishTime>07/06/2018 00:26:56</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.Templating.dll">
-      <publishTime>06/07/2018 00:27:02</publishTime>
+      <publishTime>07/06/2018 00:27:02</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.Utils.dll">
-      <publishTime>06/07/2018 00:27:02</publishTime>
+      <publishTime>07/06/2018 00:27:02</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll">
-      <publishTime>06/07/2018 00:26:58</publishTime>
+      <publishTime>07/06/2018 00:26:58</publishTime>
     </File>
     <File Include="NuGet.Frameworks.dll">
-      <publishTime>02/07/2019 16:53:58</publishTime>
+      <publishTime>01/11/2018 16:59:46</publishTime>
     </File>
     <File Include="RocketGame.deps.json">
-      <publishTime>02/27/2019 17:06:40</publishTime>
+      <publishTime>02/28/2019 22:47:19</publishTime>
     </File>
     <File Include="RocketGame.dll">
-      <publishTime>02/27/2019 17:06:10</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="RocketGame.pdb">
-      <publishTime>02/27/2019 17:06:10</publishTime>
+      <publishTime>02/28/2019 22:32:46</publishTime>
     </File>
     <File Include="RocketGame.runtimeconfig.json">
-      <publishTime>02/27/2019 17:06:41</publishTime>
+      <publishTime>02/28/2019 22:47:19</publishTime>
     </File>
     <File Include="RocketGame.Views.dll">
-      <publishTime>02/27/2019 17:06:25</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="RocketGame.Views.pdb">
-      <publishTime>02/27/2019 17:06:25</publishTime>
+      <publishTime>02/28/2019 22:47:17</publishTime>
     </File>
     <File Include="System.Composition.AttributedModel.dll">
-      <publishTime>02/07/2019 16:53:50</publishTime>
+      <publishTime>01/11/2018 17:33:29</publishTime>
     </File>
     <File Include="System.Composition.Convention.dll">
-      <publishTime>02/07/2019 16:53:50</publishTime>
+      <publishTime>01/11/2018 17:33:29</publishTime>
     </File>
     <File Include="System.Composition.Hosting.dll">
-      <publishTime>02/07/2019 16:53:51</publishTime>
+      <publishTime>01/11/2018 17:33:29</publishTime>
     </File>
     <File Include="System.Composition.Runtime.dll">
-      <publishTime>02/07/2019 16:53:52</publishTime>
+      <publishTime>01/11/2018 17:33:29</publishTime>
     </File>
     <File Include="System.Composition.TypedParts.dll">
-      <publishTime>02/07/2019 16:53:53</publishTime>
+      <publishTime>01/11/2018 17:33:29</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>02/27/2019 17:06:41</publishTime>
+      <publishTime>02/28/2019 22:47:19</publishTime>
     </File>
     <File Include="wwwroot/css/site.css">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/css/site.min.css">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/favicon.ico">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/images/banner1.svg">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/images/banner2.svg">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/images/banner3.svg">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/js/site.js">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/css/bootstrap-theme.css">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/css/bootstrap-theme.css.map">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/css/bootstrap-theme.min.css">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/css/bootstrap-theme.min.css.map">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/css/bootstrap.css">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/css/bootstrap.css.map">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/css/bootstrap.min.css">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/css/bootstrap.min.css.map">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/fonts/glyphicons-halflings-regular.eot">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/fonts/glyphicons-halflings-regular.svg">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/fonts/glyphicons-halflings-regular.woff">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/js/bootstrap.js">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/js/bootstrap.min.js">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/js/npm.js">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/LICENSE">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/jquery-validation-unobtrusive/LICENSE.txt">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/jquery-validation/dist/additional-methods.js">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/jquery-validation/dist/additional-methods.min.js">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/jquery-validation/dist/jquery.validate.js">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/jquery-validation/dist/jquery.validate.min.js">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/jquery-validation/LICENSE.md">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/jquery/dist/jquery.js">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/jquery/dist/jquery.min.js">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/jquery/dist/jquery.min.map">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
     <File Include="wwwroot/lib/jquery/LICENSE.txt">
-      <publishTime>02/10/2019 11:58:48</publishTime>
+      <publishTime>02/09/2019 20:44:48</publishTime>
     </File>
   </ItemGroup>
 </Project>

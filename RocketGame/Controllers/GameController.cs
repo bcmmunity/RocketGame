@@ -111,10 +111,13 @@ namespace RocketGame.Controllers
         public static void Unit()
         {
             var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-            db1 = new MyContext(optionsBuilder.Options);
+//			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+
+			db1 = new MyContext(optionsBuilder.Options);
         }
 
+		[HttpGet]
         public string StartGame()
         {
             Tick Tick = new Tick();

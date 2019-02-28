@@ -28,6 +28,13 @@ namespace RocketGame.Controllers
 		[HttpPost]
 		public IActionResult Admin(AdminView data)
 		{
+			db.Users.RemoveRange(db.Users);
+			db.Ticks.RemoveRange(db.Ticks);
+			db.Moves.RemoveRange(db.Moves);
+			db.Teams.RemoveRange(db.Teams);
+			db.Settings.RemoveRange(db.Settings);
+			db.SaveChanges();
+
 			if (db.Admins.Where(a => a.Mail == data.Mail).FirstOrDefault() != null)
 			{
 				if (db.Admins.Where(a => a.Mail == data.Mail).FirstOrDefault().Password == data.Password)
@@ -70,7 +77,7 @@ namespace RocketGame.Controllers
                 db.Teams.Add(team);
             }
 			Random a = new Random();
-			settings.Promo = "КОД";
+			settings.Promo = "JDFJ" + a.Next(277, 1000).ToString();
             settings.IsFinished = false;
             settings.IsStarted = false;
             db.Settings.Add(settings);
@@ -90,37 +97,45 @@ namespace RocketGame.Controllers
 			ViewBag.Promo = db.Settings.FirstOrDefault().Promo;
             return View(db.Users.Include(n => n.Team).ToList());
 		}
-
-		[HttpGet]
-		public IActionResult EditUser(int id, string Key)
+		
+		public string EditUserKey(string Key)
 		{
-			if (db.Admins.FirstOrDefault().Key != Key)
+			if (db.Moves.Where(n => n.User.Key == Key).ToList() != null)
 			{
-				ViewBag.msg = "Авторизация прошла с ошибкой, попробуйте еще раз";
-				return View("Index");
+				List<Move> moves = db.Moves.Where(n => n.User.Key == Key).ToList();
+				foreach (var item in moves)
+				{
+					db.Moves.Find(item.MoveId).User = db.Users.Find(item.User.UserId);
+				}
+				db.SaveChanges();
 			}
-			ViewBag.id = id;
-            List<User> user = db.Users.Where(n => n.UserId == id).ToList();
-            db.Logs.Add(new Log { Msg = user.FirstOrDefault().Team.TeamId.ToString() });
-            db.SaveChanges();
 
-            ViewBag.tName = db.Users.Where(n => n.UserId == id).FirstOrDefault().Team.Name;
+			if (db.Users.Where(n => n.Key == Key).FirstOrDefault() == null)
+				return "Такого игрока нет";
 
-			return View(db.Teams.ToList());
+			Random rand = new Random();
+			string k = rand.Next(10).ToString();
+
+			for (int i = 0; i < Key.Length; i++)
+				k = Key[i] + k;
+
+			db.Users.Where(n => n.Key == Key).FirstOrDefault().Key = k;
+			db.SaveChanges();
+
+			return k;
 		}
 
-		[HttpPost]
-		public IActionResult EditUser(Team team, string Key, int id)
+		public string EditUserTeam(string Key, string Team)
 		{
-			if (db.Admins.FirstOrDefault().Key != Key)
-			{
-				ViewBag.msg = "Авторизация прошла с ошибкой, попробуйте еще раз";
-				return View("Index");
-			}
+			if (db.Users.Where(n => n.Key == Key).FirstOrDefault() == null)
+				return "Такого игрока нет";
+			if (db.Teams.Find(int.Parse(Team)) == null)
+				return "Такой команды нет";
 
-			db.Users.Find(id).Team = team;
+			db.Users.Where(n => n.Key == Key).FirstOrDefault().Team = db.Teams.Find(int.Parse(Team));
+			db.SaveChanges();
 
-			return RedirectToAction("ShowUsers");
+			return "Команда изменена";
 		}
 
 		#endregion
@@ -140,6 +155,7 @@ namespace RocketGame.Controllers
 		[HttpGet]
 		public IActionResult Game(string key)
 		{
+			ViewBag.key = key;
 			return View();
 		}
 

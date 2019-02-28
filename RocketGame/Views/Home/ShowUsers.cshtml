@@ -9,8 +9,12 @@
 
 <a href="/Home/ShowUsers?Key=@ViewBag.Key">Обновить</a>
 
-<a id="s"><span onclick="makeMove()">Начать игру</span></a>
+<a id="s"><span onclick="makeMove(); $('#s').empty(); $('#s').append('Нажмите обновить')">Начать игру</span></a>
 
+<h1 id="msg"></h1>
+
+<div id="teams">
+</div>
 
 <table class="table" id="t">
 	<thead>
@@ -30,6 +34,7 @@
 			<th>
 				Команда
 			</th>
+			<th></th>
 			<th></th>
 		</tr>
 	</thead>
@@ -52,8 +57,11 @@
 				<td>
 					@item.Team.Name
 				</td>
-				<td>
-					<a href="/Home/EditUser?id=@item.UserId&key=@ViewBag.Key">Изменить</a>
+				<td id="k-@item.Key">
+					<span class="btn" onclick="editKey('@item.Key')">Изменить ключ</span>
+				</td>
+				<td id="t-@item.Key">
+					<span class="btn" onclick="selectTeam('@item.Key')">Изменить команду</span>
 				</td>
 			</tr>
 		}
@@ -61,7 +69,64 @@
 </table>
 
 <script>
+	$("#teams").hide();
 
+	function selectTeam(key) {
+		$.ajax({
+			type: "GET",
+			url: "/Game/GroupList",
+
+			success: function (result) {
+
+				$("#teams").empty();
+				$("#teams").show();
+				
+				var i = 0;
+				for (var item in result) {
+					$("#teams").append("<span class='btn' onclick='editTeam(\"" + key + "\", \"" + result[i].teamId + "\")'>" + result[i].name + "</span></br></br>");
+					i++;
+				}
+			}
+		});
+	}
+
+	function editTeam(key, team) {
+		$.ajax({
+			type: "GET",
+			url: "/Home/EditUserTeam",
+			data: { Key: key, Team: team },
+
+			success: function (result) {
+				$("#msg").empty();
+				$("#msg").append("Новый ключ - " + result);
+				
+				$("#teams").hide();
+			}
+		});
+	}
+
+	function editKey(key) {
+		$.ajax({
+			type: "GET",
+			url: "/Home/EditUserKey",
+			data: { Key: key },
+
+			success: function (result) {
+				$("#msg").empty();
+				$("#msg").append(result);
+
+				$("#t-" + key).empty();
+				$("#k-" + key).empty();
+				$("#t-" + key).append("<span class='btn' onclick=\"selectTeam('" + result + "')\">Изменить команду</span>");
+				$("#k-" + key).append("<span class='btn' onclick=\"editKey(\'" + result + "')\">Изменить ключ</span>");
+
+				var idd = "t-" + result;
+				document.getElementById("t-" + key).id = idd;
+				idd = "k-" + result;
+				document.getElementById("k-" + key).id = idd;
+			}
+		});
+	}
 
 	function makeMove() {
 		$.ajax({
@@ -70,7 +135,7 @@
 
 			success: function (result) {
 				$("#s").empty();
-				$("#s").append("<h2>Игра началась</h2>");
+				$("#s").append("<h2>" + result + "</h2>");
 			}
 		});
 	}
@@ -88,3 +153,14 @@
 		})
 	});
 </script>
+
+<style type="text/css">
+	.btn {
+		min-height: 20px;
+		background-color: gray;
+		border-radius: 200px;
+		padding: 5px;
+		float: left;
+		color: white;
+	}
+</style>
