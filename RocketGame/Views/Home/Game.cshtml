@@ -31,10 +31,9 @@
 <div id="teams">
 </div>
 <div id="res">
-	<h1 id="msg">Ваш ход сделан</h1>
+	<h1 id="msg">@ViewBag.key </h1>
 </div>
-
-<input id="k" type="text"/>
+<input id="k" type="text" value="@ViewBag.key"/>
 
 <script type="text/javascript">
 	var move = "s";
@@ -48,7 +47,7 @@
 	$("#teams").hide();
 	$("#msg").empty();
 	$("#msg").append("Игра еще не началась");
-	
+
 	setInterval(check, 5000);
 
 	function check()
@@ -108,19 +107,19 @@
 				}
 			}
 		});
-	}	
+	}
 
 	function selectTeam()
 	{
 		$.ajax({
 			type: "GET",
 			url: "/Game/GroupList",
-			
+
 			success: function (result) {
 				checkk = false;
 				$("#moves").hide();
 				$("#msg").hide();
-				
+
 				$("#teams").empty();
 				$("#teams").show();
 				//$("#teams").append(result);
@@ -134,7 +133,7 @@
 				}
 			}
 		});
-	}	
+	}
 
 	function makeMove()
 	{
@@ -142,7 +141,7 @@
 			type: "GET",
 			url: "/Game/Make",
 			data: { Type: move, Key: $("#k").val(), TeamId: team },
-			
+
 			success: function(result) {
 				$("#moves").hide();
 				$("#teams").hide();
