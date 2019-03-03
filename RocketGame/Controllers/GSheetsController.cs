@@ -39,8 +39,8 @@ namespace RocketGame.Controllers
         public static void Unit()
         {
             var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-//			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 			db = new MyContext(optionsBuilder.Options);
         }
 
@@ -341,7 +341,7 @@ namespace RocketGame.Controllers
                     break;
                 }
 
-                string[,] userdata = { { "" + team.TeamId.ToString() + "("+team.Power+")" } };
+                string[,] userdata = { { "" + team.TeamId.ToString() + "("+team.Fuel+")" } };
                 List<Request> requests = new List<Request>();
                 for (int i = 0; i < userdata.GetLength(0); i++)
                 {
@@ -430,7 +430,7 @@ namespace RocketGame.Controllers
             int index = 0;
             foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
             {
-                foreach (Move move in db.Moves.Where(n => n.User.Team == team).OrderBy(m => m.User.Name).ToList())
+                foreach (Move move in db.Moves.Where(n => n.User.Team == team).Where(m => m.Tick == db.Ticks.Last()).OrderBy(m => m.User.Name).ToList())
                 {
                     string target;
                     if (move.Result == null)

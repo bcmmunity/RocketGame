@@ -7,8 +7,8 @@ namespace RocketGame.Models
 {
     public class User
     {
-        public Team Team { get; set; }
         public int UserId { get; set; }
+        public Team Team { get; set; }
         public string Name { get; set; }
         public string Key { get; set; }
         public int Intellect { get; set; }
