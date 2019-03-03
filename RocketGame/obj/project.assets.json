@@ -12679,11 +12679,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Никита\\Desktop\\RocketGame1\\RocketGame\\RocketGame\\RocketGame.csproj",
+      "projectUniqueName": "C:\\Users\\Никита\\Desktop\\RocketGame1\\RocketGame\\RocketGame.csproj",
       "projectName": "RocketGame",
-      "projectPath": "C:\\Users\\Никита\\Desktop\\RocketGame1\\RocketGame\\RocketGame\\RocketGame.csproj",
+      "projectPath": "C:\\Users\\Никита\\Desktop\\RocketGame1\\RocketGame\\RocketGame.csproj",
       "packagesPath": "C:\\Users\\Никита\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Никита\\Desktop\\RocketGame1\\RocketGame\\RocketGame\\obj\\",
+      "outputPath": "C:\\Users\\Никита\\Desktop\\RocketGame1\\RocketGame\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

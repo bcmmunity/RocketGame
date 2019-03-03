@@ -96,6 +96,9 @@ namespace RocketGame.Controllers
 
         public void FTimer()
         {
+            db.Logs.Add(new Log { Msg = "Финиш Таймер пуск" });
+            db.SaveChanges();
+
             TimerCallback tm = new TimerCallback(FinishGame);
             ftimer = new Timer(tm, null, 60000 * db.Settings.FirstOrDefault().TimeGame, Timeout.Infinite);
         }
@@ -124,9 +127,12 @@ namespace RocketGame.Controllers
             db.Ticks.Add(Tick);
             db.Settings.FirstOrDefault().IsStarted = true;
             db.SaveChanges();
-            Timer();
             FTimer();
+            Timer();
             gsheets.InsertUsers();
+
+            db.Logs.Add(new Log { Msg = "Start game Таймер пуск" });
+            db.SaveChanges();
 
             return "Игра началась";
 		}
@@ -231,7 +237,6 @@ namespace RocketGame.Controllers
             db1.Ticks.Last().Finish = DateTime.Now;
             db1.Settings.Last().IsFinished = true;
             db1.SaveChanges();
-            //return "Игра закончилась!";
         }
 
 
@@ -275,9 +280,6 @@ namespace RocketGame.Controllers
             db1.Logs.Add(new Log { Msg = "2) Deffender power = " + defender });
             db1.Logs.Add(new Log { Msg = "Result = " + (power[attacker]-defender).ToString() });
             db1.Logs.Add(new Log { Msg = "Цель = " + target.Name });
-           // db.SaveChanges();
-
-            List<User> Users = db.Users.Include(n => n.Team).ToList();
 
             if ((power[attacker] - defender) > 0)
             {
