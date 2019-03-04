@@ -21,11 +21,11 @@ namespace RocketGame.Controllers
     //[ApiController]
     public class GSheetsController : ControllerBase
     {
-        private static string Credentials = "credentials.json";
-        private static readonly string[] ScopesSheets = { SheetsService.Scope.Spreadsheets };
-        private static readonly string AppName = "Google Sheets API .NET Quickstart";
-        private static readonly string SpreadsheetId = "11JB5cruILtYvnZMN6mRDo8lE_8T9_asmRFCyUxIbN8Y";
-        public static string Range = "'Лист1'!A2:E";
+        private string Credentials = "credentials.json";
+        private readonly string[] ScopesSheets = { SheetsService.Scope.Spreadsheets };
+        private readonly string AppName = "Google Sheets API .NET Quickstart";
+        private readonly string SpreadsheetId = "11JB5cruILtYvnZMN6mRDo8lE_8T9_asmRFCyUxIbN8Y";
+        public string Range = "'Лист1'!A2:E";
 
         private MyContext db1;
 
@@ -46,7 +46,10 @@ namespace RocketGame.Controllers
 
         public void InsertTickResult()
         {
-            Unit();
+
+            db.Logs.Add(new Log { Msg = "I'm working" });
+            db.SaveChanges();
+
             int i = 3 * db.Ticks.Last().Number;
 
             var credential = GetSheetCredentials();
@@ -74,7 +77,6 @@ namespace RocketGame.Controllers
 
         public void InsertUsers()
         {
-            Unit();
             var credential = GetSheetCredentials();
             var service = GetService(credential);
 
@@ -85,7 +87,7 @@ namespace RocketGame.Controllers
             FillStats(service, SpreadsheetId);
         }
 
-        private static UserCredential GetSheetCredentials()
+        private UserCredential GetSheetCredentials()
         {
             using (var stream = new FileStream(Credentials, FileMode.Open, FileAccess.Read))
             {
@@ -100,7 +102,7 @@ namespace RocketGame.Controllers
             }
         }
 
-        private static SheetsService GetService(UserCredential credential)
+        private SheetsService GetService(UserCredential credential)
         {
             return new SheetsService(new BaseClientService.Initializer
             {

@@ -61,47 +61,57 @@ namespace RocketGame.Controllers
             }
         }
 
-        public static void TickChecker(object x)
-        {
-            int number = (int)x;
-            Unit();
 
-            db1.Logs.Add(new Log { Msg = "Таймер " + number.ToString() + " конец" });
-            
-            //timer.Dispose();
-            if (db1.Ticks.Last().Number == number)
-            {
-                AddTick();
-            }
-            else
-            {
-                db1.Logs.Add(new Log { Msg = "ERRORRRR " + number.ToString() });
-            }
-            db1.SaveChanges();
-        }
+        #region ForTimers
 
-        public static Timer timer;
-        public Timer ftimer;
+        //public void TickChecker(object x)
+        //{
+        //    int number = (int)x;
+        //    //Unit();
 
-        public static void Timer()
-        {
-            Unit();
+        //    db.Logs.Add(new Log { Msg = "Таймер " + number.ToString() + " конец" });
+        //    db.SaveChanges();
+        //    //timer.Dispose();
+        //    if (db.Ticks.Last().Number == number)
+        //    {
+        //        AddTick();
+        //    }
+        //    else
+        //    {
+        //        db.Logs.Add(new Log { Msg = "ERRORRRR " + number.ToString() });
+        //    }
+        //    db.SaveChanges();
+        //}
 
-            db1.Logs.Add(new Log { Msg = "Таймер пуск" });
-            db1.SaveChanges();
+        //public static Timer timer;
+        //public Timer ftimer;
 
-            TimerCallback tm = new TimerCallback(TickChecker);
-            timer = new Timer(tm, db1.Ticks.Last().Number, 60000 * db1.Settings.FirstOrDefault().TimeTick, Timeout.Infinite);
-        }
+        //public void Timer()
+        //{
+        //    //Unit();
 
-        public void FTimer()
-        {
-            db.Logs.Add(new Log { Msg = "Финиш Таймер пуск" });
-            db.SaveChanges();
+        //    db.Logs.Add(new Log { Msg = "Таймер пуск" });
+        //    db.SaveChanges();
 
-            TimerCallback tm = new TimerCallback(FinishGame);
-            ftimer = new Timer(tm, null, 60000 * db.Settings.FirstOrDefault().TimeGame, Timeout.Infinite);
-        }
+        //    TimerCallback tm = new TimerCallback(TickChecker);
+        //    timer = new Timer(tm, db.Ticks.Last().Number, 60000 * db.Settings.FirstOrDefault().TimeTick, Timeout.Infinite);
+        //    db.Logs.Add(new Log { Msg = "Таймер запустился" });
+        //    db.SaveChanges();
+        //}
+
+        //public void FTimer()
+        //{
+        //    db.Logs.Add(new Log { Msg = "Финиш Таймер пуск" });
+        //    db.SaveChanges();
+
+        //    TimerCallback tm = new TimerCallback(FinishGame);
+        //    ftimer = new Timer(tm, null, 60000 * db.Settings.FirstOrDefault().TimeGame, Timeout.Infinite);
+
+        //    db.Logs.Add(new Log { Msg = "Финиш Таймер апустился" });
+        //    db.SaveChanges();
+        //}
+
+        #endregion
 
         static MyContext db1;
         //private static MyContext db = new MyContext(optionsBuilder.Options);
@@ -109,8 +119,8 @@ namespace RocketGame.Controllers
         public static void Unit()
         {
             var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
         }
@@ -125,19 +135,33 @@ namespace RocketGame.Controllers
             Tick.Number = 1;
             Tick.Start = DateTime.Now;
             db.Ticks.Add(Tick);
-            db.Settings.FirstOrDefault().IsStarted = true;
-            db.SaveChanges();
-            FTimer();
-            Timer();
-            gsheets.InsertUsers();
+            //FTimer();
+            //Timer();
 
-            db.Logs.Add(new Log { Msg = "Start game Таймер пуск" });
+            //gsheets.InsertUsers();
+
+            db.Logs.Add(new Log { Msg = "Start game end" });
+            db.Settings.FirstOrDefault().IsStarted = true;
             db.SaveChanges();
 
             return "Игра началась";
 		}
 
-		public bool KeyCheck(string Key)
+        #region Checks
+        
+        public void TimeCheck()
+        {
+            if(DateTime.Now >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame))
+            {
+                FinishGame();
+            }
+            else if (DateTime.Now >= db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick) && db.Settings.Last().IsFinished == false)
+            {
+                AddTick();
+            }
+        }
+
+        public bool KeyCheck(string Key)
 		{
 			if (db.Users.Where(n => n.Key == Key).FirstOrDefault() != null)
 			{
@@ -195,44 +219,42 @@ namespace RocketGame.Controllers
             return teams;
         }
 
-        public static string AddTick()
+        #endregion
+
+        public string AddTick()
         {
-            Unit();
+            db.Logs.Add(new Log { Msg = "AddTick Start" });
 
-            db1.Logs.Add(new Log { Msg = "AddTick Start" });
-            db1.SaveChanges();
+            //GameController g = new GameController(db);
+            Update();
+            //GSheetsController gsheets = new GSheetsController(db);
+            //gsheets.InsertTickResult();
 
-            GameController g = new GameController(db1);
-            g.Update();
-            GSheetsController gsheets = new GSheetsController(db1);
-            gsheets.InsertTickResult();
-
-            if (db1.Settings.Last().IsFinished)
+            if (db.Settings.Last().IsFinished)
             {
-                db1.Logs.Add(new Log { Msg = "AddTick GameEnd" });
-                db1.SaveChanges();
+                db.Logs.Add(new Log { Msg = "AddTick GameEnd" });
+                db.SaveChanges();
                 return "Игра окончена";
             }
 
-            db1.Ticks.Last().Finish = DateTime.Now;
+            db.Ticks.Last().Finish = DateTime.Now;
             Tick Tick = new Tick();
-            Tick.Number = db1.Ticks.Last().Number + 1;
+            Tick.Number = db.Ticks.Last().Number + 1;
             Tick.Start = DateTime.Now;
-            db1.Ticks.Add(Tick);
-            //db1.Logs.Add(new Log { Msg = "AddTick" });
-            db1.SaveChanges();
-            Timer();
+            db.Ticks.Add(Tick);
+            //Timer();
 
-            db1.Logs.Add(new Log { Msg = "AddTick End" });
-            db1.SaveChanges();
+            db.Logs.Add(new Log { Msg = "AddTick End" });
+            db.SaveChanges();
 
             return "Начался новый такт";
         }
 
-        public void FinishGame(object o)
+        public void FinishGame()
         {
             db1.Logs.Add(new Log { Msg = "FinishGame Done" });
             db1.SaveChanges();
+
             gsheets.InsertTickResult();
             db1.Ticks.Last().Finish = DateTime.Now;
             db1.Settings.Last().IsFinished = true;
@@ -243,6 +265,8 @@ namespace RocketGame.Controllers
         public void AttackGroupResult(int attacker, int[] ids, int[] power, Team target)
         {
             Unit();
+
+
             int result = (power[attacker] - target.Power);
             if (result > 0)
             {
@@ -275,6 +299,10 @@ namespace RocketGame.Controllers
 
         public void AttackRocketResult(int attacker, int defender, int[] ids, int[] power, Team target)
         {
+            var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
+            //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+            optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+
             db1.Logs.Add(new Log { Msg = "AttackRocketResult Start" });
             db1.Logs.Add(new Log { Msg = "Attacker power = " + power[attacker] });
             db1.Logs.Add(new Log { Msg = "2) Deffender power = " + defender });
@@ -314,7 +342,12 @@ namespace RocketGame.Controllers
 
         public void Update()
         {
-            db1.Logs.Add(new Log { Msg = "Update Start" });
+            db.Logs.Add(new Log { Msg = "Update start (without Unit)" });
+            db.SaveChanges();
+
+            Unit();
+
+            db1.Logs.Add(new Log { Msg = "Update Start ()" });
             List<Team> Teams = db1.Teams.ToList();
             List<Team> Teams1 = db1.Teams.ToList();
             List<User> Users = db1.Users.Include(f => f.Team).ToList();
@@ -814,7 +847,7 @@ namespace RocketGame.Controllers
 
             if (db1.Users.Where(n => n.InRocket == true).Count() == db1.Settings.FirstOrDefault().RocketSize)
             {
-                FinishGame(null);
+                FinishGame();
             }
         }
         

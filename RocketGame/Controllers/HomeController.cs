@@ -28,9 +28,10 @@ namespace RocketGame.Controllers
 		[HttpPost]
 		public IActionResult Admin(AdminView data)
 		{
-			db.Users.RemoveRange(db.Users);
+            db.Logs.RemoveRange(db.Logs);
+            db.Moves.RemoveRange(db.Moves);
+            db.Users.RemoveRange(db.Users);
 			db.Ticks.RemoveRange(db.Ticks);
-			db.Moves.RemoveRange(db.Moves);
 			db.Teams.RemoveRange(db.Teams);
 			db.Settings.RemoveRange(db.Settings);
 			db.SaveChanges();
