@@ -27,22 +27,13 @@ namespace RocketGame.Controllers
         private readonly string SpreadsheetId = "11JB5cruILtYvnZMN6mRDo8lE_8T9_asmRFCyUxIbN8Y";
         public string Range = "'Лист1'!A2:E";
 
-        private MyContext db1;
+        private MyContext db;
 
         public GSheetsController(MyContext context)
         {
-            db1 = context;
+            db = context;
         }
 
-        static MyContext db;
-
-        public static void Unit()
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
-			db = new MyContext(optionsBuilder.Options);
-        }
 
         public void InsertTickResult()
         {
@@ -113,7 +104,6 @@ namespace RocketGame.Controllers
 
         public void FillTickColumn(SheetsService service, string SpreadsheetId, int InsertColumn)
         {
-            Unit();
             string[,] TickData = { { "Такт " + db.Ticks.Last().Number.ToString() } };
             List<Request> requests = new List<Request>();
             for (int i = 0; i < TickData.GetLength(0); i++)
@@ -156,7 +146,6 @@ namespace RocketGame.Controllers
 
         public void AddToTickColumns(SheetsService service, string SpreadsheetId, int InsertColumn)
         {
-            Unit();
             string[,] Data = { { "Действие", "Цель", "Результат" } };
             List<Request> requests = new List<Request>();
             for (int i = 0; i < Data.GetLength(0); i++)
@@ -199,7 +188,6 @@ namespace RocketGame.Controllers
 
         public void FormatTickCell(SheetsService service, string SpreadsheetId, int i)
         {
-            Unit();
             List<Request> requests = new List<Request>();
 
             requests.Add(
@@ -229,7 +217,6 @@ namespace RocketGame.Controllers
 
         public void FillUsers(SheetsService service, string SpreadsheetId)
         {
-            Unit();
             int index = 0;
             int number = 1;
             foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
@@ -282,7 +269,6 @@ namespace RocketGame.Controllers
 
         public void FillStats(SheetsService service, string SpreadsheetId)
         {
-            Unit();
             int index = 0;
             foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
             {

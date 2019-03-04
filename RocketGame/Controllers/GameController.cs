@@ -25,8 +25,6 @@ namespace RocketGame.Controllers
             db = context;
         }
 
-        GSheetsController gsheets = new GSheetsController(db1);
-
         public List<Team> GroupList()
         {
             return db.Teams.ToList();
@@ -135,9 +133,11 @@ namespace RocketGame.Controllers
             Tick.Number = 1;
             Tick.Start = DateTime.Now;
             db.Ticks.Add(Tick);
+
             //FTimer();
             //Timer();
 
+            //GSheetsController gsheets = new GSheetsController(db);
             //gsheets.InsertUsers();
 
             db.Logs.Add(new Log { Msg = "Start game end" });
@@ -225,7 +225,6 @@ namespace RocketGame.Controllers
         {
             db.Logs.Add(new Log { Msg = "AddTick Start" });
 
-            //GameController g = new GameController(db);
             Update();
             //GSheetsController gsheets = new GSheetsController(db);
             //gsheets.InsertTickResult();
@@ -252,13 +251,15 @@ namespace RocketGame.Controllers
 
         public void FinishGame()
         {
-            db1.Logs.Add(new Log { Msg = "FinishGame Done" });
-            db1.SaveChanges();
+            db.Logs.Add(new Log { Msg = "FinishGame Done" });
+            db.SaveChanges();
 
-            gsheets.InsertTickResult();
-            db1.Ticks.Last().Finish = DateTime.Now;
-            db1.Settings.Last().IsFinished = true;
-            db1.SaveChanges();
+            //GSheetsController gsheets = new GSheetsController(db);
+            //gsheets.InsertTickResult();
+
+            db.Ticks.Last().Finish = DateTime.Now;
+            db.Settings.Last().IsFinished = true;
+            db.SaveChanges();
         }
 
 
@@ -285,7 +286,7 @@ namespace RocketGame.Controllers
                 {
                     db1.Teams.Where(n => n.TeamId == ids[attacker]).FirstOrDefault().Fuel += target.Fuel;
                     db1.Teams.Find(target.TeamId).Fuel = 0;
-                    db.SaveChanges();
+                    db1.SaveChanges();
                 }
             }
             else

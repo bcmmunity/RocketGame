@@ -101,3 +101,4 @@ C:\Users\Никита\Desktop\RocketGame1\RocketGame\obj\Release\netcoreapp2.1\R
 C:\Users\Никита\Desktop\RocketGame1\RocketGame\obj\Release\netcoreapp2.1\RocketGame.dll
 C:\Users\Никита\Desktop\RocketGame1\RocketGame\obj\Release\netcoreapp2.1\RocketGame.pdb
 C:\Users\Никита\Desktop\RocketGame1\RocketGame\obj\Release\netcoreapp2.1\RocketGame.csproj.CopyComplete
+C:\Users\Никита\Desktop\RocketGame1\RocketGame\RocketGame\bin\Release\netcoreapp2.1\credentials.json
