@@ -54,6 +54,14 @@
 	{
 		$.ajax({
 			type: "GET",
+			url: "/Game/TimeCheck",
+
+			success: function (result) {
+			}
+		});
+
+		$.ajax({
+			type: "GET",
 			url: "/Game/KeyCheck",
 			data: { Key: $("#k").val() },
 
@@ -113,7 +121,8 @@
 	{
 		$.ajax({
 			type: "GET",
-			url: "/Game/GroupList",
+			url: "/Game/TeamList",
+			data: { Key: $("#k").val() },
 
 			success: function (result) {
 				checkk = false;

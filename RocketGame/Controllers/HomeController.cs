@@ -167,7 +167,7 @@ namespace RocketGame.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult Index(string Promo)
+		public IActionResult Index(string Promo, string Name, string RealName, string EMail)
 		{
 			if (db.Settings.FirstOrDefault() == null)
 			{
@@ -198,9 +198,11 @@ namespace RocketGame.Controllers
 				}
 
 				user.InRocket = false;
-				user.Intellect = 0;
-				user.Power = 0;
-				user.Name = "Игрок " + (count + 1).ToString();
+				user.Intellect = 1;
+				user.Power = 1;
+				user.Name = Name;
+				user.RealName = RealName;
+				user.EMail = EMail;
 				user.Key = id.ToString() + "СРКД" + count.ToString();
 
 				user.Team = db.Teams.Find(id);
