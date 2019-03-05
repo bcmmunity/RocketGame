@@ -418,7 +418,7 @@ namespace RocketGame.Controllers
             int index = 0;
             foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
             {
-                foreach (Move move in db.Moves.Where(n => n.User.Team == team).Where(m => m.Tick == db.Ticks.Last()).OrderBy(m => m.User.Name).ToList())
+                foreach (Move move in db.Moves.Where(n => n.User.Team == team).Where(m => m.Tick == db.Ticks.Last()).OrderBy(m => m.User.UserId).ToList())
                 {
                     string target;
                     if (move.Result == null)

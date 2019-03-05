@@ -161,3 +161,4 @@ C:\Users\Никита\Desktop\RocketGame1\RocketGame\obj\Debug\netcoreapp2.1\Roc
 C:\Users\Никита\Desktop\RocketGame1\RocketGame\obj\Debug\netcoreapp2.1\RocketGame.dll
 C:\Users\Никита\Desktop\RocketGame1\RocketGame\obj\Debug\netcoreapp2.1\RocketGame.pdb
 C:\Users\Никита\Desktop\RocketGame1\RocketGame\obj\Debug\netcoreapp2.1\RocketGame.csproj.CopyComplete
+C:\Users\Никита\Desktop\RocketGame1\RocketGame\RocketGame\obj\Debug\netcoreapp2.1\Razor\Views\Tick\GetTick.g.cshtml.cs
