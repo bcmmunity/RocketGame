@@ -44,7 +44,8 @@ namespace RocketGame.Controllers
 
             }
 
-            ViewBag.users = users;
+			ViewBag.i = i;
+			ViewBag.users = users;
 
             return View();
         }
@@ -54,6 +55,7 @@ namespace RocketGame.Controllers
             if (number == db.Ticks.Last().Number)
                 return null;
 
+			ViewBag.number = number + 1;
             string[] moves = new string[db.Users.Count()];
             int i = 0;
 

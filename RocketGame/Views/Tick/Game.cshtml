@@ -1,0 +1,92 @@
+﻿
+@{
+	ViewData["Title"] = "Game";
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+<div id="content">
+
+	<table id="ft">
+		<thead>
+			<tr>
+				<th> Команда --</th>
+				<th> Топливо --</th>
+				<th> Ник игрока --</th>
+				<th> Сила/Интеллект --</th>
+			</tr>
+		</thead>
+		<tbody>
+			@for (int i = 0; i < ViewBag.i; i++)
+			{
+				<tr>
+					<th>
+						@ViewBag.users[i, 0]
+					</th>
+					<th>
+						@ViewBag.users[i, 1]
+					</th>
+					<th>
+						@ViewBag.users[i, 2]
+					</th>
+					<th>
+						@ViewBag.users[i, 3]
+					</th>
+				</tr>
+			}
+		</tbody>
+	</table>
+
+</div>
+
+<script>
+	var number = 0;
+
+
+	setInterval(metod, 5000);
+
+	function metod() {
+		$.ajax({
+			type: "GET",
+			url: "/Tick/GetTick",
+			data: { number: number },
+
+			success: function (result) {
+
+				$("#content").append(result);
+				number++;
+
+			}
+		});
+	}
+</script>
+
+<style>
+	#ft {
+		background-color: darkgray;
+		position: fixed;
+		left: 0;
+		border: solid 1px;
+	}
+
+	#content {
+		margin-left: 0;
+		width: 50000px;
+	}
+
+	table {
+		float: left;
+		margin-left: 10px;
+		text-align: center;
+	}
+
+	tr {
+		height: 30px;
+		border-bottom: solid 1px;
+	}
+
+	th {
+	}
+</style>
+
+<div style="float: none; clear: both"></div>

@@ -1,20 +1,33 @@
-﻿@*
-    
-*@
+﻿@{
+	Layout = null;
+}
 
-<div class="tick">
-    @for (int i = 0; i < ViewBag.moves.Length; i++)
-    {
-        @ViewBag.moves[i];
-        <hr />
-    }
-</div>
+
+<table>
+	<thead>
+		<tr>
+			<th>Такт @ViewBag.number</th>
+		</tr>
+	</thead>
+	<tbody>
+		@for (int i = 0; i < ViewBag.moves.Length; i++)
+		{
+		<tr>
+			<th>
+				@ViewBag.moves[i]
+			</th>
+		</tr>
+		}
+	</tbody>
+</table>
+
 
 <style>
-    .tick {
-        width: 200px;
-        background-color: Highlight;
-        border-radius: 50px;
-        color: white;
-    }
+	.tick {
+		width: 250px;
+		background-color: Highlight;
+		border-radius: 50px;
+		color: white;
+		float: left;
+	}
 </style>
