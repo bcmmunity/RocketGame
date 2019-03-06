@@ -75,7 +75,8 @@ namespace RocketGame.Controllers
             {
                 Team team = new Team();
                 team.Name = colors[i];
-                db.Teams.Add(team);
+				team.Power = settings.TeamSize;
+				db.Teams.Add(team);
             }
 			Random a = new Random();
 			settings.Promo = "JDFJ" + a.Next(277, 1000).ToString();
@@ -85,7 +86,19 @@ namespace RocketGame.Controllers
             db.SaveChanges();
             ViewBag.Key = Key;
 
-            return RedirectToAction("ShowUsers", new { Key = Key });
+			List<string> Promos = new List<string>();
+			List<string> Names = new List<string>();
+
+			foreach (var item in db.Teams.ToList())
+			{
+				Promos.Add(item.TeamId.ToString());
+				Names.Add(item.Name);
+			}
+
+			ViewBag.Names = Names;
+			ViewBag.Promos = Promos;
+
+			return RedirectToAction("ShowUsers", new { Key = Key });
         }
 
         public IActionResult ShowUsers(string Key)
@@ -96,7 +109,20 @@ namespace RocketGame.Controllers
 			}
             ViewBag.Key = Key;
 			ViewBag.Promo = db.Settings.FirstOrDefault().Promo;
-            return View(db.Users.Include(n => n.Team).ToList());
+
+			List<string> Promos = new List<string>();
+			List<string> Names = new List<string>();
+
+			foreach (var item in db.Teams.ToList())
+			{
+				Promos.Add(item.TeamId.ToString());
+				Names.Add(item.Name);
+			}
+
+			ViewBag.Names = Names;
+			ViewBag.Promos = Promos;
+
+			return View(db.Users.Include(n => n.Team).ToList());
 		}
 		
 		public string EditUserKey(string Key)
@@ -167,7 +193,7 @@ namespace RocketGame.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult Index(string Promo, string Name, string RealName, string EMail)
+		public IActionResult Index(string Promo, string Name, string RealName)
 		{
 			if (db.Settings.FirstOrDefault() == null)
 			{
@@ -181,8 +207,14 @@ namespace RocketGame.Controllers
                 return View("Index");
             }
 
+			if (db.Settings.FirstOrDefault().TeamCount * db.Settings.FirstOrDefault().TeamSize <= db.Users.Count())
+			{
+				ViewBag.msg = "Все игроки уже зарегистрированы";
+				return View("Index");
+			}
 
-            if (db.Settings.FirstOrDefault().Promo == Promo)
+			string[] pr = db.Settings.FirstOrDefault().Promo.Split('-');
+			if (db.Settings.FirstOrDefault().Promo == Promo || pr.Length == 2)
 			{
 				User user = new User();
 
@@ -202,10 +234,16 @@ namespace RocketGame.Controllers
 				user.Power = 1;
 				user.Name = Name;
 				user.RealName = RealName;
-				user.EMail = EMail;
 				user.Key = id.ToString() + "СРКД" + count.ToString();
-
-				user.Team = db.Teams.Find(id);
+				
+				if (pr.Length == 2)
+				{
+					user.Team = db.Teams.Find(pr[1]);
+				}
+				else
+				{
+					user.Team = db.Teams.Find(id);
+				}
 				db.Users.Add(user);
 				db.SaveChanges();
 

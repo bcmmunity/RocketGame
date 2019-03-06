@@ -70,35 +70,40 @@ namespace RocketGame.Controllers
 
         public IActionResult GetTick(int number)
         {
-            if (number == db.Ticks.Last().Number)
-                return null;
+			if (number == db.Ticks.Last().Number - 1)
+			{
 
-			ViewBag.number = number + 1;
-            string[] moves = new string[db.Users.Count()];
-            int i = 0;
+				ViewBag.number = number + 1;
+				string[] moves = new string[db.Users.Count()];
+				int i = 0;
 
-            foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
-            {
-                foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(n => n.UserId).ToList())
-                {
-                    if (db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault() != null)
-                    {
-                        if (db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault().To == null)
-                        {
-                            moves[i] = db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault().Type;
-                        }
-                        else
-                        {
-                            moves[i] = Transletor(db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).Include(m => m.User).FirstOrDefault());
-                        }
-                    }
-                    i++;
-                }
-            }
+				foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
+				{
+					foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(n => n.UserId).ToList())
+					{
+						if (db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault() != null)
+						{
+							if (db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault().To == null)
+							{
+								moves[i] = db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault().Type;
+							}
+							else
+							{
+								moves[i] = Transletor(db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).Include(m => m.User).FirstOrDefault());
+							}
+						}
+						i++;
+					}
+				}
 
-            ViewBag.moves = moves;
+				ViewBag.moves = moves;
 
-            return View();
+				return View();
+			}
+			else
+			{
+				return new EmptyResult();
+			}
         }
 
 
