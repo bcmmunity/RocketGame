@@ -24,10 +24,10 @@
 		{
 			<tr>
 				<th>
-					@ViewBag.Names
+					@ViewBag.Names[ViewBag.Promos.IndexOf(item)]
 				</th>
 				<th>
-					@ViewBag.Promos
+					@item
 				</th>
 			</tr>
 		}
