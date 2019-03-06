@@ -4,12 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RocketGame.Models;
 
@@ -85,11 +80,11 @@ namespace RocketGame.Controllers
                     {
                         if (db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault().To == null)
                         {
-                            moves[i] = db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault().Type;
+                            moves[i] = CommonTranslate(db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault().Type);
                         }
                         else
                         {
-                            moves[i] = Transletor(db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).Include(m => m.User).FirstOrDefault());
+                            moves[i] = Translator(db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).Include(m => m.User).FirstOrDefault());
                         }
                     }
                     i++;
@@ -101,19 +96,19 @@ namespace RocketGame.Controllers
             return View();
         }
 
-
-        public string Transletor(Move move)
+        #region Переводчики
+        public string Translator(Move move)
         {
             string result = "";
             if (move.Type == "gift")
             {
                 if (move.Result == "Подарили")
                 {
-                    result = "Подарил команде " + move.To.Name + " топливо.";
+                    result = "Д-" + GroupTranslator(move.To.Name) + ":V";
                 }
                 else
                 {
-                    result = "Предпринял попытку подарить";
+                    result = "Д-" + GroupTranslator(move.To.Name) + ":X";
                 }
             }
 
@@ -121,11 +116,11 @@ namespace RocketGame.Controllers
             {
                 if (move.Result == "Победа")
                 {
-                    result = "Атака на " + move.To.Name + ": Победа.";
+                    result = "АГ-" + GroupTranslator(move.To.Name) + ":W";
                 }
                 else
                 {
-                    result = "Атака на " + move.To.Name + ": Поражение.";
+                    result = "АГ-" + GroupTranslator(move.To.Name) + ":L";
                 }
             }
 
@@ -133,30 +128,73 @@ namespace RocketGame.Controllers
             {
                 if (move.Result == "Победа")
                 {
-                    result = "Атака на ракету " + move.To.Name + ": Победа";
+                    result = "АР-" + GroupTranslator(move.To.Name) + ":W";
                 }
                 else
                 {
-                    result = "Атака на ракету " + move.To.Name + ": Поражение";
+                    result = "АР-" + GroupTranslator(move.To.Name) + ":L";
                 }
             }
 
             if (move.Type == "getinrocket")
             {
-                if(move.User.InRocket)
-                {
-                    result = "УЛЕТЕЛ";
-                }
-                else
-                {
-                    result = "Сел в ракету, но был выбит";
-                }
+                result = "Р:В";
+            }
+            return result;
+        }
+
+        public string GroupTranslator(string team)
+        {
+            string result = "Group";
+
+            if(team == "Красные")
+            {
+                result = "Кс";
+            }
+            else if (team == "Зеленые")
+            {
+                result = "Зл";
+            }
+            else if (team == "Синие")
+            {
+                result = "Сн";
+            }
+            else if (team == "Желтые")
+            {
+                result = "Жт";
+            }
+            else if (team == "Фиолетовые")
+            {
+                result = "Фв";
             }
 
             return result;
         }
 
+        public string CommonTranslate(string move)
+        {
+            string result = "Move";
+            
+            if(move == "powerup")
+            {
+                result = "У";
+            }
+            else if(move == "intellectup")
+            {
+                result = "О";
+            }
+            else if(move == "gather")
+            {
+                result = "Т";
+            }
+            else if (move == "getinrocket")
+            {
+                result = "Р:П";
+            }
 
+            return result;
+        }
+
+        #endregion
     }
-
 }

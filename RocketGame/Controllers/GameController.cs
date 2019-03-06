@@ -16,14 +16,14 @@ namespace RocketGame.Controllers
     //[ApiController]
     public class GameController : ControllerBase
     {
-        //Настройки Google Sheets
-
         private MyContext db;
 
         public GameController(MyContext context)
         {
             db = context;
         }
+
+        //public DateTime EndGameTime = db1.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db1.Settings.Last().TimeGame);
 
         public List<Team> GroupList()
         {
@@ -112,7 +112,6 @@ namespace RocketGame.Controllers
         #endregion
 
         static MyContext db1;
-        //private static MyContext db = new MyContext(optionsBuilder.Options);
 
         public static void Unit()
         {
@@ -148,17 +147,31 @@ namespace RocketGame.Controllers
 		}
 
         #region Checks
-        
+
         public void TimeCheck()
         {
-            if(DateTime.Now >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame))
+            if (db.Settings.Last().IsFinished == false)
             {
-                FinishGame();
+                if (DateTime.Now >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame) 
+                    && DateTime.Now >= db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick))
+                {
+                    FinishGame();
+                }
+                else if (DateTime.Now >= db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick))
+                {
+                    AddTick();
+                }
             }
-            else if (DateTime.Now >= db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick) && db.Settings.Last().IsFinished == false)
+        }
+
+        public bool LastTickCheck()
+        {
+            if (db.Ticks.Last().Finish.AddMinutes(db.Settings.Last().TimeTick) 
+                >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame))
             {
-                AddTick();
+                return true;
             }
+            return false;
         }
 
         public bool KeyCheck(string Key)
@@ -224,6 +237,7 @@ namespace RocketGame.Controllers
         public string AddTick()
         {
             db.Logs.Add(new Log { Msg = "AddTick Start" });
+            db.SaveChanges();
 
             Update();
             //GSheetsController gsheets = new GSheetsController(db);
