@@ -165,3 +165,4 @@ C:\Users\Никита\Desktop\RocketGame1\RocketGame\RocketGame\obj\Debug\netcor
 C:\Users\Никита Кураев\Desktop\RocketGame\RocketGame\bin\Debug\netcoreapp2.1\credentials.json
 C:\Users\Никита Кураев\Desktop\RocketGame\RocketGame\obj\Debug\netcoreapp2.1\Razor\Views\Tick\GetTick.g.cshtml.cs
 C:\Users\Никита Кураев\Desktop\RocketGame\RocketGame\obj\Debug\netcoreapp2.1\Razor\Views\Tick\Game.g.cshtml.cs
+C:\Users\Никита\Desktop\RocketGame1\RocketGame\RocketGame\obj\Debug\netcoreapp2.1\Razor\Views\Tick\Game.g.cshtml.cs
