@@ -6,6 +6,33 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <h2>Секретный код - @ViewBag.Promo</h2>
+<a asp-area="" asp-controller="Tick" asp-action="Game" target="_blank" class="navbar-brand">Открыть таблицу результатов</a>
+
+<table>
+	<thead>
+		<tr>
+			<th>
+				Команда
+			</th>
+			<th>
+				Код
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (string item in ViewBag.Promos)
+		{
+			<tr>
+				<th>
+					@ViewBag.Names
+				</th>
+				<th>
+					@ViewBag.Promos
+				</th>
+			</tr>
+		}
+	</tbody>
+</table>
 
 <a href="/Home/ShowUsers?Key=@ViewBag.Key">Обновить</a>
 
@@ -80,7 +107,7 @@
 
 				$("#teams").empty();
 				$("#teams").show();
-				
+
 				var i = 0;
 				for (var item in result) {
 					$("#teams").append("<span class='btn' onclick='editTeam(\"" + key + "\", \"" + result[i].teamId + "\")'>" + result[i].name + "</span></br></br>");
@@ -99,7 +126,7 @@
 			success: function (result) {
 				$("#msg").empty();
 				$("#msg").append("Новый ключ - " + result);
-				
+
 				$("#teams").hide();
 			}
 		});

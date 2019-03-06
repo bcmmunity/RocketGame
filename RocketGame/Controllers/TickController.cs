@@ -65,12 +65,12 @@ namespace RocketGame.Controllers
 
         public IActionResult GetTick(int number)
         {
-            if (number == db.Ticks.Last().Number)
-                return null;
+			if (number == db.Ticks.Last().Number - 1)
+			{
 
-			ViewBag.number = number + 1;
-            string[] moves = new string[db.Users.Count()];
-            int i = 0;
+				ViewBag.number = number + 1;
+				string[] moves = new string[db.Users.Count()];
+				int i = 0;
 
             foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
             {
@@ -91,9 +91,14 @@ namespace RocketGame.Controllers
                 }
             }
 
-            ViewBag.moves = moves;
+				ViewBag.moves = moves;
 
-            return View();
+				return View();
+			}
+			else
+			{
+				return new EmptyResult();
+			}
         }
 
         #region Переводчики
