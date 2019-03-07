@@ -21,24 +21,6 @@ namespace RocketGame.Controllers
             db = context;
         }
 
-        public string[,] Stats()
-        {
-            string[,] stats = new string[db.Users.Count(), 2];
-            int i = 0;
-
-            foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
-            {
-                foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(b => b.UserId).ToList())
-                {
-                    stats[i, 0] = team.Fuel.ToString();
-                    stats[i, 1] = user.Power.ToString() + "/" + user.Intellect.ToString();
-                    i++;
-                }
-
-            }
-            return stats;
-        }
-
         public IActionResult Game()
         {
             string[,] users = new string[db.Users.Count(), 4];
@@ -102,6 +84,7 @@ namespace RocketGame.Controllers
         }
 
         #region Переводчики
+
         public string Translator(Move move)
         {
             string result = "";

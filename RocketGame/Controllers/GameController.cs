@@ -23,13 +23,6 @@ namespace RocketGame.Controllers
             db = context;
         }
 
-        //public DateTime EndGameTime = db1.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db1.Settings.Last().TimeGame);
-
-        public List<Team> GroupList()
-        {
-            return db.Teams.ToList();
-        }
-
         public void Make(Move Move, string Key, int TeamId)
         {
             if (Move.Type == "powerup" || Move.Type == "intellectup" || Move.Type == "gather" || Move.Type == "gift" || Move.Type == "attackgroup" || Move.Type == "attackrocket" || Move.Type == "getinrocket")
@@ -133,12 +126,6 @@ namespace RocketGame.Controllers
             Tick.Start = DateTime.Now;
             db.Ticks.Add(Tick);
 
-            //FTimer();
-            //Timer();
-
-            //GSheetsController gsheets = new GSheetsController(db);
-            //gsheets.InsertUsers();
-
             db.Logs.Add(new Log { Msg = "Start game end" });
             db.Settings.FirstOrDefault().IsStarted = true;
             db.SaveChanges();
@@ -232,6 +219,29 @@ namespace RocketGame.Controllers
             return teams;
         }
 
+        public List<Team> GroupList()
+        {
+            return db.Teams.ToList();
+        }
+
+        public string[,] Stats()
+        {
+            string[,] stats = new string[db.Users.Count(), 2];
+            int i = 0;
+
+            foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
+            {
+                foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(b => b.UserId).ToList())
+                {
+                    stats[i, 0] = team.Fuel.ToString();
+                    stats[i, 1] = user.Power.ToString() + "/" + user.Intellect.ToString();
+                    i++;
+                }
+
+            }
+            return stats;
+        }
+
         #endregion
 
         public string AddTick()
@@ -240,8 +250,6 @@ namespace RocketGame.Controllers
             db.SaveChanges();
 
             Update();
-            //GSheetsController gsheets = new GSheetsController(db);
-            //gsheets.InsertTickResult();
 
             if (db.Settings.Last().IsFinished)
             {
@@ -268,9 +276,6 @@ namespace RocketGame.Controllers
             db.Logs.Add(new Log { Msg = "FinishGame Done" });
             db.SaveChanges();
 
-            //GSheetsController gsheets = new GSheetsController(db);
-            //gsheets.InsertTickResult();
-
             db.Ticks.Last().Finish = DateTime.Now;
             db.Settings.Last().IsFinished = true;
             db.SaveChanges();
@@ -280,11 +285,12 @@ namespace RocketGame.Controllers
         public void AttackGroupResult(int attacker, int[] ids, int[] power, Team target)
         {
             var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-            //optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
-
+            //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+            optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
             db1 = new MyContext(optionsBuilder.Options);
 
+            db1.Logs.Add(new Log { Msg = "AttackGroupResult Start" });
+            db1.SaveChanges();
 
             int result = (power[attacker] - target.Power);
             if (result > 0)
@@ -292,6 +298,8 @@ namespace RocketGame.Controllers
                 if (target.Fuel >= result * 2)
                 {
                     db1.Teams.Where(n => n.TeamId == ids[attacker]).FirstOrDefault().Fuel += result * 2;
+                    db1.Logs.Add(new Log { Msg = "AttackGroup result = " + (result*2).ToString() });
+
                     db1.Teams.Where(m => m.TeamId == target.TeamId).FirstOrDefault().Fuel = target.Fuel - result * 2;
                     foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).ToList())
                     {
@@ -319,17 +327,17 @@ namespace RocketGame.Controllers
         public void AttackRocketResult(int attacker, int defender, int[] ids, int[] power, Team target)
         {
             var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-            //optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
-
+            //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+            optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
             db1 = new MyContext(optionsBuilder.Options);
 
             db1.Logs.Add(new Log { Msg = "AttackRocketResult Start" });
-            db1.Logs.Add(new Log { Msg = "Attacker power = " + power[attacker] });
-            db1.Logs.Add(new Log { Msg = "2) Deffender power = " + defender });
+            db1.Logs.Add(new Log { Msg = "Attacker power = " + power[attacker].ToString() });
+            db1.Logs.Add(new Log { Msg = "2) Deffender power = " + defender.ToString() });
             db1.Logs.Add(new Log { Msg = "Result = " + (power[attacker]-defender).ToString() });
             db1.Logs.Add(new Log { Msg = "Цель = " + target.Name });
-
+            db1.SaveChanges();
+    
             if ((power[attacker] - defender) > 0)
             {
                 db1.Logs.Add(new Log { Msg = "If = true " });
@@ -363,17 +371,19 @@ namespace RocketGame.Controllers
 
         public void Update()
         {
-            var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-            //optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
+            var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
+            //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+            optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
             db1 = new MyContext(optionsBuilder.Options);
 
-            db1.Logs.Add(new Log { Msg = "Update Start ()" });
+            db1.Logs.Add(new Log { Msg = "Update Start" });
+            db1.SaveChanges();
             List<Team> Teams = db1.Teams.ToList();
             List<Team> Teams1 = db1.Teams.ToList();
             List<User> Users = db1.Users.Include(f => f.Team).ToList();
             List<User> Users1 = db1.Users.Include(f => f.Team).ToList();
+
 
             #region PowerUp
             List<Move> Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "powerup").Include(f => f.User).Include(a => a.User.Team).ToList();
@@ -403,7 +413,8 @@ namespace RocketGame.Controllers
             #endregion
 
             #region Gift
-            Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "gift").Include(f => f.User).Include(a => a.User.Team).ToList();
+
+            Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "gift").Include(f => f.User).Include(a => a.User.Team).Include(g => g.To).ToList();
             foreach (Team item in Teams)
             {
                 foreach (Team target in Teams)
@@ -416,7 +427,7 @@ namespace RocketGame.Controllers
                         {
                             db1.Moves.Find(move.MoveId).Result = "Подарили";
                         }
-                        db1.SaveChanges();
+                        
                     }
                     else
                     {
@@ -425,11 +436,14 @@ namespace RocketGame.Controllers
                             db1.Moves.Find(move.MoveId).Result = "Неудача";
                         }
                     }
+                    db1.SaveChanges();
                 }
             }
+
             #endregion
 
             #region GetInRocket
+
             Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "getinrocket").Include(f => f.User).Include(a => a.User.Team).ToList();
             int count = 0;
             int[] powint = new int[db1.Settings.FirstOrDefault().TeamSize]; //Сила+Интеллект Игрока
@@ -577,10 +591,12 @@ namespace RocketGame.Controllers
                     }
                 }
             }
+
             #endregion
 
             #region AttackGroup
-            Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "attackgroup").Include(f => f.User).Include(a => a.User.Team).ToList();
+
+            Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "attackgroup").Include(f => f.User).Include(a => a.User.Team).Include(g => g.To).ToList();
             foreach (Team target in Teams)
             {
                 if (Users.Where(b => b.Team == target).Where(a => a.InRocket == false).Count() != 0 )
@@ -597,7 +613,7 @@ namespace RocketGame.Controllers
                             earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
                             ids[i] = team.TeamId;
 
-                            foreach (Move attacker in Moves.Where(n => n.User.Team == team).Where(m => m.To == target).ToList())
+                            foreach (Move attacker in Moves.Where(m => m.To == target).Where(n => n.User.Team == team).ToList())
                             {
                                 if (attacker.Time < earlyuserid[i])
                                 {
@@ -605,7 +621,7 @@ namespace RocketGame.Controllers
                                 }
                                 power[i] = power[i] + attacker.User.Power;
 
-                                db1.Logs.Add(new Log { Msg = "Attack Rocket power[" + i + "] = " + power[i].ToString() });
+                                db1.Logs.Add(new Log { Msg = "Attack Group power[" + i + "] = " + power[i].ToString() });
                                 db1.SaveChanges();
                             }
                             i++;
@@ -719,6 +735,7 @@ namespace RocketGame.Controllers
             #endregion
 
             #region AttackRocket
+
             Moves = db.Moves.Where(n => n.Tick == db.Ticks.Last()).Where(a => a.Type == "attackrocket").Include(f => f.User).Include(a => a.User.Team).Include(d => d.To).ToList(); //Можно сократить
             foreach (Team target in Teams)
             {
@@ -735,6 +752,7 @@ namespace RocketGame.Controllers
                         if (Moves.Where(n => n.User.Team == team).FirstOrDefault() != null)
                         {
                             earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
+
                             foreach (User attacker in db.Users.Where(n => n.Team == team).ToList())
                             {
 
@@ -865,6 +883,7 @@ namespace RocketGame.Controllers
                     }
                 }
             }
+
             #endregion
 
             if (db1.Users.Where(n => n.InRocket == true).Count() == db1.Settings.FirstOrDefault().RocketSize)
