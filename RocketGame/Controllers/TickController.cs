@@ -87,7 +87,8 @@ namespace RocketGame.Controllers
 
         public string Translator(Move move)
         {
-            string result = "";
+            string result = "Move with result";
+
             if (move.Type == "gift")
             {
                 if (move.Result == "Подарили")
