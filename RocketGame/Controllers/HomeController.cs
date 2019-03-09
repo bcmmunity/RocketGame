@@ -70,7 +70,7 @@ namespace RocketGame.Controllers
                 ViewBag.msg = "Ошибка!</br>Должно быть не больше 35 игроков";
                 return View();
             }
-            string[] colors = { "Красные", "Синие", "Желтые", "Зеленые", "Оранжевые" };
+            string[] colors = { "Красные", "Синие", "Желтые", "Зеленые", "Фиолетовые" };
             for (int i = 0; i < settings.TeamCount; i++)
             {
                 Team team = new Team();
@@ -91,7 +91,7 @@ namespace RocketGame.Controllers
 
 			foreach (var item in db.Teams.ToList())
 			{
-				Promos.Add(item.TeamId.ToString());
+				Promos.Add(db.Settings.Last().Promo + "-" + item.TeamId.ToString());
 				Names.Add(item.Name);
 			}
 
@@ -115,7 +115,7 @@ namespace RocketGame.Controllers
 
 			foreach (var item in db.Teams.ToList())
 			{
-				Promos.Add(item.TeamId.ToString());
+				Promos.Add(db.Settings.Last().Promo + "-" + item.TeamId.ToString());
 				Names.Add(item.Name);
 			}
 
@@ -222,7 +222,7 @@ namespace RocketGame.Controllers
 				return View("Index");
 			}
 
-			string[] pr = db.Settings.FirstOrDefault().Promo.Split('-');
+			string[] pr = Promo.Split('-');
 			if (db.Settings.FirstOrDefault().Promo == Promo || pr.Length == 2)
 			{
 				User user = new User();
