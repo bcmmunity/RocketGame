@@ -217,7 +217,11 @@ namespace RocketGame.Controllers
             }
         }
 
-        public List<Team> TeamList(string Key)
+		#endregion
+
+		#region Extra
+
+		public List<Team> TeamList(string Key)
         {
             List<Team> teams = db.Teams.Where(n => n.TeamId != db.Users.Where(f => f.Key == Key).FirstOrDefault().Team.TeamId).ToList();
             return teams;

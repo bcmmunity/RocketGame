@@ -49,29 +49,28 @@ namespace RocketGame.Controllers
         {
 			if (number == db.Ticks.Last().Number - 1)
 			{
-
 				ViewBag.number = number + 1;
 				string[] moves = new string[db.Users.Count()];
 				int i = 0;
 
-            foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
-            {
-                foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(n => n.UserId).ToList())
-                {
-                    if (db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault() != null)
-                    {
-                        if (db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault().To == null)
-                        {
-                            moves[i] = CommonTranslate(db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault().Type);
-                        }
-                        else
-                        {
-                            moves[i] = Translator(db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).Include(m => m.User).FirstOrDefault());
-                        }
-                    }
-                    i++;
-                }
-            }
+				foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
+				{
+					foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(n => n.UserId).ToList())
+					{
+						if (db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault() != null)
+						{
+							if (db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault().To == null)
+							{
+								moves[i] = CommonTranslate(db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault().Type);
+							}
+							else
+							{
+								moves[i] = Translator(db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).Include(m => m.User).FirstOrDefault());
+							}
+						}
+						i++;
+					}
+				}
 
 				ViewBag.moves = moves;
 
