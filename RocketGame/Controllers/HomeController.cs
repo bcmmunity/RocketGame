@@ -195,6 +195,15 @@ namespace RocketGame.Controllers
 		[HttpPost]
 		public IActionResult Index(string Promo, string Name, string RealName)
 		{
+			foreach (User item in db.Users.ToList())
+			{
+				if (item.Name == Name)
+				{
+					ViewBag.msg = "Псевдоним занят";
+					return View("Index");
+				}
+			}
+
 			if (db.Settings.FirstOrDefault() == null)
 			{
 				ViewBag.msg = "Нет активных игр";
