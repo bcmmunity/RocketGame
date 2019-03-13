@@ -247,7 +247,7 @@ namespace RocketGame.Controllers
 				
 				if (pr.Length == 2)
 				{
-					user.Team = db.Teams.Find(pr[1]);
+					user.Team = db.Teams.Find(int.Parse(pr[1]));
 				}
 				else
 				{

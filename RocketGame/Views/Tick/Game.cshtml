@@ -24,13 +24,13 @@
 					<th>
 						@ViewBag.users[i, 0]
 					</th>
-					<th>
+					<th id="1-@i">
 						@ViewBag.users[i, 1]
 					</th>
 					<th>
 						@ViewBag.users[i, 2]
 					</th>
-					<th>
+					<th id="2-@i">
 						@ViewBag.users[i, 3]
 					</th>
 				</tr>
@@ -45,6 +45,22 @@
 	setInterval(metod, 5000);
 
 	function metod() {
+		$.ajax({
+			type: "GET",
+			url: "/Game/Stats",
+
+			success: function (result) {
+
+				for (var i = 0; i < @ViewBag.i ; i++) {
+					$("#1-" + i).empty();
+					$("#1-" + i).append(result[i][0]);
+					$("#2-" + i).empty();
+					$("#2-" + i).append(result[i][1]);
+				}
+
+			}
+		});
+
 		$.ajax({
 			type: "GET",
 			url: "/Tick/GetTick",
