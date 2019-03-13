@@ -73,7 +73,7 @@ using RocketGame.Models;
             WriteLiteral("</h1>\r\n\t\t\t");
             EndContext();
             BeginContext(142, 301, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "9bb5bd1e07d84a7295857fa8afbb92bf", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "b8ac5184d1ac4476a7ee9fb4e9d7b66c", async() => {
                 BeginContext(203, 233, true);
                 WriteLiteral("\r\n\t\t\t\t<label>Логин:</label><br />\r\n\t\t\t\t<input type=\"text\" name=\"Mail\" /><br /><br />\r\n\t\t\t\t<label>Пароль:</label><br />\r\n\t\t\t\t<input type=\"text\" name=\"Password\" /><br /><br />\r\n\t\t\t\t<input type=\"submit\" value=\"Войти\" class=\"btn\" />\r\n\t\t\t");
                 EndContext();

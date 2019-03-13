@@ -29,8 +29,8 @@ namespace RocketGame.Controllers
 		public static void Unit()
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
 		}
@@ -89,7 +89,7 @@ namespace RocketGame.Controllers
 		public string[,] DataArray()
 		{
 			Unit();
-			string[,] result = new string[(1 + db.Users.Count()), (5 + db.Ticks.Count())]; //{ { "Команда", "Топливо", "Никнейм", "Реальное имя", "Сила/Ум" } };
+			string[,] result = new string[(1 + db1.Users.Count()), (5 + db1.Ticks.Count())];
 			int i = 0;
 
 			result[i, 0] = "Команда";
@@ -99,12 +99,12 @@ namespace RocketGame.Controllers
 			result[i, 4] = "Сила/Ум";
 			i++;
 
-			foreach (Team team in db.Teams.ToList())
+			foreach (Team team in db1.Teams.ToList())
 			{
 				result[i, 0] = team.Name;
 				result[i, 1] = team.Fuel.ToString();
 
-				foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(b => b.UserId).ToList())
+				foreach (User user in db1.Users.Where(n => n.Team == team).OrderBy(b => b.UserId).ToList())
 				{
 					result[i, 2] = user.Name;
 					result[i, 3] = user.RealName;
@@ -115,30 +115,32 @@ namespace RocketGame.Controllers
 
 			int j = 5;
 
-			foreach (Tick tick in db.Ticks.OrderBy(n => n.TickId).ToList())
-			result[j, 0] = "Такт " + tick.Number;
-
-			int count = 1;
-
-			foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
+			foreach (Tick tick in db1.Ticks.OrderBy(n => n.TickId).ToList())
 			{
-				foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(n => n.UserId).ToList())
+				result[0, j] = "Такт " + tick.Number;
+
+				int count = 1;
+
+				foreach (Team team in db1.Teams.OrderBy(n => n.TeamId).ToList())
 				{
-					if (db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault() != null)
+					foreach (User user in db1.Users.Where(n => n.Team == team).OrderBy(n => n.UserId).ToList())
 					{
-						if (db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault().To == null)
+						if (db1.Moves.Where(n => n.User == user).Where(b => b.Tick == db1.Ticks.Last()).FirstOrDefault() != null)
 						{
-							result[j, count] = tc.CommonTranslate(db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault().Type);
+							if (db1.Moves.Where(n => n.User == user).Where(b => b.Tick == db1.Ticks.Last()).FirstOrDefault().To == null)
+							{
+								result[count, j] = tc.CommonTranslate(db1.Moves.Where(n => n.User == user).Where(b => b.Tick == db1.Ticks.Last()).FirstOrDefault().Type);
+							}
+							else
+							{
+								result[count, j] = tc.Translator(db1.Moves.Where(n => n.User == user).Where(b => b.Tick == db1.Ticks.Last()).Include(m => m.User).FirstOrDefault());
+							}
 						}
-						else
-						{
-							result[j, count] = tc.Translator(db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).Include(m => m.User).FirstOrDefault());
-						}
+						count++;
 					}
-					count++;
 				}
+				j++;
 			}
-			j++;
 
 			return result;
 		}
