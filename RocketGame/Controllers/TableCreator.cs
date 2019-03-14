@@ -125,15 +125,15 @@ namespace RocketGame.Controllers
 				{
 					foreach (User user in db1.Users.Where(n => n.Team == team).OrderBy(n => n.UserId).ToList())
 					{
-						if (db1.Moves.Where(n => n.User == user).Where(b => b.Tick == db1.Ticks.Last()).FirstOrDefault() != null)
+						if (db1.Moves.Where(n => n.User == user).Where(b => b.Tick == tick).FirstOrDefault() != null)
 						{
-							if (db1.Moves.Where(n => n.User == user).Where(b => b.Tick == db1.Ticks.Last()).FirstOrDefault().To == null)
+							if (db1.Moves.Where(n => n.User == user).Where(b => b.Tick == tick).FirstOrDefault().To == null)
 							{
-								result[count, j] = tc.CommonTranslate(db1.Moves.Where(n => n.User == user).Where(b => b.Tick == db1.Ticks.Last()).FirstOrDefault().Type);
+								result[count, j] = tc.CommonTranslate(db1.Moves.Where(n => n.User == user).Where(b => b.Tick == tick).FirstOrDefault().Type);
 							}
 							else
 							{
-								result[count, j] = tc.Translator(db1.Moves.Where(n => n.User == user).Where(b => b.Tick == db1.Ticks.Last()).Include(m => m.User).FirstOrDefault());
+								result[count, j] = tc.Translator(db1.Moves.Where(n => n.User == user).Where(b => b.Tick == tick).Include(m => m.User).FirstOrDefault());
 							}
 						}
 						count++;

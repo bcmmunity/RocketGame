@@ -70,56 +70,171 @@ namespace RocketGame.Controllers
             }
         }
 
-        #region ForTimers
+		#region ForTimers
 
-        //public void TickChecker(object x)
-        //{
-        //    int number = (int)x;
-        //    //Unit();
+		//public void TickChecker(object x)
+		//{
+		//    int number = (int)x;
+		//    //Unit();
 
-        //    db.Logs.Add(new Log { Msg = "Таймер " + number.ToString() + " конец" });
-        //    db.SaveChanges();
-        //    //timer.Dispose();
-        //    if (db.Ticks.Last().Number == number)
-        //    {
-        //        AddTick();
-        //    }
-        //    else
-        //    {
-        //        db.Logs.Add(new Log { Msg = "ERRORRRR " + number.ToString() });
-        //    }
-        //    db.SaveChanges();
-        //}
+		//    db.Logs.Add(new Log { Msg = "Таймер " + number.ToString() + " конец" });
+		//    db.SaveChanges();
+		//    //timer.Dispose();
+		//    if (db.Ticks.Last().Number == number)
+		//    {
+		//        AddTick();
+		//    }
+		//    else
+		//    {
+		//        db.Logs.Add(new Log { Msg = "ERRORRRR " + number.ToString() });
+		//    }
+		//    db.SaveChanges();
+		//}
 
-        //public static Timer timer;
-        //public Timer ftimer;
+		//public static Timer timer;
+		//public Timer ftimer;
 
-        //public void Timer()
-        //{
-        //    //Unit();
+		//public void Timer()
+		//{
+		//    //Unit();
 
-        //    db.Logs.Add(new Log { Msg = "Таймер пуск" });
-        //    db.SaveChanges();
+		//    db.Logs.Add(new Log { Msg = "Таймер пуск" });
+		//    db.SaveChanges();
 
-        //    TimerCallback tm = new TimerCallback(TickChecker);
-        //    timer = new Timer(tm, db.Ticks.Last().Number, 60000 * db.Settings.FirstOrDefault().TimeTick, Timeout.Infinite);
-        //    db.Logs.Add(new Log { Msg = "Таймер запустился" });
-        //    db.SaveChanges();
-        //}
+		//    TimerCallback tm = new TimerCallback(TickChecker);
+		//    timer = new Timer(tm, db.Ticks.Last().Number, 60000 * db.Settings.FirstOrDefault().TimeTick, Timeout.Infinite);
+		//    db.Logs.Add(new Log { Msg = "Таймер запустился" });
+		//    db.SaveChanges();
+		//}
 
-        //public void FTimer()
-        //{
-        //    db.Logs.Add(new Log { Msg = "Финиш Таймер пуск" });
-        //    db.SaveChanges();
+		//public void FTimer()
+		//{
+		//    db.Logs.Add(new Log { Msg = "Финиш Таймер пуск" });
+		//    db.SaveChanges();
 
-        //    TimerCallback tm = new TimerCallback(FinishGame);
-        //    ftimer = new Timer(tm, null, 60000 * db.Settings.FirstOrDefault().TimeGame, Timeout.Infinite);
+		//    TimerCallback tm = new TimerCallback(FinishGame);
+		//    ftimer = new Timer(tm, null, 60000 * db.Settings.FirstOrDefault().TimeGame, Timeout.Infinite);
 
-        //    db.Logs.Add(new Log { Msg = "Финиш Таймер апустился" });
-        //    db.SaveChanges();
-        //}
+		//    db.Logs.Add(new Log { Msg = "Финиш Таймер апустился" });
+		//    db.SaveChanges();
+		//}
 
-        #endregion
+		#endregion
+
+		#region Checks
+
+		public void TimeCheck()
+		{
+			if (db.Settings.Last().IsFinished == false)
+			{
+				if (DateTime.Now >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame)
+					&& DateTime.Now >= db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick))
+				{
+					FinishGame();
+				}
+				else if (DateTime.Now >= db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick))
+				{
+					AddTick();
+				}
+			}
+		}
+
+		public bool LastTickCheck()
+		{
+			if (db.Ticks.Last().Finish.AddMinutes(db.Settings.Last().TimeTick)
+				>= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame))
+			{
+				return true;
+			}
+			return false;
+		}
+
+		public bool KeyCheck(string Key)
+		{
+			if (db.Users.Where(n => n.Key == Key).FirstOrDefault() != null)
+			{
+				return true;
+			}
+			return false;
+		}
+
+		public string GameCheck()
+		{
+			if (db.Settings.FirstOrDefault().IsStarted == false)
+			{
+				return "Игра еще не началась";
+			}
+			return "Игра началась";
+		}
+
+		public string MoveCheck(string Key)
+		{
+			if (db.Settings.FirstOrDefault().IsFinished)
+			{
+				return "Игра окончена";
+			}
+
+			if (db.Settings.FirstOrDefault().IsStarted == false)
+			{
+				return "Игра еще не началась";
+			}
+
+			if (db.Moves.Where(n => n.User.Key == Key).Where(l => l.Tick.Number == db.Ticks.Last().Number).FirstOrDefault() != null)
+			{
+				return "Ход сделан";
+			}
+			else
+			{
+				return "Ход не сделан";
+			}
+		}
+
+		public bool RocketCheck(string Key)
+		{
+			if (db.Users.Where(n => n.Key == Key).Include(l => l.Team).FirstOrDefault().Team.Fuel >= db.Settings.FirstOrDefault().RocketFuel)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		#endregion
+
+		#region Extra
+
+		public List<Team> TeamList(string Key)
+		{
+			List<Team> teams = db.Teams.Where(n => n.TeamId != db.Users.Where(f => f.Key == Key).FirstOrDefault().Team.TeamId).ToList();
+			return teams;
+		}
+
+		public List<Team> GroupList()
+		{
+			return db.Teams.ToList();
+		}
+
+		public string[,] Stats()
+		{
+			string[,] stats = new string[db.Users.Count(), 2];
+			int i = 0;
+
+			foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
+			{
+				foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(b => b.UserId).ToList())
+				{
+					stats[i, 0] = team.Fuel.ToString();
+					stats[i, 1] = user.Power.ToString() + "/" + user.Intellect.ToString();
+					i++;
+				}
+
+			}
+			return stats;
+		}
+
+		#endregion
 
 		[HttpGet]
         public string StartGame()
@@ -128,6 +243,11 @@ namespace RocketGame.Controllers
             {
                 db.Logs.Add(new Log { Msg = "Game started" });
                 db.SaveChanges();
+
+				if (System.IO.File.Exists("Test.xlsx"))
+				{
+					System.IO.File.Delete("Test.xlsx");
+				}
 
                 Tick Tick = new Tick();
                 Tick.Number = 1;
@@ -142,121 +262,6 @@ namespace RocketGame.Controllers
             }
             return "Не все игроки вошли!";
 		}
-
-        #region Checks
-
-        public void TimeCheck()
-        {
-            if (db.Settings.Last().IsFinished == false)
-            {
-                if (DateTime.Now >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame) 
-                    && DateTime.Now >= db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick))
-                {
-                    FinishGame();
-                }
-                else if (DateTime.Now >= db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick))
-                {
-                    AddTick();
-                }
-            }
-        }
-
-        public bool LastTickCheck()
-        {
-            if (db.Ticks.Last().Finish.AddMinutes(db.Settings.Last().TimeTick) 
-                >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public bool KeyCheck(string Key)
-		{
-			if (db.Users.Where(n => n.Key == Key).FirstOrDefault() != null)
-			{
-				return true;
-			}
-			return false;
-		}
-
-		public string GameCheck()
-        {
-            if(db.Settings.FirstOrDefault().IsStarted == false)
-            {
-                return "Игра еще не началась";
-            }
-            return "Игра началась";
-        }
-
-        public string MoveCheck(string Key)
-        {
-            if (db.Settings.FirstOrDefault().IsFinished)
-            {
-                return "Игра окончена";
-            }
-
-            if (db.Settings.FirstOrDefault().IsStarted == false)
-            {
-                return "Игра еще не началась";
-            }
-
-            if (db.Moves.Where(n => n.User.Key == Key).Where(l => l.Tick.Number == db.Ticks.Last().Number).FirstOrDefault() != null)
-            {
-                return "Ход сделан";
-            }
-            else
-            {
-                return "Ход не сделан";
-            }
-        }
-
-        public bool RocketCheck(string Key)
-        {
-            if (db.Users.Where(n => n.Key == Key).Include(l => l.Team).FirstOrDefault().Team.Fuel >= db.Settings.FirstOrDefault().RocketFuel)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-		#endregion
-
-		#region Extra
-
-		public List<Team> TeamList(string Key)
-        {
-            List<Team> teams = db.Teams.Where(n => n.TeamId != db.Users.Where(f => f.Key == Key).FirstOrDefault().Team.TeamId).ToList();
-            return teams;
-        }
-
-        public List<Team> GroupList()
-        {
-            return db.Teams.ToList();
-        }
-
-        public string[,] Stats()
-        {
-            string[,] stats = new string[db.Users.Count(), 2];
-            int i = 0;
-
-            foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
-            {
-                foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(b => b.UserId).ToList())
-                {
-                    stats[i, 0] = team.Fuel.ToString();
-                    stats[i, 1] = user.Power.ToString() + "/" + user.Intellect.ToString();
-                    i++;
-                }
-
-            }
-            return stats;
-        }
-
-        #endregion
 
         public string AddTick()
         {

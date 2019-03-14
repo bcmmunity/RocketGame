@@ -68,29 +68,34 @@
 	<tbody>
 		@foreach (var item in Model)
 		{
-			<tr>
-				<td>
-					@Html.DisplayFor(modelItem => item.Name)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Intellect)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Power)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.InRocket)
-				</td>
-				<td>
-					@item.Team.Name
-				</td>
-				<td id="k-@item.Key">
-					<span class="btn" onclick="editKey('@item.Key')">Изменить ключ</span>
-				</td>
-				<td id="t-@item.Key">
-					<span class="btn" onclick="selectTeam('@item.Key')">Изменить команду</span>
-				</td>
-			</tr>
+        <tr>
+            <td>
+                @item.Team.Name
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+    <!--
+            <td>
+                @Html.DisplayFor(modelItem => item.Intellect)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Power)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InRocket)
+            </td>
+    -->
+            <td>
+                @Html.DisplayFor(modelItem => item.Key)
+            </td>
+            <td id="k-@item.Key">
+                <span class="btn" onclick="editKey('@item.Key')">Изменить ключ</span>
+            </td>
+            <td id="t-@item.Key">
+                <span class="btn" onclick="selectTeam('@item.Key')">Изменить команду</span>
+            </td>
+        </tr>
 		}
 	</tbody>
 </table>
