@@ -5,42 +5,48 @@
 }
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-<h2>Секретный код - @ViewBag.Promo</h2>
-<a asp-area="" asp-controller="Tick" asp-action="Game" target="_blank" class="navbar-brand">Открыть таблицу результатов</a>
 
-<table>
-	<thead>
-		<tr>
-			<th>
-				Команда
-			</th>
-			<th>
-				Код
-			</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (string item in ViewBag.Promos)
-		{
+<div id="main">
+
+	<h2>Секретный код - @ViewBag.Promo</h2>
+
+	<a asp-area="" asp-controller="Tick" asp-action="Game" target="_blank" class="navbar-brand">Открыть таблицу результатов</a>
+
+	<table>
+		<thead>
 			<tr>
 				<th>
-					@ViewBag.Names[ViewBag.Promos.IndexOf(item)]
+					Команда
 				</th>
 				<th>
-					@item
+					Код
 				</th>
 			</tr>
-		}
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+			@foreach (string item in ViewBag.Promos)
+			{
+				<tr>
+					<th>
+						@ViewBag.Names[ViewBag.Promos.IndexOf(item)]
+					</th>
+					<th>
+						@item
+					</th>
+				</tr>
+			}
+		</tbody>
+	</table>
 
-<a href="/Home/ShowUsers?Key=@ViewBag.Key">Обновить</a>
+	<a href="/Home/ShowUsers?Key=@ViewBag.Key">Обновить</a>
 
-<a id="s"><span onclick="makeMove(); $('#s').empty(); $('#s').append('Нажмите обновить')">Начать игру</span></a>
+	<a id="s"><span onclick="makeMove(); $('#s').empty(); $('#s').append('Нажмите обновить')">Начать игру</span></a>
 
-<h1 id="msg"></h1>
+	<h1 id="msg"></h1>
 
-<div id="teams">
+	<div id="teams">
+	</div>
+
 </div>
 
 <table class="table" id="t">
@@ -101,6 +107,31 @@
 </table>
 
 <script>
+	var end = "Игра окончена - <a href='~/Test.xlsx' download>Скачать таблицу</a>"
+
+
+	setInterval(check, 5000);
+
+	var f = true;
+
+	function check() {
+		$.ajax({
+			type: "GET",
+			url: "/Game/GameCheck",
+
+			success: function (result) {
+
+				if (result = "Игра закончилась") {
+					if (f) {
+						$("#main").empty();
+						$("#main").append(end);
+						f = false;
+					}
+				}
+			}
+		});
+	}
+
 	$("#teams").hide();
 
 	function selectTeam(key) {
