@@ -185,8 +185,12 @@ namespace RocketGame.Controllers
             if(db.Settings.FirstOrDefault().IsStarted == false)
             {
                 return "Игра еще не началась";
-            }
-            return "Игра началась";
+			}
+			if (db.Settings.FirstOrDefault().IsFinished == true)
+			{
+				return "Игра закончилась";
+			}
+			return "Игра началась";
         }
 
         public string MoveCheck(string Key)
