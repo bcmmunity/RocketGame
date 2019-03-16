@@ -248,6 +248,7 @@ namespace RocketGame.Controllers
 				if (pr.Length == 2)
 				{
 					user.Team = db.Teams.Find(int.Parse(pr[1]));
+					user.Key = user.Team.TeamId + "СРКД" + db.Users.Where(n => n.Team == user.Team).Count().ToString();
 				}
 				else
 				{
