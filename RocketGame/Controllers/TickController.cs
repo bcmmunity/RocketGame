@@ -47,7 +47,7 @@ namespace RocketGame.Controllers
 
         public IActionResult GetTick(int number)
         {
-			if (number == db.Ticks.Last().Number - 1)
+			if (number == db.Ticks.Last().Number - 1 || (number == db.Ticks.Last().Number && db.Settings.FirstOrDefault().IsFinished))
 			{
 				ViewBag.number = number + 1;
 				string[] moves = new string[db.Users.Count()];
@@ -57,15 +57,15 @@ namespace RocketGame.Controllers
 				{
 					foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(n => n.UserId).ToList())
 					{
-						if (db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault() != null)
+						if (db.Moves.Where(n => n.User == user).Where(b => b.Tick.Number == number).FirstOrDefault() != null)
 						{
-							if (db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault().To == null)
+							if (db.Moves.Where(n => n.User == user).Where(b => b.Tick.Number == number).FirstOrDefault().To == null)
 							{
-								moves[i] = CommonTranslate(db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).FirstOrDefault().Type);
+								moves[i] = CommonTranslate(db.Moves.Where(n => n.User == user).Where(b => b.Tick.Number == number).FirstOrDefault().Type);
 							}
 							else
 							{
-								moves[i] = Translator(db.Moves.Where(n => n.User == user).Where(b => b.Tick == db.Ticks.Last()).Include(m => m.User).FirstOrDefault());
+								moves[i] = Translator(db.Moves.Where(n => n.User == user).Where(b => b.Tick.Number == number).Include(m => m.User).FirstOrDefault());
 							}
 						}
 						i++;
