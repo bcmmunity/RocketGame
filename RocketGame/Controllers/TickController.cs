@@ -16,12 +16,24 @@ namespace RocketGame.Controllers
     {
         private MyContext db;
 
-        public TickController(MyContext context)
+        public TickController()
         {
-            db = context;
+			Unit();
+            db = db1;
         }
 
-        public IActionResult Game()
+		static MyContext db1;
+
+		public void Unit()
+		{
+			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
+			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+
+			db1 = new MyContext(optionsBuilder.Options);
+		}
+
+		public IActionResult Game()
         {
             string[,] users = new string[db.Users.Count(), 4];
             int i = 0;

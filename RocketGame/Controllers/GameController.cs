@@ -25,21 +25,16 @@ namespace RocketGame.Controllers
 
 		static MyContext db1;
 
-		public static void Unit()
+		public void Unit()
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
 		}
 
-		TableCreator tc = new TableCreator(db1);
-
-		public void TableCreate()
-		{
-			tc.CreateTable();
-		}
+		TableCreator tc = new TableCreator();
 
 		public void Make(Move Move, string Key, int TeamId)
         {
@@ -160,11 +155,21 @@ namespace RocketGame.Controllers
 
 		public string GameCheck()
 		{
+
+			if (db.Settings.Last().IsFinished == true)
+			{
+				return "Игра закончилась";
+			}
+
 			if (db.Settings.FirstOrDefault().IsStarted == false)
 			{
 				return "Игра еще не началась";
 			}
-			return "Игра началась";
+			else
+			{
+				return "Игра началась";
+			}
+			
 		}
 
 		public string MoveCheck(string Key)
@@ -298,13 +303,15 @@ namespace RocketGame.Controllers
             db.Ticks.Last().Finish = DateTime.Now;
             db.Settings.Last().IsFinished = true;
             db.SaveChanges();
+
+			tc.CreateTable();
         }
 
         public void AttackGroupResult(int attacker, int[] ids, int[] power, Team target)
         {
             var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-            //optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+            //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+            optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
             db1 = new MyContext(optionsBuilder.Options);
 
             db1.Logs.Add(new Log { Msg = "AttackGroupResult Start" });
@@ -347,8 +354,8 @@ namespace RocketGame.Controllers
         public void AttackRocketResult(int attacker, int defender, int[] ids, int[] power, Team target)
         {
             var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-            //optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+            //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+            optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
             db1 = new MyContext(optionsBuilder.Options);
 
             db1.Logs.Add(new Log { Msg = "AttackRocketResult Start" });
@@ -393,8 +400,8 @@ namespace RocketGame.Controllers
         {
 
             var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-            //optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+            //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+            optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
             db1 = new MyContext(optionsBuilder.Options);
 
             db1.Logs.Add(new Log { Msg = "Update Start" });

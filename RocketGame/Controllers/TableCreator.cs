@@ -19,23 +19,24 @@ namespace RocketGame.Controllers
 	{
 		private MyContext db;
 
-		public TableCreator(MyContext context)
+		public TableCreator()
 		{
-			db = context;
+			Unit();
+			db = db1;
 		}
 
 		static MyContext db1;
 
-		public static void Unit()
+		public void Unit()
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
 		}
 
-		TickController tc = new TickController(db1);
+		TickController tc = new TickController();
 
 		public string alf = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
