@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using RocketGame.Models;
+using OfficeOpenXml;
 
 namespace RocketGame.Controllers
 {
@@ -28,8 +30,8 @@ namespace RocketGame.Controllers
 		public void Unit()
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
 		}
@@ -311,8 +313,14 @@ namespace RocketGame.Controllers
             db.Settings.Last().IsFinished = true;
             db.SaveChanges();
 
+			db.Logs.Add(new Log { Msg = "Запуск таблицы" });
+			db.SaveChanges();
+
 			tc.CreateTable();
-        }
+
+			db.Logs.Add(new Log { Msg = "Создана таблицы" });
+			db.SaveChanges();
+		}
 
         public void AttackGroupResult(int attacker, int[] ids, int[] power, Team target)
         {
@@ -323,7 +331,7 @@ namespace RocketGame.Controllers
 			int result = (power[attacker] - target.Power);
 
 			db1.Logs.Add(new Log { Msg = "AttackGroupResult Start" });
-			db1.Logs.Add(new Log { Msg = "AttackGroup result = " + (result * 2).ToString() });
+			db1.Logs.Add(new Log { Msg = "AttackGroup result = " + result.ToString() });
 
             if (result > 0)
             {
@@ -661,15 +669,12 @@ namespace RocketGame.Controllers
 
             Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "attackgroup").Include(f => f.User).Include(a => a.User.Team).Include(g => g.To).ToList();
             foreach (Team target in db1.Teams.ToList())
-            {
+			{
 				db1.Logs.Add(new Log { Msg = "Атака на " + target.Name });
 				db1.SaveChanges();
 
 				if (db1.Users.Where(b => b.Team == target).Where(a => a.InRocket == false).Count() == db1.Settings.Last().TeamSize)
                 {
-					db1.Logs.Add(new Log { Msg = "Команда пригодна для атаки" });
-					db1.SaveChanges();
-
 					int i = 0; //кол-во атакующих команд
                     int[] power = new int[5]; //Сила Команд
                     int[] ids = new int[5]; //ID Команд
@@ -677,29 +682,42 @@ namespace RocketGame.Controllers
 
                     foreach (Team team in db1.Teams.ToList())
                     {
-						if (Moves.Where(n => n.User.Team == team).Where(n => n.To == target).ToList() != null)
-						{
-							db1.Logs.Add(new Log { Msg = "Прошел проверку" });
-							db1.SaveChanges();
+						power[i] = 0;
+						earlyuserid[i] = DateTime.Now; //Moves.Where(n => n.User.Team == team).First().Time;
 
-							earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
+						if (db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "attackgroup").Where(n => n.User.Team == team).Where(n => n.To == target).ToList() != null)
+						{
+							db1.Logs.Add(new Log { Msg = "Прошел проверку. i = " + i });
+
 							ids[i] = team.TeamId;
 
 							db1.Logs.Add(new Log { Msg = "Идем дальше..." });
 							db1.SaveChanges();
 
-							foreach (Move attacker in Moves.Where(n => n.User.Team == team).Where(m => m.To == target)) //Было написано .ToList()
+							foreach (Move attacker in db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "attackgroup").Where(n => n.User.Team == team).Where(n => n.To == target).Include(c => c.User).ToList()) // 
 							{
 								db1.Logs.Add(new Log { Msg = "Вошли в цикл" });
 								db1.SaveChanges();
 
+								db1.Logs.Add(new Log { Msg = "Тип: " + attacker.Type + " Цель: " + attacker.To.Name + " Сила: " + attacker.User.Power + " Время в массиве: " + earlyuserid[i] });
+								db1.SaveChanges();
+
 								if (attacker.Time < earlyuserid[i])
 								{
+									db1.Logs.Add(new Log { Msg = "Вошли в проверку" });
+									db1.SaveChanges();
 									earlyuserid[i] = attacker.Time;
 								}
+
+								db1.Logs.Add(new Log { Msg = "Вышли из проверки" });
+								db1.SaveChanges();
+
 								power[i] += attacker.User.Power;
 
-								db1.Logs.Add(new Log { Msg = "Attack Group power[" + i + "] = " + power[i].ToString() });
+								db1.Logs.Add(new Log { Msg = "power работает" });
+								db1.SaveChanges();
+
+								db1.Logs.Add(new Log { Msg = "Attack Group power[" + i + "] = " + power[i] });
 								db1.SaveChanges();
 
 							}
@@ -1009,9 +1027,10 @@ namespace RocketGame.Controllers
                 FinishGame();
             }
         }
-        
 
-        public string Debug()
+		#region Debug
+
+		public string Debug()
         {
             Tick tick = new Tick();
             Setting setting = new Setting();
@@ -1231,5 +1250,25 @@ namespace RocketGame.Controllers
 
             return "Все хорошо!";
         }
+
+		#endregion
+
+		public void TxtFile()
+		{
+			string fileName = @"C:\MyNewExcelFile.xlsx";
+			FileInfo newFile = new FileInfo(fileName);
+
+			using (ExcelPackage xlPackage = new ExcelPackage(newFile)) // create the xlsx file
+			{
+				// Add a new worksheet on which to put data 
+				ExcelWorksheet xlWorksheet = xlPackage.Workbook.Worksheets.Add("Лист");
+
+				string[,] insert = { { "KillMe" } };
+				xlWorksheet.Cells["A1"].Value = "KillMe";
+
+				// Write the file
+				xlPackage.Save();
+			}
+		}
     }
 }

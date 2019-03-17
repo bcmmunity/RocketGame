@@ -30,8 +30,8 @@ namespace RocketGame.Controllers
 		public void Unit()
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
 		}
@@ -42,6 +42,9 @@ namespace RocketGame.Controllers
 
 		public void CreateTable()
 		{
+			db.Logs.Add(new Log { Msg = "Запустился метод" });
+			db.SaveChanges();
+
 			string fileName = @"Test.xlsx";
 			FileInfo newFile = new FileInfo(fileName);
 
@@ -49,6 +52,9 @@ namespace RocketGame.Controllers
 			{
 				// Add a new worksheet on which to put data 
 				ExcelWorksheet xlWorksheet = xlPackage.Workbook.Worksheets.Add("Лист");
+
+				db.Logs.Add(new Log { Msg = "Работает в юзинге" });
+				db.SaveChanges();
 
 				string[,] insert = DataArray();
 				InsertData(xlWorksheet, insert);
