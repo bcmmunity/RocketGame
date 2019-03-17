@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.1",
-    "signature": "ba9e7ceaa5e4eacf5034cfac313c6c20d4242d66"
+    "signature": "c47c25fbb11955e96b65f73bd726eee2776376f4"
   },
   "compilationOptions": {
     "defines": [
@@ -25,7 +25,6 @@
       "RocketGame/1.0.0": {
         "dependencies": {
           "EPPlus.Core": "1.5.4",
-          "Google.Apis.Sheets.v4": "1.38.0.1495",
           "Microsoft.AspNetCore.App": "2.1.1",
           "Microsoft.AspNetCore.Razor.Design": "2.1.2",
           "Microsoft.NETCore.App": "2.1.0",
@@ -62,70 +61,6 @@
         },
         "compile": {
           "lib/netstandard2.0/EPPlus.Core.dll": {}
-        }
-      },
-      "Google.Apis/1.38.0": {
-        "dependencies": {
-          "Google.Apis.Core": "1.38.0",
-          "Newtonsoft.Json": "11.0.2"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Google.Apis.dll": {
-            "assemblyVersion": "1.38.0.0",
-            "fileVersion": "1.38.0.0"
-          }
-        },
-        "compile": {
-          "lib/netstandard2.0/Google.Apis.dll": {}
-        }
-      },
-      "Google.Apis.Auth/1.38.0": {
-        "dependencies": {
-          "Google.Apis": "1.38.0",
-          "Google.Apis.Core": "1.38.0"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Google.Apis.Auth.PlatformServices.dll": {
-            "assemblyVersion": "1.38.0.0",
-            "fileVersion": "1.38.0.0"
-          },
-          "lib/netstandard2.0/Google.Apis.Auth.dll": {
-            "assemblyVersion": "1.38.0.0",
-            "fileVersion": "1.38.0.0"
-          }
-        },
-        "compile": {
-          "lib/netstandard2.0/Google.Apis.Auth.PlatformServices.dll": {},
-          "lib/netstandard2.0/Google.Apis.Auth.dll": {}
-        }
-      },
-      "Google.Apis.Core/1.38.0": {
-        "dependencies": {
-          "Newtonsoft.Json": "11.0.2"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Google.Apis.Core.dll": {
-            "assemblyVersion": "1.38.0.0",
-            "fileVersion": "1.38.0.0"
-          }
-        },
-        "compile": {
-          "lib/netstandard2.0/Google.Apis.Core.dll": {}
-        }
-      },
-      "Google.Apis.Sheets.v4/1.38.0.1495": {
-        "dependencies": {
-          "Google.Apis": "1.38.0",
-          "Google.Apis.Auth": "1.38.0"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Google.Apis.Sheets.v4.dll": {
-            "assemblyVersion": "1.38.0.1495",
-            "fileVersion": "1.38.0.1495"
-          }
-        },
-        "compile": {
-          "lib/netstandard2.0/Google.Apis.Sheets.v4.dll": {}
         }
       },
       "Microsoft.AspNetCore.Razor.Design/2.1.2": {},
@@ -3635,34 +3570,6 @@
       "sha512": "sha512-QGa4Qxm+9ND+tlgsa9bWWQrBZ096shez5DDhkUE5OsPqdQIO8kfMq2dAOBkOE1JrB0ZSFeIIspBoIsb9kCx3iA==",
       "path": "epplus.core/1.5.4",
       "hashPath": "epplus.core.1.5.4.nupkg.sha512"
-    },
-    "Google.Apis/1.38.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-yLlM5vMaT/Qsc0bTyLFqfevLuH7cb3wteHQjAU4XA683BWUqueFxWjLJGjxYqNoHo0F1aohNf8y9dQoz4hyKHA==",
-      "path": "google.apis/1.38.0",
-      "hashPath": "google.apis.1.38.0.nupkg.sha512"
-    },
-    "Google.Apis.Auth/1.38.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-f5M8xPj3n8w36nOyQEOhE47GIIy+blVRZd5zBmqdofqtWjXP0IYuRuyHOooSZJHg+QNi+7c4x/N6ovf8I9nJJA==",
-      "path": "google.apis.auth/1.38.0",
-      "hashPath": "google.apis.auth.1.38.0.nupkg.sha512"
-    },
-    "Google.Apis.Core/1.38.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-PQ4dU+lMepd8P/WYTrFZL35KnPJAxc/WBuCEwjjeV3G64wouYmRrFtHhGX3BngImmh2a9BNMIbQlXjmrIwyxQg==",
-      "path": "google.apis.core/1.38.0",
-      "hashPath": "google.apis.core.1.38.0.nupkg.sha512"
-    },
-    "Google.Apis.Sheets.v4/1.38.0.1495": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-7RzvHGv3wmzoDqMZFs33UYI2FppLeRqvc+P64skM7XrOspgUyitpxFtXoFWYdGFMAcIr91/V/M49drDMoL9LwQ==",
-      "path": "google.apis.sheets.v4/1.38.0.1495",
-      "hashPath": "google.apis.sheets.v4.1.38.0.1495.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Razor.Design/2.1.2": {
       "type": "package",

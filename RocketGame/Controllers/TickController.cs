@@ -59,7 +59,7 @@ namespace RocketGame.Controllers
 
         public IActionResult GetTick(int number)
         {
-			if (number == db.Ticks.Last().Number - 1 || (number == db.Ticks.Last().Number && db.Settings.FirstOrDefault().IsFinished))
+			if (number <= db.Ticks.Last().Number - 1 || (number == db.Ticks.Last().Number && db.Settings.FirstOrDefault().IsFinished))
 			{
 				ViewBag.number = number;
 				string[] moves = new string[db.Users.Count()];
