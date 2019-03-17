@@ -60,7 +60,14 @@ namespace RocketGame.Controllers
                     db.Logs.Add(new Log { Msg = "Move check done" });
                     db.SaveChanges();
 
-                    AddTick();
+					if (DateTime.Now >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame))
+					{
+						FinishGame();
+					}
+					else
+					{
+						AddTick();
+					}
                 }
             }
         }
@@ -313,10 +320,11 @@ namespace RocketGame.Controllers
             //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
             optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
             db1 = new MyContext(optionsBuilder.Options);
+			int result = (power[attacker] - target.Power);
 
-            db1.Logs.Add(new Log { Msg = "AttackGroupResult Start" });
+			db1.Logs.Add(new Log { Msg = "AttackGroupResult Start" });
+			db1.Logs.Add(new Log { Msg = "AttackGroup result = " + (result * 2).ToString() });
 
-            int result = (power[attacker] - target.Power);
             if (result > 0)
             {
                 if (target.Fuel >= result * 2)
@@ -371,6 +379,7 @@ namespace RocketGame.Controllers
                 foreach (User user in db.Users.Where(n => n.Team.TeamId == target.TeamId))
                 {
                     db1.Logs.Add(new Log { Msg = "user = " + user.InRocket.ToString() });
+
                     db1.Users.Find(user.UserId).InRocket = false;
                     db1.Moves.Where(m => m.User == user).FirstOrDefault().Result = "Выбиты";
                     db1.SaveChanges();
@@ -472,160 +481,179 @@ namespace RocketGame.Controllers
             int[] powint = new int[db1.Settings.FirstOrDefault().TeamSize]; //Сила+Интеллект Игрока
             int[] teamids = new int[5]; //ID Команд
             int[] userid = new int[db1.Settings.FirstOrDefault().TeamSize];
+			bool isdone = false;
             DateTime[] earlyuser = new DateTime[db1.Settings.FirstOrDefault().TeamSize]; //Время хода игрока
 
-            db1.Logs.Add(new Log { Msg = "Начало Гет_Ин_Да_Факин_Рокет" });
+            db1.Logs.Add(new Log { Msg = "Проверка Гет_Ин_Да_Факин_Рокет" });
             db1.SaveChanges();
 
             foreach (Team team in db1.Teams.ToList())
             {
                 if (Moves.Where(n => n.User.Team == team).FirstOrDefault() != null && Moves.Where(n => n.User.Team == team).Count() == db1.Settings.FirstOrDefault().TeamSize)
                 {
+					isdone = true;
                     teamids[count] = team.TeamId;
                     count++;
                 }
             }
 
-            db1.Logs.Add(new Log { Msg = "Teams trying to get = " + count.ToString()  });
-            db1.SaveChanges();
+			db1.Logs.Add(new Log { Msg = "Teams trying to get = " + count.ToString() });
+			db1.Logs.Add(new Log { Msg = "isdone =  " + isdone.ToString() });
+			db1.SaveChanges();
 
-            if (count > 0)
-            {
-                int winner = 0;
-                bool fl = false;
-                foreach (Move move in Moves.OrderBy(n => n.Time).ToList())
-                {
-                    for (int f = 0; f < count; f++)
-                    {
-                        if (teamids[f] == move.User.Team.TeamId)
-                        {
-                            winner = move.User.Team.TeamId;
-                            fl = true;
+			if (isdone)
+			{
+				db1.Logs.Add(new Log { Msg = "Начало Гет_Ин_Да_Факин_Рокет" });
+				db1.SaveChanges();
+				if (count > 0)
+				{
+					int winner = 0;
+					bool fl = false;
+					foreach (Move move in Moves.OrderBy(n => n.Time).ToList())
+					{
+						for (int f = 0; f < count; f++)
+						{
+							if (teamids[f] == move.User.Team.TeamId)
+							{
+								winner = move.User.Team.TeamId;
+								fl = true;
 
-                            db1.Logs.Add(new Log { Msg = "fl = " + fl.ToString() });
-                            db1.SaveChanges();
+								db1.Logs.Add(new Log { Msg = "fl = " + fl.ToString() });
+								db1.SaveChanges();
 
-                            break;
-                        }
+								break;
+							}
 
-                        if (fl) break;
-                    }
-                    if (fl) break;
-                }
+							if (fl) break;
+						}
+						if (fl) break;
+					}
 
-                if (Moves.Where(m => m.User.Team.TeamId == winner).Count() == db1.Settings.FirstOrDefault().RocketSize) //Условие, что нет конкуренции в команде
-                {
-                    db1.Logs.Add(new Log { Msg = "Нет конкуренции" });
-                    db1.SaveChanges();
+					if (Moves.Where(m => m.User.Team.TeamId == winner).Count() == db1.Settings.FirstOrDefault().RocketSize) //Нет конкуренции в команде
+					{
+						db1.Logs.Add(new Log { Msg = "Нет конкуренции" });
+						db1.SaveChanges();
 
-                    foreach (Move winners in Moves.Where(m => m.User.Team.TeamId == winner).ToList())
-                    {
-                        db1.Users.Find(winners.User.UserId).InRocket = true;
-                        db1.SaveChanges();
-                    }
-                }
-                else //Есть конкуренция в команде
-                {
-                    db1.Logs.Add(new Log { Msg = "Есть конкуренция" });
-                    db1.SaveChanges();
+						foreach (Move winners in Moves.Where(m => m.User.Team.TeamId == winner).ToList())
+						{
+							db1.Users.Find(winners.User.UserId).InRocket = true;
+							db1.SaveChanges();
+						}
+					}
+					else //Есть конкуренция в команде
+					{
+						db1.Logs.Add(new Log { Msg = "Есть конкуренция" });
+						db1.SaveChanges();
 
-                    int countwinner = 0; //кол-во игроков в команде победивших
-                    int c = db1.Settings.FirstOrDefault().RocketSize;
-                    foreach (Move move in Moves.Where(m => m.User.Team.TeamId == winner).OrderBy(k => k.Time).ToList())
-                    {
+						int countwinner = 0; //кол-во игроков в команде победивших
+						int c = db1.Settings.FirstOrDefault().RocketSize;
+						foreach (Move move in Moves.Where(m => m.User.Team.TeamId == winner).OrderBy(k => k.Time).ToList())
+						{
 
-                        powint[countwinner] += move.User.Power + move.User.Intellect;
-                        userid[countwinner] = move.User.UserId;
-                        countwinner++;
-                    }
+							powint[countwinner] += move.User.Power + move.User.Intellect;
+							userid[countwinner] = move.User.UserId;
+							countwinner++;
+						}
 
-                    for (int p = 1; p < countwinner; p++)
-                    {
-                        for (int k = 0; k < p; k++)
-                        {
-                            if (powint[k] < powint[p])
-                            {
-                                int t = powint[p];
-                                powint[p] = powint[k];
-                                powint[k] = t;
+						db1.Logs.Add(new Log { Msg = "countwinner = " + countwinner });
+						db1.SaveChanges();
 
-                                t = userid[p];
-                                userid[p] = userid[k];
-                                userid[k] = t;
-                            }
-                        }
-                    }
+						for (int p = 1; p < countwinner; p++)
+						{
+							for (int k = 0; k < p; k++)
+							{
+								if (powint[k] < powint[p]) //Сортировка
+								{
+									int t = powint[p];
+									powint[p] = powint[k];
+									powint[k] = t;
 
-                    int index = db1.Settings.FirstOrDefault().RocketSize;
-                    int borders = index - 1;
-                    int borderf = index;
-                    bool g = true;
+									t = userid[p];
+									userid[p] = userid[k];
+									userid[k] = t;
+								}
+							}
+						}
 
-                    if (powint[index - 1] != powint[index])
-                    {
-                        g = false;
-                        for (int s = 0; s < index; s++)
-                        {
-                            db1.Users.Where(m => m.UserId == userid[s]).FirstOrDefault().InRocket = true;
-                            db1.SaveChanges();
-                        }
-                    }
+						int index = db1.Settings.FirstOrDefault().RocketSize;
+						int borders = index - 1;
+						int borderf = index;
+						bool g = true;
 
-                    if (g)
-                    {
-                        while (powint[index - 1] == powint[index])
-                        {
-                            borders = index - 1;
-                            index--;
-                        }
+						db1.Logs.Add(new Log { Msg = "Начало проверки конкцренции" });
+						db1.SaveChanges();
 
-                        while (powint[index + 1] == powint[index])
-                        {
-                            if (index + 1 > powint.Length)
-                            {
-                                borderf = index + 1;
-                                index++;
-                            }
-                            break;
-                        }
+						if (powint[index - 1] != powint[index])
+						{
+							g = false;
+							for (int s = 0; s < index; s++)
+							{
+								db1.Users.Where(m => m.UserId == userid[s]).FirstOrDefault().InRocket = true;
+								db1.SaveChanges();
+							}
+						}
 
-                        for (int s = 0; s <= borders; s++)
-                        {
-                            db1.Users.Where(m => m.UserId == userid[s]).FirstOrDefault().InRocket = true; //Error
-                            db1.SaveChanges();
-                        }
-                        for (int h = borders; h <= borderf; h++)
-                        {
-                            earlyuser[h] = db1.Moves.Where(a => a.User.UserId == userid[h]).FirstOrDefault().Time;
-                        }
-                        for (int l = borders + 1; l < borderf; l++) //Проверить (Сортировка на убывание времени)
-                        {
-                            for (int z = borders; z < l; z++)
-                            {
-                                if (earlyuser[z] > earlyuser[l])
-                                {
-                                    DateTime t = earlyuser[l];
-                                    earlyuser[l] = earlyuser[z];
-                                    earlyuser[z] = t;
+						db1.Logs.Add(new Log { Msg = "Сложная проверка конкуренции" });
+						db1.SaveChanges();
 
-                                    int n = powint[l];
-                                    powint[l] = powint[z];
-                                    powint[z] = n;
+						if (g)
+						{
+							while (powint[index - 1] == powint[index])
+							{
+								borders = index - 1;
+								index--;
+							}
 
-                                    n = userid[l];
-                                    userid[l] = userid[z];
-                                    userid[z] = n;
-                                }
-                            }
-                        }
-                        for (int b = 0; b < db1.Settings.FirstOrDefault().RocketSize - borders; b++)
-                        {
-                            db1.Users.Where(m => m.UserId == userid[b]).FirstOrDefault().InRocket = true;
-                            db1.SaveChanges();
-                        }
-                    }
-                }
-            }
+							while (powint[index + 1] == powint[index])
+							{
+								if (index + 1 > powint.Length)
+								{
+									borderf = index + 1;
+									index++;
+								}
+								break;
+							}
+
+							for (int s = 0; s <= borders; s++)
+							{
+								db1.Users.Where(m => m.UserId == userid[s]).FirstOrDefault().InRocket = true;
+								db1.SaveChanges();
+							}
+							for (int h = borders; h <= borderf; h++)
+							{
+								earlyuser[h] = db1.Moves.Where(a => a.User.UserId == userid[h]).FirstOrDefault().Time;
+							}
+							for (int l = borders + 1; l < borderf; l++)
+							{
+								for (int z = borders; z < l; z++)
+								{
+									if (earlyuser[z] > earlyuser[l])
+									{
+										DateTime t = earlyuser[l];
+										earlyuser[l] = earlyuser[z];
+										earlyuser[z] = t;
+
+										int n = powint[l];
+										powint[l] = powint[z];
+										powint[z] = n;
+
+										n = userid[l];
+										userid[l] = userid[z];
+										userid[z] = n;
+									}
+								}
+							}
+							for (int b = 0; b < db1.Settings.FirstOrDefault().RocketSize - borders; b++)
+							{
+								db1.Users.Where(m => m.UserId == userid[b]).FirstOrDefault().InRocket = true;
+								db1.SaveChanges();
+							}
+						}
+					}
+					db1.Logs.Add(new Log { Msg = "Конец getinrocket" });
+					db1.SaveChanges();
+				}
+			}
 
             #endregion
 
@@ -634,33 +662,49 @@ namespace RocketGame.Controllers
             Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "attackgroup").Include(f => f.User).Include(a => a.User.Team).Include(g => g.To).ToList();
             foreach (Team target in db1.Teams.ToList())
             {
-                if (db1.Users.Where(b => b.Team == target).Where(a => a.InRocket == false).Count() != 0 )
+				db1.Logs.Add(new Log { Msg = "Атака на " + target.Name });
+				db1.SaveChanges();
+
+				if (db1.Users.Where(b => b.Team == target).Where(a => a.InRocket == false).Count() == db1.Settings.Last().TeamSize)
                 {
-                    int i = 0; //кол-во атакующих команд
+					db1.Logs.Add(new Log { Msg = "Команда пригодна для атаки" });
+					db1.SaveChanges();
+
+					int i = 0; //кол-во атакующих команд
                     int[] power = new int[5]; //Сила Команд
                     int[] ids = new int[5]; //ID Команд
                     DateTime[] earlyuserid = new DateTime[5]; //Самый ранний ход команды
 
                     foreach (Team team in db1.Teams.ToList())
                     {
-                        if (Moves.Where(n => n.User.Team == team).Where(n => n.To == target).FirstOrDefault() != null)
-                        {
-                            earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
-                            ids[i] = team.TeamId;
+						if (Moves.Where(n => n.User.Team == team).Where(n => n.To == target).ToList() != null)
+						{
+							db1.Logs.Add(new Log { Msg = "Прошел проверку" });
+							db1.SaveChanges();
 
-                            foreach (Move attacker in Moves.Where(m => m.To == target).Where(n => n.User.Team == team).ToList())
-                            {
-                                if (attacker.Time < earlyuserid[i])
-                                {
-                                    earlyuserid[i] = attacker.Time;
-                                }
-                                power[i] += attacker.User.Power;
+							earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
+							ids[i] = team.TeamId;
 
-                                db1.Logs.Add(new Log { Msg = "Attack Group power[" + i + "] = " + power[i].ToString() });
-                                db1.SaveChanges();
-                            }
-                            i++;
-                        }
+							db1.Logs.Add(new Log { Msg = "Идем дальше..." });
+							db1.SaveChanges();
+
+							foreach (Move attacker in Moves.Where(n => n.User.Team == team).Where(m => m.To == target)) //Было написано .ToList()
+							{
+								db1.Logs.Add(new Log { Msg = "Вошли в цикл" });
+								db1.SaveChanges();
+
+								if (attacker.Time < earlyuserid[i])
+								{
+									earlyuserid[i] = attacker.Time;
+								}
+								power[i] += attacker.User.Power;
+
+								db1.Logs.Add(new Log { Msg = "Attack Group power[" + i + "] = " + power[i].ToString() });
+								db1.SaveChanges();
+
+							}
+							i++;
+						}
                     }
 
                     for (int j = 1; j < i; j++)
@@ -799,7 +843,7 @@ namespace RocketGame.Controllers
             Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "attackrocket").Include(f => f.User).Include(a => a.User.Team).Include(d => d.To).ToList(); //Можно сократить
             foreach (Team target in db1.Teams.ToList())
             {
-                db1.Logs.Add(new Log { Msg = "Я работаю!" });
+                db1.Logs.Add(new Log { Msg = "AttackRocket запустилось" });
                 db1.Logs.Add(new Log { Msg = "Игроков в ракете: " + db1.Users.Where(b => b.Team == target).Where(a => a.InRocket == true).Count().ToString() });
                 db1.SaveChanges();
 
@@ -817,7 +861,6 @@ namespace RocketGame.Controllers
                     foreach (Team team in db1.Teams.ToList())
                     {
                         if (Moves.Where(n => n.User.Team == team).Where(n => n.To == target).FirstOrDefault() != null)
-                        //if (Moves.Where(n => n.User.Team == team && n.To == target).FirstOrDefault() != null)
                         {
                             db1.Logs.Add(new Log { Msg = "Провека на НЕнуль пройдена!" });
                             db1.SaveChanges();
@@ -826,7 +869,6 @@ namespace RocketGame.Controllers
                             ids[i] = team.TeamId;
 
                             foreach (Move attacker in Moves.Where(m => m.To == target).Where(n => n.User.Team == team).ToList())
-                            //foreach (Move attacker in Moves.Where(m => m.To == target && m.User.Team == team).ToList())
                             {
                                 db1.Logs.Add(new Log { Msg = attacker.User.Name });
                                 db1.SaveChanges();

@@ -128,14 +128,7 @@ namespace RocketGame.Controllers
 					{
 						if (db1.Moves.Where(n => n.User == user).Where(b => b.Tick == tick).FirstOrDefault() != null)
 						{
-							if (db1.Moves.Where(n => n.User == user).Where(b => b.Tick == tick).FirstOrDefault().To == null)
-							{
-								result[count, j] = tc.CommonTranslate(db1.Moves.Where(n => n.User == user).Where(b => b.Tick == tick).FirstOrDefault().Type);
-							}
-							else
-							{
-								result[count, j] = tc.Translator(db1.Moves.Where(n => n.User == user).Where(b => b.Tick == tick).Include(m => m.User).FirstOrDefault());
-							}
+							result[count, j] = tc.Translator(db1.Moves.Where(n => n.User == user).Where(b => b.Tick == tick).Include(m => m.User).FirstOrDefault());
 						}
 						count++;
 					}

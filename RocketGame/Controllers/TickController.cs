@@ -69,16 +69,10 @@ namespace RocketGame.Controllers
 				{
 					foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(n => n.UserId).ToList())
 					{
-						if (db.Moves.Where(n => n.User == user).Where(b => b.Tick.Number == number).FirstOrDefault() != null)
+						foreach (Move move in db.Moves.Where(n => n.User == user).Where(b => b.Tick.Number == number).Include(n => n.User).ToList())
+						if (move != null)
 						{
-							if (db.Moves.Where(n => n.User == user).Where(b => b.Tick.Number == number).FirstOrDefault().To == null)
-							{
-								moves[i] = CommonTranslate(db.Moves.Where(n => n.User == user).Where(b => b.Tick.Number == number).FirstOrDefault().Type);
-							}
-							else
-							{
-								moves[i] = Translator(db.Moves.Where(n => n.User == user).Where(b => b.Tick.Number == number).Include(m => m.User).FirstOrDefault());
-							}
+							moves[i] = Translator(move);
 						}
 						i++;
 					}
@@ -98,7 +92,7 @@ namespace RocketGame.Controllers
 
         public string Translator(Move move)
         {
-            string result = "Move with result";
+            string result = "Move";
 
             if (move.Type == "gift")
             {
@@ -136,11 +130,40 @@ namespace RocketGame.Controllers
                 }
             }
 
-            if (move.Type == "getinrocket")
-            {
-                result = "Р:В";
-            }
-            return result;
+			if (move.Type == "powerup")
+			{
+				result = "У";
+			}
+
+			if (move.Type == "intellectup")
+			{
+				result = "О";
+			}
+
+			if (move.Type == "gather")
+			{
+				result = "Т";
+			}
+
+			if (move.Type == "getinrocket" && move.User.InRocket)
+			{
+				result = "Р:П";
+			}
+
+			if (move.Type == "getinrocket" && move.User.InRocket == false)
+			{
+				if (move.Result == "Выбиты")
+				{
+					result = "Р:В";
+				}
+
+				else
+				{
+					result = "Р";
+				}
+			}
+
+			return result;
         }
 
         public string GroupTranslator(string team)
@@ -171,29 +194,12 @@ namespace RocketGame.Controllers
             return result;
         }
 
-        public string CommonTranslate(string move)
-        {
-            string result = "Move";
+        //public string CommonTranslate(Move move)
+        //{
+        //    string result = "Move";
             
-            if(move == "powerup")
-            {
-                result = "У";
-            }
-            else if(move == "intellectup")
-            {
-                result = "О";
-            }
-            else if(move == "gather")
-            {
-                result = "Т";
-            }
-            else if (move == "getinrocket")
-            {
-                result = "Р:П";
-            }
 
-            return result;
-        }
+        //}
 
         #endregion
     }
