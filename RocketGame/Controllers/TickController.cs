@@ -61,7 +61,7 @@ namespace RocketGame.Controllers
         {
 			if (number == db.Ticks.Last().Number - 1 || (number == db.Ticks.Last().Number && db.Settings.FirstOrDefault().IsFinished))
 			{
-				ViewBag.number = number + 1;
+				ViewBag.number = number;
 				string[] moves = new string[db.Users.Count()];
 				int i = 0;
 

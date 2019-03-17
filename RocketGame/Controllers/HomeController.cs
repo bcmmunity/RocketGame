@@ -244,10 +244,13 @@ namespace RocketGame.Controllers
 				user.Name = Name;
 				user.RealName = RealName;
 				user.Key = id.ToString() + "СРКД" + count.ToString();
-				
+
+				string userKey = id.ToString() + "СРКД" + count.ToString();
+
 				if (pr.Length == 2)
 				{
 					user.Team = db.Teams.Find(int.Parse(pr[1]));
+					userKey = user.Team.TeamId + "СРКД" + db.Users.Where(n => n.Team == user.Team).Count().ToString();
 					user.Key = user.Team.TeamId + "СРКД" + db.Users.Where(n => n.Team == user.Team).Count().ToString();
 				}
 				else
@@ -256,8 +259,7 @@ namespace RocketGame.Controllers
 				}
 				db.Users.Add(user);
 				db.SaveChanges();
-
-				string userKey = id.ToString() + "СРКД" + count.ToString();
+				
 
 				return RedirectToAction("Game", new { key = userKey });
 			}

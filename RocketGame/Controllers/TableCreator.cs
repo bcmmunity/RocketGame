@@ -45,7 +45,7 @@ namespace RocketGame.Controllers
 			db.Logs.Add(new Log { Msg = "Запустился метод" });
 			db.SaveChanges();
 
-			string fileName = Environment.CurrentDirectory + "\\Test.xlsx";
+			string fileName = Environment.CurrentDirectory + "\\wwwroot\\Test.xlsx";
 			FileInfo newFile = new FileInfo(fileName);
 
 			using (ExcelPackage xlPackage = new ExcelPackage(newFile)) // create the xlsx file
