@@ -30,8 +30,8 @@ namespace RocketGame.Controllers
 		public void Unit()
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
 		}
@@ -350,7 +350,12 @@ namespace RocketGame.Controllers
                 }
                 else
                 {
-                    db1.Teams.Where(n => n.TeamId == ids[attacker]).FirstOrDefault().Fuel += target.Fuel;
+					foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).ToList())
+					{
+						db1.Moves.Find(move.MoveId).Result = "Победа";
+						db1.SaveChanges();
+					}
+					db1.Teams.Where(n => n.TeamId == ids[attacker]).FirstOrDefault().Fuel += target.Fuel;
                     db1.Teams.Find(target.TeamId).Fuel = 0;
                     db1.SaveChanges();
                 }
@@ -1253,9 +1258,9 @@ namespace RocketGame.Controllers
 
 		#endregion
 
-		public void TxtFile()
+		public string TxtFile()
 		{
-			string fileName = @"C:\MyNewExcelFile.xlsx";
+			string fileName = Environment.CurrentDirectory + "\\ItsAlive.xlsx"; //@"C:\MyNewExcelFile.xlsx";
 			FileInfo newFile = new FileInfo(fileName);
 
 			using (ExcelPackage xlPackage = new ExcelPackage(newFile)) // create the xlsx file
@@ -1269,6 +1274,7 @@ namespace RocketGame.Controllers
 				// Write the file
 				xlPackage.Save();
 			}
+			return fileName;
 		}
     }
 }
