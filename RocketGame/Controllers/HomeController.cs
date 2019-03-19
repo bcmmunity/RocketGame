@@ -245,7 +245,6 @@ namespace RocketGame.Controllers
 				user.Power = 1;
 				user.Name = Name;
 				user.RealName = RealName;
-				user.Mail = Mail;
 				user.Key = id.ToString() + "СРКД" + count.ToString();
 
 				string userKey = id.ToString() + "СРКД" + count.ToString();
@@ -263,17 +262,7 @@ namespace RocketGame.Controllers
 				db.Users.Add(user);
 				db.SaveChanges();
 
-				MailAddress from = new MailAddress("info@diffind.com", "RocketGame");
-				MailAddress to = new MailAddress(Mail);
-
-				MailMessage m = new MailMessage(from, to);
-				m.Subject = "ID для игры RocketGame";
-				m.Body = user.Key;
-				SmtpClient smtp = new SmtpClient("wpl19.hosting.reg.ru", 587);
-				smtp.Credentials = new NetworkCredential("info@diffind.com", "SuperInfo123!");
-				smtp.EnableSsl = true;
-
-				smtp.SendAsync(m, "check");
+				MailAsync(Mail, user.Key); //Работай.
 
 				return RedirectToAction("Game", new { key = userKey });
 			}
@@ -284,7 +273,7 @@ namespace RocketGame.Controllers
 
 		#endregion
 
-		public async Task MailAsync(string Mail, string Key)
+		public void MailAsync(string Mail, string Key)
 		{
 			MailAddress from = new MailAddress("info@diffind.com", "RocketGame");
 			MailAddress to = new MailAddress(Mail);
@@ -292,11 +281,12 @@ namespace RocketGame.Controllers
 			MailMessage m = new MailMessage(from, to);
 			m.Subject = "ID для игры RocketGame";
 			m.Body = Key;
+
 			SmtpClient smtp = new SmtpClient("wpl19.hosting.reg.ru", 587);
 			smtp.Credentials = new NetworkCredential("info@diffind.com", "SuperInfo123!");
-			smtp.EnableSsl = true;
+			//smtp.EnableSsl = true;
 
-			await smtp.SendMailAsync(m);
+			smtp.SendAsync(m, "check");
 		}
 	}    
 }

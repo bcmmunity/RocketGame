@@ -9,7 +9,6 @@ namespace RocketGame.Models
     {
         public int UserId { get; set; }
         public Team Team { get; set; }
-		public string Mail { get; set; }
         public string Name { get; set; }
         public string Key { get; set; }
         public int Intellect { get; set; }
