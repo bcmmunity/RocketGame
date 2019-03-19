@@ -94,7 +94,22 @@ namespace RocketGame.Controllers
         {
             string result = "Move";
 
-            if (move.Type == "gift")
+			if (move.Type == "powerup")
+			{
+				result = "У";
+			}
+
+			if (move.Type == "intellectup")
+			{
+				result = "О";
+			}
+
+			if (move.Type == "gather")
+			{
+				result = "Т";
+			}
+
+			if (move.Type == "gift")
             {
                 if (move.Result == "Подарили")
                 {
@@ -106,7 +121,24 @@ namespace RocketGame.Controllers
                 }
             }
 
-            if (move.Type == "attackgroup")
+			if (move.Type == "getinrocket")
+			{
+				if (move.User.InRocket == true)
+				{
+					result = "Р:П";
+				}
+				else if (move.User.InRocket == false && move.Result == "Выбиты")
+				{
+
+					result = "Р:В";
+				}
+				else
+				{
+					result = "Р";
+				}
+			}
+
+			if (move.Type == "attackgroup")
             {
                 if (move.Result == "Победа")
                 {
@@ -129,39 +161,6 @@ namespace RocketGame.Controllers
                     result = "АР-" + GroupTranslator(move.To.Name) + ":L";
                 }
             }
-
-			if (move.Type == "powerup")
-			{
-				result = "У";
-			}
-
-			if (move.Type == "intellectup")
-			{
-				result = "О";
-			}
-
-			if (move.Type == "gather")
-			{
-				result = "Т";
-			}
-
-			if (move.Type == "getinrocket" && move.User.InRocket)
-			{
-				result = "Р:П";
-			}
-
-			if (move.Type == "getinrocket" && move.User.InRocket == false)
-			{
-				if (move.Result == "Выбиты")
-				{
-					result = "Р:В";
-				}
-
-				else
-				{
-					result = "Р";
-				}
-			}
 
 			return result;
         }
@@ -193,13 +192,6 @@ namespace RocketGame.Controllers
 
             return result;
         }
-
-        //public string CommonTranslate(Move move)
-        //{
-        //    string result = "Move";
-            
-
-        //}
 
         #endregion
     }

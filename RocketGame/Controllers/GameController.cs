@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web;
+using System.Net;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Net.Mail;
 using Microsoft.EntityFrameworkCore;
 using RocketGame.Models;
 using OfficeOpenXml;
@@ -199,7 +201,17 @@ namespace RocketGame.Controllers
 		[HttpGet]
         public string StartGame()
         {
-            if (db.Users.Count() == (db.Settings.Last().TeamSize * db.Settings.Last().TeamCount))
+			int count = 0; // Кол-во команд, размер которых равен настройкам игры
+
+			foreach (Team team in db.Teams.ToList())
+			{
+				if (db.Users.Where(n => n.Team == team).Count() == db.Settings.Last().TeamSize)
+				{
+					count++;
+				}
+			}
+
+            if (count == db.Settings.Last().TeamCount)
             {
                 db.Logs.Add(new Log { Msg = "Game started" });
                 db.SaveChanges();
@@ -1229,5 +1241,20 @@ namespace RocketGame.Controllers
         }
 
 		#endregion
+
+		public async Task MailAsynk(string Mail, string Key)
+		{
+			MailAddress from = new MailAddress("info@diffind.com", "RocketGame");
+			MailAddress to = new MailAddress(Mail);
+
+			MailMessage m = new MailMessage(from, to);
+			m.Subject = "ID для игры RocketGame";
+			m.Body = Key;
+			SmtpClient smtp = new SmtpClient("wpl19.hosting.reg.ru", 587);
+			smtp.Credentials = new NetworkCredential("info@diffind.com", "SuperInfo123!");
+			//smtp.EnableSsl = true;
+
+			await smtp.SendMailAsync(m);
+		}
     }
 }
