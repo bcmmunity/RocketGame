@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
+using System.Net.Mail;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -193,7 +195,7 @@ namespace RocketGame.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult Index(string Promo, string Name, string RealName)
+		public IActionResult Index(string Promo, string Name, string RealName, string Mail)
 		{
 			foreach (User item in db.Users.ToList())
 			{
@@ -259,7 +261,8 @@ namespace RocketGame.Controllers
 				}
 				db.Users.Add(user);
 				db.SaveChanges();
-				
+
+				MailAsync(Mail, user.Key); //Работай.
 
 				return RedirectToAction("Game", new { key = userKey });
 			}
@@ -269,6 +272,21 @@ namespace RocketGame.Controllers
 		}
 
 		#endregion
-		
-    }    
+
+		public void MailAsync(string Mail, string Key)
+		{
+			MailAddress from = new MailAddress("info@diffind.com", "RocketGame");
+			MailAddress to = new MailAddress(Mail);
+
+			MailMessage m = new MailMessage(from, to);
+			m.Subject = "ID для игры RocketGame";
+			m.Body = Key;
+
+			SmtpClient smtp = new SmtpClient("wpl19.hosting.reg.ru", 587);
+			smtp.Credentials = new NetworkCredential("info@diffind.com", "SuperInfo123!");
+			//smtp.EnableSsl = true;
+
+			smtp.SendAsync(m, "check");
+		}
+	}    
 }

@@ -69,6 +69,9 @@
                 Команда
             </th>
             <th>
+                Никнейм
+            </th>
+            <th>
                 Имя
             </th>
             <th>
@@ -88,10 +91,10 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
-    <!--
             <td>
-                @Html.DisplayFor(modelItem => item.Intellect)
+                @Html.DisplayFor(modelItem => item.RealName)
             </td>
+            <!--
             <td>
                 @Html.DisplayFor(modelItem => item.Power)
             </td>
@@ -114,7 +117,7 @@
 </table>
 
 <script>
-	var end = "Игра окончена - <a href='~/Test.xlsx' download>Скачать таблицу</a>"
+	var end = "Игра окончена - <a href='..//Test.xlsx' download>Скачать таблицу</a>"
 
 
 	setInterval(check, 5000);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web;
+using System.Net;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Net.Mail;
 using Microsoft.EntityFrameworkCore;
 using RocketGame.Models;
 using OfficeOpenXml;
@@ -42,9 +44,6 @@ namespace RocketGame.Controllers
         {
             if (Move.Type == "powerup" || Move.Type == "intellectup" || Move.Type == "gather" || Move.Type == "gift" || Move.Type == "attackgroup" || Move.Type == "attackrocket" || Move.Type == "getinrocket")
             {
-                db.Logs.Add(new Log { Msg = Move.Type });
-                db.SaveChanges();
-
                 Move.User = db.Users.Where(n => n.Key == Key).FirstOrDefault();
                 Move.Tick = db.Ticks.Last();
                 Move.Time = DateTime.Now;
@@ -54,7 +53,7 @@ namespace RocketGame.Controllers
 
                 Tick LastTick = db.Ticks.Last();
 
-                db.Logs.Add(new Log { Msg = db.Users.Where(n => n.Key == Key).FirstOrDefault().Key });
+                db.Logs.Add(new Log { Msg = Move.Type + " " + db.Users.Where(n => n.Key == Key).FirstOrDefault().Key });
                 db.SaveChanges();
 
                 if (db.Settings.FirstOrDefault().TeamCount * db.Settings.FirstOrDefault().TeamSize == db.Moves.Where(n => n.Tick == LastTick).Count())
@@ -73,57 +72,6 @@ namespace RocketGame.Controllers
                 }
             }
         }
-
-		#region ForTimers
-
-		//public void TickChecker(object x)
-		//{
-		//    int number = (int)x;
-		//    //Unit();
-
-		//    db.Logs.Add(new Log { Msg = "Таймер " + number.ToString() + " конец" });
-		//    db.SaveChanges();
-		//    //timer.Dispose();
-		//    if (db.Ticks.Last().Number == number)
-		//    {
-		//        AddTick();
-		//    }
-		//    else
-		//    {
-		//        db.Logs.Add(new Log { Msg = "ERRORRRR " + number.ToString() });
-		//    }
-		//    db.SaveChanges();
-		//}
-
-		//public static Timer timer;
-		//public Timer ftimer;
-
-		//public void Timer()
-		//{
-		//    //Unit();
-
-		//    db.Logs.Add(new Log { Msg = "Таймер пуск" });
-		//    db.SaveChanges();
-
-		//    TimerCallback tm = new TimerCallback(TickChecker);
-		//    timer = new Timer(tm, db.Ticks.Last().Number, 60000 * db.Settings.FirstOrDefault().TimeTick, Timeout.Infinite);
-		//    db.Logs.Add(new Log { Msg = "Таймер запустился" });
-		//    db.SaveChanges();
-		//}
-
-		//public void FTimer()
-		//{
-		//    db.Logs.Add(new Log { Msg = "Финиш Таймер пуск" });
-		//    db.SaveChanges();
-
-		//    TimerCallback tm = new TimerCallback(FinishGame);
-		//    ftimer = new Timer(tm, null, 60000 * db.Settings.FirstOrDefault().TimeGame, Timeout.Infinite);
-
-		//    db.Logs.Add(new Log { Msg = "Финиш Таймер апустился" });
-		//    db.SaveChanges();
-		//}
-
-		#endregion
 
 		#region Checks
 
@@ -253,7 +201,17 @@ namespace RocketGame.Controllers
 		[HttpGet]
         public string StartGame()
         {
-            if (db.Users.Count() == (db.Settings.Last().TeamSize * db.Settings.Last().TeamCount))
+			int count = 0; // Кол-во команд, размер которых равен настройкам игры
+
+			foreach (Team team in db.Teams.ToList())
+			{
+				if (db.Users.Where(n => n.Team == team).Count() == db.Settings.Last().TeamSize)
+				{
+					count++;
+				}
+			}
+
+            if (count == db.Settings.Last().TeamCount)
             {
                 db.Logs.Add(new Log { Msg = "Game started" });
                 db.SaveChanges();
@@ -296,7 +254,6 @@ namespace RocketGame.Controllers
             Tick.Number = db.Ticks.Last().Number + 1;
             Tick.Start = DateTime.Now;
             db.Ticks.Add(Tick);
-            //Timer();
 
             db.Logs.Add(new Log { Msg = "AddTick End" });
             db.SaveChanges();
@@ -324,10 +281,8 @@ namespace RocketGame.Controllers
 
         public void AttackGroupResult(int attacker, int[] ids, int[] power, Team target)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-            //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-            optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
-            db1 = new MyContext(optionsBuilder.Options);
+			Unit();
+
 			int result = (power[attacker] - target.Power);
 
 			db1.Logs.Add(new Log { Msg = "AttackGroupResult Start" });
@@ -374,10 +329,7 @@ namespace RocketGame.Controllers
 
         public void AttackRocketResult(int attacker, int defender, int[] ids, int[] power, Team target)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-            //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-            optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
-            db1 = new MyContext(optionsBuilder.Options);
+			Unit();
 
             db1.Logs.Add(new Log { Msg = "AttackRocketResult Start" });
             db1.Logs.Add(new Log { Msg = "Attacker power = " + power[attacker].ToString() });
@@ -420,11 +372,7 @@ namespace RocketGame.Controllers
 
         public void Update()
         {
-
-            var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-            //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-            optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
-            db1 = new MyContext(optionsBuilder.Options);
+			Unit();
 
             db1.Logs.Add(new Log { Msg = "Update Start" });
             db1.SaveChanges();
@@ -562,9 +510,12 @@ namespace RocketGame.Controllers
 						int c = db1.Settings.FirstOrDefault().RocketSize;
 						foreach (Move move in Moves.Where(m => m.User.Team.TeamId == winner).OrderBy(k => k.Time).ToList())
 						{
-
 							powint[countwinner] += move.User.Power + move.User.Intellect;
 							userid[countwinner] = move.User.UserId;
+
+							db1.Logs.Add(new Log { Msg = "powint[" + countwinner + "] = " + powint[countwinner] });
+							db1.SaveChanges();
+
 							countwinner++;
 						}
 
@@ -606,16 +557,23 @@ namespace RocketGame.Controllers
 							}
 						}
 
-						db1.Logs.Add(new Log { Msg = "Сложная проверка конкуренции" });
-						db1.SaveChanges();
-
 						if (g)
 						{
+							db1.Logs.Add(new Log { Msg = "Сложная проверка конкуренции. Индекс = " + index + "powint = " + powint[0] + " " + powint[1]});
+							db1.SaveChanges();
+
 							while (powint[index - 1] == powint[index])
 							{
 								borders = index - 1;
 								index--;
+								if (index == 0)
+								{
+									break;
+								}
 							}
+
+							db1.Logs.Add(new Log { Msg = "Прошел 1 while. borders = " + borders });
+							db1.SaveChanges();
 
 							while (powint[index + 1] == powint[index])
 							{
@@ -627,15 +585,27 @@ namespace RocketGame.Controllers
 								break;
 							}
 
+							db1.Logs.Add(new Log { Msg = "Прошел 2 while. borderf = " + borderf });
+							db1.SaveChanges();
+
 							for (int s = 0; s <= borders; s++)
 							{
 								db1.Users.Where(m => m.UserId == userid[s]).FirstOrDefault().InRocket = true;
 								db1.SaveChanges();
 							}
+
+
+							db1.Logs.Add(new Log { Msg = "Прошел первый for для верхней границы" });
+							db1.SaveChanges();
+
 							for (int h = borders; h <= borderf; h++)
 							{
 								earlyuser[h] = db1.Moves.Where(a => a.User.UserId == userid[h]).FirstOrDefault().Time;
 							}
+
+							db1.Logs.Add(new Log { Msg = "Прошел for для времени" });
+							db1.SaveChanges();
+
 							for (int l = borders + 1; l < borderf; l++)
 							{
 								for (int z = borders; z < l; z++)
@@ -656,6 +626,10 @@ namespace RocketGame.Controllers
 									}
 								}
 							}
+
+							db1.Logs.Add(new Log { Msg = "Прошел последний for" });
+							db1.SaveChanges();
+
 							for (int b = 0; b < db1.Settings.FirstOrDefault().RocketSize - borders; b++)
 							{
 								db1.Users.Where(m => m.UserId == userid[b]).FirstOrDefault().InRocket = true;
@@ -1258,23 +1232,19 @@ namespace RocketGame.Controllers
 
 		#endregion
 
-		public string TxtFile()
+		public async Task MailAsynk(string Mail, string Key)
 		{
-			string fileName = Environment.CurrentDirectory + "\\ItsAlive.xlsx"; //@"C:\MyNewExcelFile.xlsx";
-			FileInfo newFile = new FileInfo(fileName);
+			MailAddress from = new MailAddress("info@diffind.com", "RocketGame");
+			MailAddress to = new MailAddress(Mail);
 
-			using (ExcelPackage xlPackage = new ExcelPackage(newFile)) // create the xlsx file
-			{
-				// Add a new worksheet on which to put data 
-				ExcelWorksheet xlWorksheet = xlPackage.Workbook.Worksheets.Add("Лист");
+			MailMessage m = new MailMessage(from, to);
+			m.Subject = "ID для игры RocketGame";
+			m.Body = Key;
+			SmtpClient smtp = new SmtpClient("wpl19.hosting.reg.ru", 587);
+			smtp.Credentials = new NetworkCredential("info@diffind.com", "SuperInfo123!");
+			//smtp.EnableSsl = true;
 
-				string[,] insert = { { "KillMe" } };
-				xlWorksheet.Cells["A1"].Value = "KillMe";
-
-				// Write the file
-				xlPackage.Save();
-			}
-			return fileName;
+			await smtp.SendMailAsync(m);
 		}
     }
 }

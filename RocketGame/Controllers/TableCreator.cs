@@ -42,25 +42,30 @@ namespace RocketGame.Controllers
 
 		public void CreateTable()
 		{
-			db.Logs.Add(new Log { Msg = "Запустился метод" });
+			db.Logs.Add(new Log { Msg = "Таблица создается" });
 			db.SaveChanges();
 
 			string fileName = Environment.CurrentDirectory + "\\wwwroot\\Test.xlsx";
 			FileInfo newFile = new FileInfo(fileName);
+
+			if (File.Exists(fileName))
+			{
+				File.Delete(fileName);
+			}
 
 			using (ExcelPackage xlPackage = new ExcelPackage(newFile)) // create the xlsx file
 			{
 				// Add a new worksheet on which to put data 
 				ExcelWorksheet xlWorksheet = xlPackage.Workbook.Worksheets.Add("Лист");
 
-				db.Logs.Add(new Log { Msg = "Работает в юзинге" });
-				db.SaveChanges();
-
 				string[,] insert = DataArray();
 				InsertData(xlWorksheet, insert);
 
 				// Write the file
 				xlPackage.Save();
+
+				db.Logs.Add(new Log { Msg = "Таблица создалась" });
+				db.SaveChanges();
 			}
 		}
 
