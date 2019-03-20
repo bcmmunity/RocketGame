@@ -7,32 +7,32 @@
 	<div class="row">
 		<col-6>
 			<h1>@ViewBag.msg</h1>
-			<form asp-controller="Home" asp-action="Setting" asp-route-key="@ViewBag.Key" method="post" >
+			<form asp-controller="Home" asp-action="Setting" asp-route-key="@ViewBag.Key" method="post">
 
 				</br>
 				<label>Время одного такта в минутах</label>
 				</br>
-				@Html.TextBoxFor(n => n.TimeTick)
+				@Html.TextBoxFor(n => n.TimeTick, new { value = 5 })
 				</br>
 				<label>Время игры в минутах</label>
 				</br>
-				@Html.TextBoxFor(n => n.TimeGame)
+				@Html.TextBoxFor(n => n.TimeGame, new { value = 60 })
 				</br>
 				<label>Количество команд</label>
 				</br>
-				@Html.TextBoxFor(n => n.TeamCount)
+				@Html.TextBoxFor(n => n.TeamCount, new { value = 5 })
 				</br>
 				<label>Размер команд</label>
 				</br>
-				@Html.TextBoxFor(n => n.TeamSize)
+				@Html.TextBoxFor(n => n.TeamSize, new { value = 5 })
 				</br>
 				<label>Количество мест в ракете</label>
 				</br>
-				@Html.TextBoxFor(n => n.RocketSize)
+				@Html.TextBoxFor(n => n.RocketSize, new { value = 5 })
 				</br>
 				<label>Необходимое для ракеты топливо</label>
 				</br>
-				@Html.TextBoxFor(n => n.RocketFuel)
+				@Html.TextBoxFor(n => n.RocketFuel, new { value = 40 })
 				</br>
 
 				<input type="submit" value="Отправить" class="btn" />

@@ -28,9 +28,20 @@ namespace RocketGame.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult Admin(AdminView data)
+		public IActionResult Admin(AdminView data, string Type)
 		{
-            db.Logs.RemoveRange(db.Logs);
+			if (db.Admins.Where(a => a.Mail == data.Mail).FirstOrDefault() != null && Type == "Old")
+			{
+				if (db.Admins.Where(a => a.Mail == data.Mail).FirstOrDefault().Password == data.Password)
+				{
+					return RedirectToAction("ShowUsers", new { Key = db.Admins.Where(a => a.Mail == data.Mail).FirstOrDefault().Key });
+				}
+
+				ViewBag.msg = "Неверный пароль";
+				return View();
+			}
+
+			db.Logs.RemoveRange(db.Logs);
             db.Moves.RemoveRange(db.Moves);
             db.Users.RemoveRange(db.Users);
 			db.Ticks.RemoveRange(db.Ticks);
@@ -81,7 +92,10 @@ namespace RocketGame.Controllers
 				db.Teams.Add(team);
             }
 			Random a = new Random();
-			settings.Promo = "JDFJ" + a.Next(277, 1000).ToString();
+
+			string ALF = "QWERTYUIOPASDFGHJKLZXCVBNM";
+
+			settings.Promo = "JDFJ" + ALF[a.Next(0, 25)];
             settings.IsFinished = false;
             settings.IsStarted = false;
             db.Settings.Add(settings);
@@ -148,6 +162,7 @@ namespace RocketGame.Controllers
 			for (int i = 0; i < Key.Length; i++)
 				k = Key[i] + k;
 
+			db.Users.Where(n => n.Key == Key).FirstOrDefault().Name = db.Users.Where(n => n.Key == Key).FirstOrDefault().Name + 'D';
 			db.Users.Where(n => n.Key == Key).FirstOrDefault().Key = k;
 			db.SaveChanges();
 
@@ -245,15 +260,15 @@ namespace RocketGame.Controllers
 				user.Power = 1;
 				user.Name = Name;
 				user.RealName = RealName;
-				user.Key = id.ToString() + "СРКД" + count.ToString();
+				user.Key = id.ToString() + "4574" + count.ToString();
 
-				string userKey = id.ToString() + "СРКД" + count.ToString();
+				string userKey = id.ToString() + "4574" + count.ToString();
 
 				if (pr.Length == 2)
 				{
 					user.Team = db.Teams.Find(int.Parse(pr[1]));
-					userKey = user.Team.TeamId + "СРКД" + db.Users.Where(n => n.Team == user.Team).Count().ToString();
-					user.Key = user.Team.TeamId + "СРКД" + db.Users.Where(n => n.Team == user.Team).Count().ToString();
+					userKey = user.Team.TeamId + "4574" + db.Users.Where(n => n.Team == user.Team).Count().ToString();
+					user.Key = user.Team.TeamId + "4574" + db.Users.Where(n => n.Team == user.Team).Count().ToString();
 				}
 				else
 				{
