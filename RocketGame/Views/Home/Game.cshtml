@@ -6,35 +6,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <h2 id="warning"></h2>
 
-<table id="ft">
-	<thead>
-		<tr>
-			<th> Команда</th>
-			<th> Топливо</th>
-			<th> Ник игрока</th>
-			<th> Сила/Интеллект</th>
-		</tr>
-	</thead>
-	<tbody>
-		@for (int i = 0; i < ViewBag.i; i++)
-		{
-			<tr>
-				<th>
-					@ViewBag.users[i, 0]
-				</th>
-				<th id="1-@i">
-					@ViewBag.users[i, 1]
-				</th>
-				<th>
-					@ViewBag.users[i, 2]
-				</th>
-				<th id="2-@i">
-					@ViewBag.users[i, 3]
-				</th>
-			</tr>
-		}
-	</tbody>
-</table>
 <div id="content">
 </div>
 
@@ -91,25 +62,19 @@
 
 	.card {
 		margin: 5px;
-		min-width: 50px;
 	}
 
 	#content {
 		background-color: #fff;
 		min-height: 200px;
+		max-width: 100%;
 		display: flex;
 		overflow-x: auto;
 	}
 
-	#ft {
+	.ft {
 		background-color: darkgray;
-		left: 0;
 		border: solid 1px;
-		float: left;
-	}
-
-	#content {
-		margin-left: 0;
 	}
 
 	tr {
@@ -120,6 +85,8 @@
 	th {
 	}
 </style>
+
+<link href="~/css/site.css" rel="stylesheet">
 
 <div style="float: none; clear: both"></div>
 

@@ -202,24 +202,6 @@ namespace RocketGame.Controllers
 		[HttpGet]
 		public IActionResult Game(string key)
 		{
-			string[,] users = new string[db.Users.Count(), 4];
-			int i = 0;
-
-			foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
-			{
-				foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(b => b.UserId).ToList())
-				{
-					users[i, 0] = team.Name;
-					users[i, 1] = team.Fuel.ToString();
-					users[i, 2] = user.Name;
-					users[i, 3] = user.Power.ToString() + "/" + user.Intellect.ToString();
-					i++;
-				}
-
-			}
-
-			ViewBag.i = i;
-			ViewBag.users = users;
 			ViewBag.key = key;
 			return View();
 		}
