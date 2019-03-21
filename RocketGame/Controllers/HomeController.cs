@@ -141,7 +141,7 @@ namespace RocketGame.Controllers
 			return View(db.Users.Include(n => n.Team).ToList());
 		}
 		
-		public string EditUserKey(string Key)
+		public string EditUserKey(string Key, string UserId)
 		{
 			if (db.Moves.Where(n => n.User.Key == Key).ToList() != null)
 			{
@@ -155,6 +155,8 @@ namespace RocketGame.Controllers
 
 			if (db.Users.Where(n => n.Key == Key).FirstOrDefault() == null)
 				return "Такого игрока нет";
+			if (db.Users.Find(int.Parse(UserId))== null)
+				return "Такого игрока нет";
 
 			Random rand = new Random();
 			string k = rand.Next(10).ToString();
@@ -162,7 +164,8 @@ namespace RocketGame.Controllers
 			for (int i = 0; i < Key.Length; i++)
 				k = Key[i] + k;
 
-			db.Users.Where(n => n.Key == Key).FirstOrDefault().Name = db.Users.Where(n => n.Key == Key).FirstOrDefault().Name + 'D';
+			db.Users.Where(n => n.Key == Key).FirstOrDefault().RealName = db.Users.Find(int.Parse(UserId)).RealName;
+			db.Users.Where(n => n.Key == Key).FirstOrDefault().Name = db.Users.Where(n => n.Key == Key).FirstOrDefault().Name + "_D";
 			db.Users.Where(n => n.Key == Key).FirstOrDefault().Key = k;
 			db.SaveChanges();
 
@@ -199,8 +202,53 @@ namespace RocketGame.Controllers
 		[HttpGet]
 		public IActionResult Game(string key)
 		{
+			string[,] users = new string[db.Users.Count(), 4];
+			int i = 0;
+
+			foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
+			{
+				foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(b => b.UserId).ToList())
+				{
+					users[i, 0] = team.Name;
+					users[i, 1] = team.Fuel.ToString();
+					users[i, 2] = user.Name;
+					users[i, 3] = user.Power.ToString() + "/" + user.Intellect.ToString();
+					i++;
+				}
+
+			}
+
+			ViewBag.i = i;
+			ViewBag.users = users;
 			ViewBag.key = key;
 			return View();
+		}
+
+		[HttpGet]
+		public string[,] GetUsers(string key)
+		{
+			string[,] users = new string[db.Users.Count() - 1, 2];
+			int i = 0;
+
+			foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
+			{
+				foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(b => b.UserId).ToList())
+				{
+					if (user.Key != key)
+					{
+						users[i, 0] = team.Name;
+						users[i, 1] = user.UserId.ToString();
+						i++;
+					}
+				}
+
+			}
+
+			ViewBag.i = i;
+			ViewBag.users = users;
+			ViewBag.key = key;
+
+			return users;
 		}
 
 		[HttpGet]

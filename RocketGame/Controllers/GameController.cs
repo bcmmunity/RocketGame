@@ -32,8 +32,8 @@ namespace RocketGame.Controllers
 		public void Unit()
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
 		}
@@ -1158,8 +1158,8 @@ namespace RocketGame.Controllers
             StartGame();
 
             //Добавление Тактов
-            //tick.Number = 1;
-            //db.Ticks.Add(tick);
+            tick.Number = 1;
+            db.Ticks.Add(tick);
 
             //Добавление действий
             Move move1 = new Move();
@@ -1218,16 +1218,17 @@ namespace RocketGame.Controllers
             Update();
 
             
-            //tick.Number = 2;
-            //db.Ticks.Add(tick);
+            tick.Number = 2;
+            db.Ticks.Add(tick);
 
-            //Update();
+            Update();
 
-            //tick.Number = 3;
-            //db.Ticks.Add(tick);
-            //Update();
+            tick.Number = 3;
+            db.Ticks.Add(tick);
+            Update();
+			db.SaveChanges();
 
-            return "Все хорошо!";
+			return "Все хорошо!";
         }
 
 		#endregion

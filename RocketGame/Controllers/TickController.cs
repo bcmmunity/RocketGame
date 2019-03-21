@@ -27,8 +27,8 @@ namespace RocketGame.Controllers
 		public void Unit()
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
 		}
@@ -58,12 +58,31 @@ namespace RocketGame.Controllers
         }
 
         public IActionResult GetTick(int number)
-        {
+		{
+			string[,] users = new string[db.Users.Count(), 4];
+			int i = 0;
+
+			foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
+			{
+				foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(b => b.UserId).ToList())
+				{
+					users[i, 0] = team.Name;
+					users[i, 1] = team.Fuel.ToString();
+					users[i, 2] = user.Name;
+					users[i, 3] = user.Power.ToString() + "/" + user.Intellect.ToString();
+					i++;
+				}
+
+			}
+
+			ViewBag.i = i;
+			ViewBag.users = users;
+
 			if (number <= db.Ticks.Last().Number - 1 || (number == db.Ticks.Last().Number && db.Settings.FirstOrDefault().IsFinished))
 			{
 				ViewBag.number = number;
 				string[] moves = new string[db.Users.Count()];
-				int i = 0;
+				i = 0;
 
 				foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
 				{

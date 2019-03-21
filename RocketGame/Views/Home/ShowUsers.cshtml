@@ -46,6 +46,9 @@
 	<div id="teams">
 	</div>
 
+	<div id="users">
+	</div>
+
 </div>
 
 <table class="table" id="t">
@@ -106,7 +109,7 @@
                 @Html.DisplayFor(modelItem => item.Key)
             </td>
             <td id="k-@item.Key">
-                <span class="btn" onclick="editKey('@item.Key')">Изменить ключ</span>
+                <span class="btn" onclick="selectOwner('@item.Key')">Сделать дублем</span>
             </td>
             <td id="t-@item.Key">
                 <span class="btn" onclick="selectTeam('@item.Key')">Изменить команду</span>
@@ -119,6 +122,27 @@
 <script>
 	var end = "Игра окончена - <a href='..//Test.xlsx' download>Скачать таблицу</a>"
 
+	$("#users").hide();
+
+	function selectOwner(kkey) {
+		$.ajax({
+			type: "GET",
+			url: "/Home/GetUsers",
+			data: { Key: kkey },
+
+			success: function (result) {
+
+				$("#users").empty();
+				$("#users").show();
+
+				var i = 0;
+				for (var item in result) {
+					$("#users").append("<span class='btn' onclick=' = editKey(" + kkey + "," + result[i][1] + "); '>" + result[i][0] + "</span></br></br>");
+					i++;
+				}
+			}
+		});
+	}
 
 	setInterval(check, 5000);
 
@@ -178,16 +202,17 @@
 		});
 	}
 
-	function editKey(key) {
+	function editKey(key, userId) {
 		$.ajax({
 			type: "GET",
 			url: "/Home/EditUserKey",
-			data: { Key: key },
+			data: { Key: key, UserId: userId },
 
 			success: function (result) {
 				$("#msg").empty();
 				$("#msg").append(result);
 
+				$("#users").hide();
 				$("#t-" + key).empty();
 				$("#k-" + key).empty();
 				$("#t-" + key).append("<span class='btn' onclick=\"selectTeam('" + result + "')\">Изменить команду</span>");
