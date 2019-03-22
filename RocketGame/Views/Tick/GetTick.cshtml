@@ -2,37 +2,6 @@
 	Layout = null;
 }
 
-
-<table class="card" style="background-color: darkgray">
-	<thead>
-		<tr>
-			<th> Команда</th>
-			<th> Топливо</th>
-			<th> Ник игрока</th>
-			<th> Сила/Интеллект</th>
-		</tr>
-	</thead>
-	<tbody>
-		@for (int i = 0; i < ViewBag.i; i++)
-		{
-			<tr>
-				<th>
-					@ViewBag.users[i, 0]
-				</th>
-				<th id="1-@i">
-					@ViewBag.users[i, 1]
-				</th>
-				<th>
-					@ViewBag.users[i, 2]
-				</th>
-				<th id="2-@i">
-					@ViewBag.users[i, 3]
-				</th>
-			</tr>
-		}
-	</tbody>
-</table>
-
 <table class="card">
 	<thead>
 		<tr>

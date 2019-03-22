@@ -187,7 +187,7 @@ namespace RocketGame.Controllers
 			{
 				foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(b => b.UserId).ToList())
 				{
-					stats[i, 0] = team.Fuel.ToString();
+					stats[i, 0] = team.Name + "-" + team.Fuel.ToString();
 					stats[i, 1] = user.Power.ToString() + "/" + user.Intellect.ToString();
 					i++;
 				}
@@ -1218,34 +1218,20 @@ namespace RocketGame.Controllers
             Update();
 
             
-            tick.Number = 2;
-            db.Ticks.Add(tick);
+   //         tick.Number = 2;
+   //         db.Ticks.Add(tick);
 
-            Update();
+   //         Update();
 
-            tick.Number = 3;
-            db.Ticks.Add(tick);
-            Update();
-			db.SaveChanges();
+   //         tick.Number = 3;
+   //         db.Ticks.Add(tick);
+   //         Update();
+			//db.SaveChanges();
 
 			return "Все хорошо!";
         }
 
 		#endregion
 
-		public async Task MailAsynk(string Mail, string Key)
-		{
-			MailAddress from = new MailAddress("info@diffind.com", "RocketGame");
-			MailAddress to = new MailAddress(Mail);
-
-			MailMessage m = new MailMessage(from, to);
-			m.Subject = "ID для игры RocketGame";
-			m.Body = Key;
-			SmtpClient smtp = new SmtpClient("wpl19.hosting.reg.ru", 587);
-			smtp.Credentials = new NetworkCredential("info@diffind.com", "SuperInfo123!");
-			//smtp.EnableSsl = true;
-
-			await smtp.SendMailAsync(m);
-		}
     }
 }

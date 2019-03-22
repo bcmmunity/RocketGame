@@ -66,10 +66,10 @@ namespace RocketGame.Controllers
 			{
 				foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(b => b.UserId).ToList())
 				{
-					users[i, 0] = team.Name;
-					users[i, 1] = team.Fuel.ToString();
-					users[i, 2] = user.Name;
-					users[i, 3] = user.Power.ToString() + "/" + user.Intellect.ToString();
+					users[i, 0] = team.Name + "-" + team.Fuel.ToString();
+					//users[i, 1] = team.Fuel.ToString();
+					users[i, 1] = user.Name;
+					users[i, 2] = user.Power.ToString() + "/" + user.Intellect.ToString();
 					i++;
 				}
 
@@ -82,6 +82,7 @@ namespace RocketGame.Controllers
 			{
 				ViewBag.number = number;
 				string[] moves = new string[db.Users.Count()];
+				string[] stats = new string[db.Users.Count()];
 				i = 0;
 
 				foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
@@ -91,12 +92,14 @@ namespace RocketGame.Controllers
 						foreach (Move move in db.Moves.Where(n => n.User == user).Where(b => b.Tick.Number == number).Include(n => n.User).ToList())
 						if (move != null)
 						{
+							stats[i] = users[i, 2];
 							moves[i] = Translator(move);
 						}
 						i++;
 					}
 				}
 
+				ViewBag.stats = stats;
 				ViewBag.moves = moves;
 
 				return View();
