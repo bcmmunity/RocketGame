@@ -137,7 +137,7 @@
 
 				var i = 0;
 				for (var item in result) {
-					$("#users").append("<span class='btn' onclick=' = editKey(" + kkey + "," + result[i][1] + "); '>" + result[i][0] + "</span></br></br>");
+					$("#users").append("<span class='btn' onclick='editKey(\"" + kkey + "\"," + result[i][1] + "); '>" + result[i][0] + "</span></br></br>");
 					i++;
 				}
 			}
@@ -210,7 +210,7 @@
 
 			success: function (result) {
 				$("#msg").empty();
-				$("#msg").append(result);
+				$("#msg").append("Дубль сделан (нажмите обновить)");
 
 				$("#users").hide();
 				$("#t-" + key).empty();

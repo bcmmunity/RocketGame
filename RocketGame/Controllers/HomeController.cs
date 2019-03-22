@@ -108,7 +108,14 @@ namespace RocketGame.Controllers
 
 			foreach (var item in db.Teams.ToList())
 			{
-				Promos.Add(db.Settings.Last().Promo + "-" + item.TeamId.ToString());
+				int idd = item.TeamId;
+				string res = "";
+				while (idd != 0)
+				{
+					res += ALF[idd % 10];
+					idd /= 10;
+				}
+				Promos.Add(db.Settings.Last().Promo + "-" + res);
 				Names.Add(item.Name);
 			}
 
@@ -149,7 +156,7 @@ namespace RocketGame.Controllers
 				List<Move> moves = db.Moves.Where(n => n.User.Key == Key).ToList();
 				foreach (var item in moves)
 				{
-					db.Moves.Find(item.MoveId).User = db.Users.Find(item.User.UserId);
+					db.Moves.Find(item.MoveId).User = db.Users.Where(n => n.Key == Key).FirstOrDefault();
 				}
 				db.SaveChanges();
 			}
@@ -219,7 +226,7 @@ namespace RocketGame.Controllers
 				{
 					if (user.Key != key)
 					{
-						users[i, 0] = team.Name;
+						users[i, 0] = user.RealName;
 						users[i, 1] = user.UserId.ToString();
 						i++;
 					}
