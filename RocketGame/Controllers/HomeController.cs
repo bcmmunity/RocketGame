@@ -112,7 +112,7 @@ namespace RocketGame.Controllers
 				string res = "";
 				while (idd != 0)
 				{
-					res += ALF[idd % 10];
+					res = ALF[idd % 10] + res;
 					idd /= 10;
 				}
 				Promos.Add(db.Settings.Last().Promo + "-" + res);
@@ -144,7 +144,7 @@ namespace RocketGame.Controllers
 
 				while (idd != 0)
 				{
-					res += ALF[idd % 10];
+					res = ALF[idd % 10] + res;
 					idd /= 10;
 				}
 				Promos.Add(db.Settings.Last().Promo + "-" + res);
