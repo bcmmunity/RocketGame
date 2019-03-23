@@ -108,7 +108,14 @@ namespace RocketGame.Controllers
 
 			foreach (var item in db.Teams.ToList())
 			{
-				Promos.Add(db.Settings.Last().Promo + "-" + item.TeamId.ToString());
+				int idd = item.TeamId;
+				string res = "";
+				while (idd != 0)
+				{
+					res += ALF[idd % 10];
+					idd /= 10;
+				}
+				Promos.Add(db.Settings.Last().Promo + "-" + res);
 				Names.Add(item.Name);
 			}
 
@@ -149,7 +156,7 @@ namespace RocketGame.Controllers
 				List<Move> moves = db.Moves.Where(n => n.User.Key == Key).ToList();
 				foreach (var item in moves)
 				{
-					db.Moves.Find(item.MoveId).User = db.Users.Find(item.User.UserId);
+					db.Moves.Find(item.MoveId).User = db.Users.Where(n => n.Key == Key).FirstOrDefault();
 				}
 				db.SaveChanges();
 			}
@@ -203,6 +210,24 @@ namespace RocketGame.Controllers
 		[HttpGet]
 		public IActionResult Game(string key)
 		{
+			string[,] users = new string[db.Users.Count(), 4];
+			int i = 0;
+
+			foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
+			{
+				foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(b => b.UserId).ToList())
+				{
+					users[i, 0] = team.Name;
+					users[i, 1] = team.Fuel.ToString();
+					users[i, 2] = user.Name;
+					users[i, 3] = user.Power.ToString() + "/" + user.Intellect.ToString();
+					i++;
+				}
+
+			}
+
+			ViewBag.i = i;
+			ViewBag.users = users;
 			ViewBag.key = key;
 			return View();
 		}
@@ -219,7 +244,7 @@ namespace RocketGame.Controllers
 				{
 					if (user.Key != key)
 					{
-						users[i, 0] = team.Name;
+						users[i, 0] = user.RealName;
 						users[i, 1] = user.UserId.ToString();
 						i++;
 					}
