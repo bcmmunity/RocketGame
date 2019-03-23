@@ -135,11 +135,19 @@ namespace RocketGame.Controllers
 			ViewBag.Promo = db.Settings.FirstOrDefault().Promo;
 
 			List<string> Promos = new List<string>();
-			List<string> Names = new List<string>();
+			List<string> Names = new List<string>(); string ALF = "QWERTYUIOPASDFGHJKLZXCVBNM";
 
 			foreach (var item in db.Teams.ToList())
 			{
-				Promos.Add(db.Settings.Last().Promo + "-" + item.TeamId.ToString());
+				int idd = item.TeamId;
+				string res = "";
+
+				while (idd != 0)
+				{
+					res += ALF[idd % 10];
+					idd /= 10;
+				}
+				Promos.Add(db.Settings.Last().Promo + "-" + res);
 				Names.Add(item.Name);
 			}
 
@@ -331,10 +339,33 @@ namespace RocketGame.Controllers
 				user.Key = id.ToString() + count.ToString();
 
 				string userKey = id.ToString() + count.ToString();
+				List<string> Names = new List<string>();
+				string ALF = "QWERTYUIOPASDFGHJKLZXCVBNM";
 
 				if (pr.Length == 2)
 				{
-					user.Team = db.Teams.Find(int.Parse(pr[1]));
+						int j = 0, tId = 0;
+
+					for (int i = 0; i < pr[1].Length; i++)
+					{
+						while (ALF[j] != pr[1][i])
+						{
+							j++;
+						}
+
+						if (tId == 0)
+						{
+							tId = j;
+						}
+						else
+						{
+							tId = tId * 10 + j;
+						}
+
+						j = 0;
+					}
+
+					user.Team = db.Teams.Find(tId);
 					userKey = user.Team.TeamId + db.Users.Where(n => n.Team == user.Team).Count().ToString();
 					user.Key = user.Team.TeamId + db.Users.Where(n => n.Team == user.Team).Count().ToString();
 				}
