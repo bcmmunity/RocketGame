@@ -270,6 +270,12 @@ namespace RocketGame.Controllers
 				return View("Index");
 			}
 
+			if(Mail == null)
+			{
+				ViewBag.msg = "Пожалуйста, введите почту";
+				return View("Index");
+			}
+
 			string[] pr = Promo.Split('-');
 			if (db.Settings.FirstOrDefault().Promo == Promo || pr.Length == 2)
 			{
