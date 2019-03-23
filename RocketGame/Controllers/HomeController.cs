@@ -301,6 +301,12 @@ namespace RocketGame.Controllers
 				return View("Index");
 			}
 
+			if (!VerifyMail(Mail))
+			{
+				ViewBag.msg = "Неправильная почта";
+				return View("Index");
+			}
+
 			string[] pr = Promo.Split('-');
 			if (db.Settings.FirstOrDefault().Promo == Promo || pr.Length == 2)
 			{
@@ -340,7 +346,7 @@ namespace RocketGame.Controllers
 				db.SaveChanges();
 
 				MailAsync(Mail, user.Key); //Работай.
-
+			
 				return RedirectToAction("Game", new { key = userKey });
 			}
 
@@ -364,6 +370,19 @@ namespace RocketGame.Controllers
 			//smtp.EnableSsl = true;
 
 			smtp.SendAsync(m, "check");
+		}
+
+		public bool VerifyMail(string email)
+		{
+			try
+			{
+				var addr = new System.Net.Mail.MailAddress(email);
+				return addr.Address == email;
+			}
+			catch
+			{
+				return false;
+			}
 		}
 	}    
 }
