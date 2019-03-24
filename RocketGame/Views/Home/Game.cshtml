@@ -82,102 +82,108 @@
 <span id="kk" onclick="$('#kk').hide(); $('#k').show()">Показать ключ</span>
 
 <div id="content">
-    <table class="card stst" style="background-color: darkgray">
-        <thead>
-            <tr>
-                <th> Команда(Т) </th>
-                <th> Ник </th>
-                <th> С/И </th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int i = 0; i < ViewBag.i; i++)
-            {
-                <tr>
-                    <th id="0-@i">
-                        @ViewBag.users[i, 0]
-                    </th>
-                    <th>
-                        @ViewBag.users[i, 2]
-                    </th>
-                    <th id="1-@i">
-                        @ViewBag.users[i, 3]
-                    </th>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <table class="card" style="background-color: darkgray">
-        <thead>
-            <tr>
-                <th> Команда(Т) </th>
-                <th> Ник </th>
-                <th> С/И </th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int i = 0; i < ViewBag.i; i++)
-            {
-                <tr>
-                    <th>
-                        @ViewBag.users[i, 0]
-                    </th>
-                    <th>
-                        @ViewBag.users[i, 2]
-                    </th>
-                    <th>
-                        @ViewBag.users[i, 3]
-                    </th>
-                </tr>
-            }
-        </tbody>
-    </table>
+	<table class="card stst" id="table1" style="background-color: darkgray">
+		<thead>
+			<tr>
+				<th> Команда(Т) </th>
+				<th> Ник </th>
+				<th> С/И </th>
+			</tr>
+		</thead>
+		<tbody>
+			@for (int i = 0; i < ViewBag.i; i++)
+			{
+				<tr>
+					<th id="0-@i">
+						@ViewBag.users[i, 0]
+					</th>
+					<th>
+						@ViewBag.users[i, 2]
+					</th>
+					<th id="1-@i">
+						@ViewBag.users[i, 3]
+					</th>
+				</tr>
+			}
+		</tbody>
+	</table>
+	<table class="card stst1" id="table2" style="background-color: darkgray">
+		<thead>
+			<tr>
+				<th> Команда(Т) </th>
+				<th> Ник </th>
+				<th> С/И </th>
+			</tr>
+		</thead>
+		<tbody>
+			@for (int i = 0; i < ViewBag.i; i++)
+			{
+				<tr>
+					<th>
+						@ViewBag.users[i, 0]
+					</th>
+					<th>
+						@ViewBag.users[i, 2]
+					</th>
+					<th>
+						@ViewBag.users[i, 3]
+					</th>
+				</tr>
+			}
+		</tbody>
+	</table>
 </div>
 
 <style>
-    html,
-    body {
-        width: 100%;
-        height: 100%;
-    }
+	html,
+	body {
+		width: 100%;
+		height: 100%;
+	}
 
-    .stst {
-        position: absolute;
-    }
+	.stst {
+		position: absolute;
+		white-space: nowrap;
+	}
 
-    body {
-        margin: 0;
-        display: flex;
-        justify-content: center;
-    }
+	.stst1 {
+		white-space: nowrap;
+	}
 
-    .card {
-        margin: 5px;
-    }
+	body {
+		margin: 0;
+		display: flex;
+		justify-content: center;
+	}
 
-    #content {
-        background-color: #fff;
-        min-height: 200px;
-        max-width: 100%;
-        display: flex;
-        overflow-x: auto;
-        margin-top: 100px;
-    }
+	.card {
+		white-space: nowrap;
+		margin: 5px;
+	}
 
-    .ft {
-        background-color: darkgray;
-        border: solid 1px;
-    }
+	#content {
+		background-color: #fff;
+		min-height: 200px;
+		max-width: 100%;
+		display: flex;
+		overflow-x: auto;
+		margin-top: 100px;
+	}
 
-    tr {
-        height: 30px;
-        border-bottom: solid 1px;
-    }
+	.ft {
+		background-color: darkgray;
+		border: solid 1px;
+	}
 
-    th {
-        border-left: solid 1px;
-        border-right: solid 1px;
-    }
+	tr {
+		height: 30px;
+		border-bottom: solid 1px;
+	}
+
+	th {
+		border-left: solid 1px;
+		border-right: solid 1px;
+	}
 </style>
 
 <div>

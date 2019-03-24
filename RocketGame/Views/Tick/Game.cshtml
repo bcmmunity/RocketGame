@@ -7,7 +7,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
 <div id="content">
-    <table class="card stst" style="background-color: darkgray">
+    <table class="card stst" id="table1" style="background-color: darkgray">
         <thead>
             <tr>
                 <th> Команда(Т) </th>
@@ -32,7 +32,7 @@
             }
         </tbody>
     </table>
-    <table class="card" style="background-color: darkgray">
+    <table class="card stst1" id="table2" style="background-color: darkgray">
         <thead>
             <tr>
                 <th> Команда(Т) </th>
@@ -94,6 +94,7 @@
 				}
 			}
 		});
+		//$("#table2").width = $("#table1").width;
 	}
 </script>
 
@@ -104,9 +105,14 @@
         height: 100%;
     }
 
-    .stst {
-        position: absolute;
-    }
+	.stst {
+		position: absolute;
+		white-space: nowrap;
+	}
+
+	.stst1 {
+		white-space: nowrap;
+	}
 
     body {
         margin: 0;
@@ -114,9 +120,10 @@
         justify-content: center;
     }
 
-    .card {
-        margin: 5px;
-    }
+	.card {
+		white-space: nowrap;
+		margin: 5px;
+	}
 
     #content {
         background-color: #fff;

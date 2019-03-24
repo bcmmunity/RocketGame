@@ -3,6 +3,7 @@
 	ViewData["Title"] = "Настройки игры";
 }
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <div class="container">
 	<div class="row">
 		<col-6>
@@ -12,27 +13,27 @@
 				</br>
 				<label>Время одного такта в минутах</label>
 				</br>
-				@Html.TextBoxFor(n => n.TimeTick, new { value = 5 })
+				@Html.TextBoxFor(n => n.TimeTick, new { id = "i1" })
 				</br>
 				<label>Время игры в минутах</label>
 				</br>
-				@Html.TextBoxFor(n => n.TimeGame, new { value = 60 })
+				@Html.TextBoxFor(n => n.TimeGame, new { id = "i2" })
 				</br>
 				<label>Количество команд</label>
 				</br>
-				@Html.TextBoxFor(n => n.TeamCount, new { value = 5 })
+				@Html.TextBoxFor(n => n.TeamCount, new { id = "i3" })
 				</br>
 				<label>Размер команд</label>
 				</br>
-				@Html.TextBoxFor(n => n.TeamSize, new { value = 5 })
+				@Html.TextBoxFor(n => n.TeamSize, new { id = "i4" })
 				</br>
 				<label>Количество мест в ракете</label>
 				</br>
-				@Html.TextBoxFor(n => n.RocketSize, new { value = 5 })
+				@Html.TextBoxFor(n => n.RocketSize, new { id = "i5" })
 				</br>
 				<label>Необходимое для ракеты топливо</label>
 				</br>
-				@Html.TextBoxFor(n => n.RocketFuel, new { value = 40 })
+				@Html.TextBoxFor(n => n.RocketFuel, new { id = "i6" })
 				</br>
 
 				<input type="submit" value="Отправить" class="btn" />
@@ -40,6 +41,15 @@
 		</col-6>
 	</div>
 </div>
+
+<script>
+	document.getElementById("i1").value = "5";
+	document.getElementById("i2").value = "60";
+	document.getElementById("i3").value = "5";
+	document.getElementById("i4").value = "5";
+	document.getElementById("i5").value = "4";
+	document.getElementById("i6").value = "40";
+</script>
 
 <script>
 	localStorage.setItem("Key", @ViewBag.Key);
