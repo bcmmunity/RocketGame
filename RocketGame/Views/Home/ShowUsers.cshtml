@@ -218,6 +218,15 @@
 				$("#t-" + key).append("<span class='btn' onclick=\"selectTeam('" + result + "')\">Изменить команду</span>");
 				$("#k-" + key).append("<span class='btn' onclick=\"editKey(\'" + result + "')\">Изменить ключ</span>");
 
+				$.ajax({
+					type: "GET",
+					url: "/Home/DoubleMail",
+					data: { DoubleKey: result, UserId: userId },
+
+					success: function (result) {
+					}
+				});
+
 				var idd = "t-" + result;
 				document.getElementById("t-" + key).id = idd;
 				idd = "k-" + result;
