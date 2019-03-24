@@ -7,32 +7,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
 <div id="content">
-    <table class="card stst" id="table1" style="background-color: darkgray">
-        <thead>
-            <tr>
-                <th> Команда(Т) </th>
-                <th> Ник </th>
-                <th> С/И </th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int i = 0; i < ViewBag.i; i++)
-            {
-                <tr>
-                    <th id="0-@i">
-                        @ViewBag.users[i, 0]
-                    </th>
-                    <th>
-                        @ViewBag.users[i, 2]
-                    </th>
-                    <th id="1-@i">
-                        @ViewBag.users[i, 3]
-                    </th>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <table class="card stst1" id="table2" style="background-color: darkgray">
+    <table class="card" id="table2" style="background-color: darkgray">
         <thead>
             <tr>
                 <th> Команда(Т) </th>
@@ -61,10 +36,15 @@
 
 <script>
 	var number = 1;
+	
 
 	setInterval(metod, 1000);
 
 	function metod() {
+
+		$("#head").hide();
+		$("#foo").hide();
+
 		$.ajax({
 			type: "GET",
 			url: "/Game/Stats",
@@ -96,6 +76,11 @@
 		});
 		//$("#table2").width = $("#table1").width;
 	}
+
+	
+
+	$("#head").hide();
+	$("#foo").hide();
 </script>
 
 <style>
@@ -105,49 +90,40 @@
         height: 100%;
     }
 
-	.stst {
-		position: absolute;
-		white-space: nowrap;
-	}
-
-	.stst1 {
-		white-space: nowrap;
-	}
-
-    body {
-        margin: 0;
-        display: flex;
-        justify-content: center;
-    }
-
 	.card {
 		white-space: nowrap;
-		margin: 5px;
+		min-width: 20px;
 	}
 
-    #content {
-        background-color: #fff;
-        min-height: 200px;
-        max-width: 100%;
-        display: flex;
-        overflow-x: auto;
-        margin-top: 100px;
-    }
+	#content {
+		background-color: #fff;
+		min-height: 200px;
+		min-width: 500%;
+		margin-top: 100px;
+		position: absolute;
+		left: 0;
+	}
+
+	table {
+		float: left;
+	}
 
     .ft {
         background-color: darkgray;
         border: solid 1px;
     }
 
-    tr {
-        height: 30px;
-        border-bottom: solid 1px;
-    }
+	tr {
+		height: 30px;
+		border-bottom: solid 1px;
+		border-top: solid 1px;
+	}
 
-    th {
-        border-left: solid 1px;
-        border-right: solid 1px;
-    }
+	th {
+		border-left: solid 1px;
+		border-right: solid 1px;
+		text-align: center;
+	}
 </style>
 
 <link href="~/css/site.css" rel="stylesheet">
