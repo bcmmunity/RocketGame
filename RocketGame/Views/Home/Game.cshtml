@@ -37,7 +37,13 @@
 
 <input id="k" type="text" value="@ViewBag.key" />
 
-<a asp-area="" asp-controller="Home" asp-action="Game" class="navbar-brand">Подтвердите ключ (если вы его изменяли)</a>
+<a href="/Home/Game?Key=" id="ag">Подтвердите ключ (если вы его изменяли)</a>
+<script>
+
+	$("#k").oninput = function () {
+		document.getElementById("ag").href = "/Home/Game?Key=" + $("#k").val(); 
+	};
+</script>
 
 <span id="kk" onclick="$('#kk').hide(); $('#k').show()">Показать ключ</span>
 
@@ -67,10 +73,10 @@
 			}
 		</tbody>
 	</table>
-	<table class="card stst1" id="table2" style="background-color: darkgray">
+	<table class="card stst1" id="table2" style="background-color: darkgray; margin-right: 5px;">
 		<thead>
 			<tr>
-				<th> Ком(Т) </th>
+				<th> Команда(Т) </th>
 				<th> Ник </th>
 				<th> С/И </th>
 			</tr>
@@ -97,7 +103,7 @@
 <script>
 	var number = 1;
 
-	setInterval(metod, 100);
+	setInterval(metod, 2000);
 
 	function metod() {
 		$.ajax({
@@ -174,6 +180,7 @@
 	}
 
 	th {
+		min-width: 20px;
 		border-left: solid 1px;
 		border-right: solid 1px;
 		text-align: center;
