@@ -119,7 +119,7 @@ WriteAttributeValue("", 992, ViewBag.key, 992, 12, false);
             WriteLiteral(" />\r\n\r\n");
             EndContext();
             BeginContext(1012, 119, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "748535f8b05941a4b34c0f0ec227ae2b", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "67746d15bbcb43bb86654c4368fb1b05", async() => {
                 BeginContext(1088, 39, true);
                 WriteLiteral("Подтвердите ключ (если вы его изменяли)");
                 EndContext();
@@ -356,7 +356,7 @@ WriteAttributeValue("", 1614, i, 1614, 2, false);
             WriteLiteral("id 1px;\r\n\t\ttext-align: center;\r\n\t}\r\n</style>\r\n\r\n");
             EndContext();
             BeginContext(3428, 45, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("link", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagOnly, "8c8d63da8675486eb09677947fa1dd68", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("link", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagOnly, "f29ed5b1ed054a148cdce4858c8e24e4", async() => {
             }
             );
             __Microsoft_AspNetCore_Mvc_Razor_TagHelpers_UrlResolutionTagHelper = CreateTagHelper<global::Microsoft.AspNetCore.Mvc.Razor.TagHelpers.UrlResolutionTagHelper>();

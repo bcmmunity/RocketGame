@@ -42,8 +42,8 @@ namespace RocketGame.Controllers
             {
                 foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(b => b.UserId).ToList())
                 {
-                    users[i, 0] = team.Name;
-                    users[i, 1] = team.Fuel.ToString();
+                    users[i, 0] = GroupTranslator(team.Name) + " (" + team.Fuel.ToString() + ")";
+                    //users[i, 1] = team.Fuel.ToString();
                     users[i, 2] = user.Name;
                     users[i, 3] = user.Power.ToString() + "/" + user.Intellect.ToString();
                     i++;

@@ -226,7 +226,7 @@ using RocketGame.Models;
             WriteLiteral("1px;\r\n\t\tborder-right: solid 1px;\r\n\t\ttext-align: center;\r\n\t}\r\n</style>\r\n\r\n");
             EndContext();
             BeginContext(2262, 45, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("link", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagOnly, "975f7764277f403d84e6c176f41a1830", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("link", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagOnly, "d9368b2b0b334b01a6111867aa96454c", async() => {
             }
             );
             __Microsoft_AspNetCore_Mvc_Razor_TagHelpers_UrlResolutionTagHelper = CreateTagHelper<global::Microsoft.AspNetCore.Mvc.Razor.TagHelpers.UrlResolutionTagHelper>();
