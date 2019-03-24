@@ -41,14 +41,6 @@ namespace RocketGame.Controllers
 				return View();
 			}
 
-			db.Logs.RemoveRange(db.Logs);
-            db.Moves.RemoveRange(db.Moves);
-            db.Users.RemoveRange(db.Users);
-			db.Ticks.RemoveRange(db.Ticks);
-			db.Teams.RemoveRange(db.Teams);
-			db.Settings.RemoveRange(db.Settings);
-			db.SaveChanges();
-
 			if (db.Admins.Where(a => a.Mail == data.Mail).FirstOrDefault() != null)
 			{
 				if (db.Admins.Where(a => a.Mail == data.Mail).FirstOrDefault().Password == data.Password)
@@ -84,7 +76,16 @@ namespace RocketGame.Controllers
                 return View();
             }
 
-            string[] colors = { "Красные", "Синие", "Желтые", "Зеленые", "Фиолетовые" };
+			db.Logs.RemoveRange(db.Logs);
+			db.Moves.RemoveRange(db.Moves);
+			db.Users.RemoveRange(db.Users);
+			db.Ticks.RemoveRange(db.Ticks);
+			db.Teams.RemoveRange(db.Teams);
+			db.Settings.RemoveRange(db.Settings);
+			db.SaveChanges();
+
+
+			string[] colors = { "Красные", "Синие", "Желтые", "Зеленые", "Фиолетовые" };
             for (int i = 0; i < settings.TeamCount; i++)
             {
                 Team team = new Team();
@@ -305,7 +306,7 @@ namespace RocketGame.Controllers
 
 			if(Mail == null)
 			{
-				ViewBag.msg = "Пожалуйста, введите почту";
+				ViewBag.msg = "Введите почту";
 				return View("Index");
 			}
 
