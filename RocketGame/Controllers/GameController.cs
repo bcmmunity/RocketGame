@@ -880,7 +880,7 @@ namespace RocketGame.Controllers
 					i++;
 				}
 
-				foreach (User defender in db.Users.Where(n => n.Team == target).Where(s => s.InRocket == true).ToList())
+				foreach (User defender in db.Users.Where(s => s.InRocket == true).ToList())
 				{
 					defendpower += defender.Power;
 				}
