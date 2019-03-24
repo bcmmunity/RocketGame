@@ -14,7 +14,7 @@ namespace RocketGame.Models
         public int Intellect { get; set; }
         public int Power { get; set; }
         public bool InRocket { get; set; }
-        public string EMail { get; set; }
+        public string Mail { get; set; }
         public string RealName { get; set; }
     }
 }

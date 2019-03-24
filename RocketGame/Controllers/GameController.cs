@@ -327,7 +327,7 @@ namespace RocketGame.Controllers
             db1.SaveChanges();
         }
 
-        public void AttackRocketResult(int attacker, int defender, int[] ids, int[] power, Team target)
+        public void AttackRocketResult(int attacker, int defender, int[] ids, int[] power)
         {
 			Unit();
 
@@ -335,13 +335,12 @@ namespace RocketGame.Controllers
             db1.Logs.Add(new Log { Msg = "Attacker power = " + power[attacker].ToString() });
             db1.Logs.Add(new Log { Msg = "2) Deffender power = " + defender.ToString() });
             db1.Logs.Add(new Log { Msg = "Result = " + (power[attacker]-defender).ToString() });
-            db1.Logs.Add(new Log { Msg = "Цель = " + target.Name });
             db1.SaveChanges();
     
             if ((power[attacker] - defender) > 0)
             {
                 db1.Logs.Add(new Log { Msg = "If = true " });
-                foreach (User user in db.Users.Where(n => n.Team.TeamId == target.TeamId))
+                foreach (User user in db.Users.Where(n => n.InRocket == true))
                 {
                     db1.Logs.Add(new Log { Msg = "user = " + user.InRocket.ToString() });
 
@@ -838,166 +837,164 @@ namespace RocketGame.Controllers
             #region AttackRocket
 
             Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "attackrocket").Include(f => f.User).Include(a => a.User.Team).Include(d => d.To).ToList(); //Можно сократить
-            foreach (Team target in db1.Teams.ToList())
-            {
                 db1.Logs.Add(new Log { Msg = "AttackRocket запустилось" });
-                db1.Logs.Add(new Log { Msg = "Игроков в ракете: " + db1.Users.Where(b => b.Team == target).Where(a => a.InRocket == true).Count().ToString() });
+                db1.Logs.Add(new Log { Msg = "Игроков в ракете: " + db1.Users.Where(a => a.InRocket == true).Count().ToString() });
                 db1.SaveChanges();
 
-                if (db1.Users.Where(b => b.Team == target).Where(a => a.InRocket == true).Count() == db.Settings.Last().RocketSize)
-                {
-                    db1.Logs.Add(new Log { Msg = "I'm in!" });
-                    db1.SaveChanges();
+			if (db1.Users.Where(a => a.InRocket == true).Count() == db.Settings.Last().RocketSize)
+			{
+				db1.Logs.Add(new Log { Msg = "I'm in!" });
+				db1.SaveChanges();
 
-                    int i = 0; //Кол-во атакующих команд
-                    int defendpower = 0;
-                    int[] power = new int[5]; //Сила Команд
-                    int[] ids = new int[5]; //ID Команд
-                    DateTime[] earlyuserid = new DateTime[5]; //Самый ранний ход команды
+				int i = 0; //Кол-во атакующих команд
+				int defendpower = 0;
+				int[] power = new int[5]; //Сила Команд
+				int[] ids = new int[5]; //ID Команд
+				DateTime[] earlyuserid = new DateTime[5]; //Самый ранний ход команды
 
-                    foreach (Team team in db1.Teams.ToList())
-                    {
-                        if (Moves.Where(n => n.User.Team == team).Where(n => n.To == target).FirstOrDefault() != null)
-                        {
-                            db1.Logs.Add(new Log { Msg = "Провека на НЕнуль пройдена!" });
-                            db1.SaveChanges();
+				foreach (Team team in db1.Teams.ToList())
+				{
+					if (Moves.Where(n => n.User.Team == team).FirstOrDefault() != null)
+					{
+						db1.Logs.Add(new Log { Msg = "Провека на НЕнуль пройдена!" });
+						db1.SaveChanges();
 
-                            earlyuserid[i] = Moves.Where(n => n.User.Team == team).Where(n => n.To == target).FirstOrDefault().Time;
-                            ids[i] = team.TeamId;
+						earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
+						ids[i] = team.TeamId;
 
-                            foreach (Move attacker in Moves.Where(m => m.To == target).Where(n => n.User.Team == team).ToList())
-                            {
-                                db1.Logs.Add(new Log { Msg = attacker.User.Name });
-                                db1.SaveChanges();
+						foreach (Move attacker in Moves.Where(n => n.User.Team == team).ToList())
+						{
+							db1.Logs.Add(new Log { Msg = attacker.User.Name });
+							db1.SaveChanges();
 
-                                if (attacker.Time < earlyuserid[i])
-                                {
-                                    earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
-                                }
-                                power[i] += attacker.User.Power;
-                            }
-                        }
-                        db1.Logs.Add(new Log { Msg = "Attack Rocket power[" + i + "] = " + power[i].ToString() });
-                        db1.SaveChanges();
+							if (attacker.Time < earlyuserid[i])
+							{
+								earlyuserid[i] = Moves.Where(n => n.User.Team == team).FirstOrDefault().Time;
+							}
+							power[i] += attacker.User.Power;
+						}
+					}
+					db1.Logs.Add(new Log { Msg = "Attack Rocket power[" + i + "] = " + power[i].ToString() });
+					db1.SaveChanges();
 
-                        i++;
-                    }
+					i++;
+				}
 
-                    foreach (User defender in db.Users.Where(n => n.Team == target).Where(s => s.InRocket == true).ToList())
-                    {
-                        defendpower += defender.Power;
-                    }
+				foreach (User defender in db.Users.Where(n => n.Team == target).Where(s => s.InRocket == true).ToList())
+				{
+					defendpower += defender.Power;
+				}
 
-                    for (int j = 1; j < i; j++) //Проверить (Сортировка)
-                    {
-                        for (int k = 0; k < j; k++)
-                        {
-                            if (power[k] < power[j])
-                            {
-                                int n = power[j];
-                                power[j] = power[k];
-                                power[k] = n;
+				for (int j = 1; j < i; j++) //Проверить (Сортировка)
+				{
+					for (int k = 0; k < j; k++)
+					{
+						if (power[k] < power[j])
+						{
+							int n = power[j];
+							power[j] = power[k];
+							power[k] = n;
 
-                                n = ids[j];
-                                ids[j] = ids[k];
-                                ids[k] = n;
+							n = ids[j];
+							ids[j] = ids[k];
+							ids[k] = n;
 
-                                DateTime t = earlyuserid[j];
-                                earlyuserid[j] = earlyuserid[k];
-                                earlyuserid[k] = t;
-                            }
-                        }
-                    }
+							DateTime t = earlyuserid[j];
+							earlyuserid[j] = earlyuserid[k];
+							earlyuserid[k] = t;
+						}
+					}
+				}
 
-                    int equalcount = 1; //Количество самых сильных
-                    for (int j = 1; j < i; j++)
-                    {
-                        if (power[0] == power[j])
-                        {
-                            equalcount++;
-                        }
-                    }
+				int equalcount = 1; //Количество самых сильных
+				for (int j = 1; j < i; j++)
+				{
+					if (power[0] == power[j])
+					{
+						equalcount++;
+					}
+				}
 
-                    db1.Logs.Add(new Log { Msg = "Equal = " + equalcount.ToString() + "  = " + i.ToString() });
-                    db1.Logs.Add(new Log { Msg = "Defenders = " + defendpower.ToString() + " id = " + i.ToString() });
-                    db1.SaveChanges();
+				db1.Logs.Add(new Log { Msg = "Equal = " + equalcount.ToString() + "  = " + i.ToString() });
+				db1.Logs.Add(new Log { Msg = "Defenders = " + defendpower.ToString() + " id = " + i.ToString() });
+				db1.SaveChanges();
 
-                    if (equalcount == 1)
-                    {
-                        AttackRocketResult(0, defendpower, ids, power, target);
-                        db.SaveChanges();
-                    }
+				if (equalcount == 1)
+				{
+					AttackRocketResult(0, defendpower, ids, power);
+					db.SaveChanges();
+				}
 
-                    if (equalcount == 2)
-                    {
+				if (equalcount == 2)
+				{
 
-                        if (earlyuserid[0] < earlyuserid[1])
-                        {
-                            AttackRocketResult(0, defendpower, ids, power, target);
-                            db.SaveChanges();
-                        }
-                        else
-                        {
-                            AttackRocketResult(1, defendpower, ids, power, target);
-                            db.SaveChanges();
-                        }
-                    }
+					if (earlyuserid[0] < earlyuserid[1])
+					{
+						AttackRocketResult(0, defendpower, ids, power);
+						db.SaveChanges();
+					}
+					else
+					{
+						AttackRocketResult(1, defendpower, ids, power);
+						db.SaveChanges();
+					}
+				}
 
-                    if (equalcount == 3)
-                    {
-                        for (int j = 1; j < 3; j++) //Проверить (Сортировка на убывание времени)
-                        {
-                            for (int k = 0; k < j; k++)
-                            {
-                                if (earlyuserid[k] > earlyuserid[j])
-                                {
-                                    DateTime t = earlyuserid[j];
-                                    earlyuserid[j] = earlyuserid[k];
-                                    earlyuserid[k] = t;
+				if (equalcount == 3)
+				{
+					for (int j = 1; j < 3; j++) //Проверить (Сортировка на убывание времени)
+					{
+						for (int k = 0; k < j; k++)
+						{
+							if (earlyuserid[k] > earlyuserid[j])
+							{
+								DateTime t = earlyuserid[j];
+								earlyuserid[j] = earlyuserid[k];
+								earlyuserid[k] = t;
 
-                                    int n = power[j];
-                                    power[j] = power[k];
-                                    power[k] = n;
+								int n = power[j];
+								power[j] = power[k];
+								power[k] = n;
 
-                                    n = ids[j];
-                                    ids[j] = ids[k];
-                                    ids[k] = n;
-                                }
-                            }
-                        }
-                        AttackRocketResult(0, defendpower, ids, power, target);
-                        db.SaveChanges();
-                    }
+								n = ids[j];
+								ids[j] = ids[k];
+								ids[k] = n;
+							}
+						}
+					}
+					AttackRocketResult(0, defendpower, ids, power);
+					db.SaveChanges();
+				}
 
-                    if (equalcount == 4)
-                    {
-                        for (int j = 1; j < 4; j++) //Проверить (Сортировка на убывание времени)
-                        {
-                            for (int k = 0; k < j; k++)
-                            {
-                                if (earlyuserid[k] > earlyuserid[j])
-                                {
-                                    DateTime t = earlyuserid[j];
-                                    earlyuserid[j] = earlyuserid[k];
-                                    earlyuserid[k] = t;
+				if (equalcount == 4)
+				{
+					for (int j = 1; j < 4; j++) //Проверить (Сортировка на убывание времени)
+					{
+						for (int k = 0; k < j; k++)
+						{
+							if (earlyuserid[k] > earlyuserid[j])
+							{
+								DateTime t = earlyuserid[j];
+								earlyuserid[j] = earlyuserid[k];
+								earlyuserid[k] = t;
 
-                                    int n = power[j];
-                                    power[j] = power[k];
-                                    power[k] = n;
+								int n = power[j];
+								power[j] = power[k];
+								power[k] = n;
 
-                                    n = ids[j];
-                                    ids[j] = ids[k];
-                                    ids[k] = n;
-                                }
-                            }
-                        }
-                        AttackRocketResult(0, defendpower, ids, power, target);
-                        db.SaveChanges();
-                    }
-                }
-                db1.Logs.Add(new Log { Msg = "Я вышел из большого If'а!" });
-                db1.SaveChanges();
-            }
+								n = ids[j];
+								ids[j] = ids[k];
+								ids[k] = n;
+							}
+						}
+					}
+					AttackRocketResult(0, defendpower, ids, power);
+					db.SaveChanges();
+				}
+			}
+            db1.Logs.Add(new Log { Msg = "Я вышел из большого If'а!" });
+            db1.SaveChanges();
+            
 
             #endregion
 

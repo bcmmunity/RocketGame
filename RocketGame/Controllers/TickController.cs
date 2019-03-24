@@ -66,7 +66,7 @@ namespace RocketGame.Controllers
 			{
 				foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(b => b.UserId).ToList())
 				{
-					users[i, 0] = team.Name + " (" + team.Fuel.ToString() + ")";
+					users[i, 0] = GroupTranslator(team.Name) + " (" + team.Fuel.ToString() + ")";
 					//users[i, 1] = team.Fuel.ToString();
 					users[i, 1] = user.Name;
 					users[i, 2] = user.Power.ToString() + "/" + user.Intellect.ToString();
@@ -193,23 +193,23 @@ namespace RocketGame.Controllers
 
             if(team == "Красные")
             {
-                result = "Кс";
+                result = "К";
             }
             else if (team == "Зеленые")
             {
-                result = "Зл";
+                result = "З";
             }
             else if (team == "Синие")
             {
-                result = "Сн";
+                result = "С";
             }
             else if (team == "Желтые")
             {
-                result = "Жт";
+                result = "Ж";
             }
             else if (team == "Фиолетовые")
             {
-                result = "Фв";
+                result = "Ф";
             }
 
             return result;

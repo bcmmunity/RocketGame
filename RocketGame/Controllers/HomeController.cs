@@ -337,6 +337,7 @@ namespace RocketGame.Controllers
 				user.Power = 1;
 				user.Name = Name;
 				user.RealName = RealName;
+				user.Mail = Mail;
 				user.Key = id.ToString() + count.ToString();
 
 				string userKey = id.ToString() + count.ToString();
@@ -402,6 +403,11 @@ namespace RocketGame.Controllers
 			//smtp.EnableSsl = true;
 
 			smtp.SendAsync(m, "check");
+		}
+
+		public void DoubleMail(int UserId, string DoubleKey)
+		{
+			MailAsync(db.Users.Where(n => n.UserId == UserId).FirstOrDefault().Mail, "Ключ дубля: " + DoubleKey);
 		}
 
 		public bool VerifyMail(string email)
