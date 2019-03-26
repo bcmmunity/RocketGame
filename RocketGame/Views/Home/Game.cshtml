@@ -47,7 +47,7 @@
 
 <span id="kk" onclick="$('#kk').hide(); $('#k').show()">Показать ключ</span>
 
-<div id="content">
+<div id="cont">
 	<table class="card stst" id="table1" style="background-color: darkgray">
 		<thead>
 			<tr>
@@ -73,34 +73,12 @@
 			}
 		</tbody>
 	</table>
-	<table class="card stst1" id="table2" style="background-color: darkgray; margin-right: 5px;">
-		<thead>
-			<tr>
-				<th> Команда(Т) </th>
-				<th> Ник </th>
-				<th> С/И </th>
-			</tr>
-		</thead>
-		<tbody>
-			@for (int i = 0; i < ViewBag.i; i++)
-			{
-				<tr>
-					<th>
-						@ViewBag.users[i, 0]
-					</th>
-					<th>
-						@ViewBag.users[i, 2]
-					</th>
-					<th>
-						@ViewBag.users[i, 3]
-					</th>
-				</tr>
-			}
-		</tbody>
-	</table>
+
+	<div id="content">
+	</div>
 </div>
 
-<script>
+	<script>
 	var number = 1;
 
 	setInterval(metod, 2000);
@@ -136,243 +114,251 @@
 			}
 		});
 	}
-</script>
-<style>
+	</script>
+	<style>
 
-	.stst {
-		position: absolute;
-		white-space: nowrap;
-	}
+		.stst {
+			white-space: nowrap;
+			float: left;
+		}
 
-	.stst1 {
-		white-space: nowrap;
-	}
+		.stst1 {
+			white-space: nowrap;
+		}
 
-	body {
-		margin: 0;
-		display: flex;
-		justify-content: center;
-	}
+		body {
+			margin: 0;
+			display: flex;
+			justify-content: center;
+		}
 
-	.card {
-		white-space: nowrap;
-	}
+		.card {
+			white-space: nowrap;
+		}
 
-	#content {
-		background-color: #fff;
-		min-height: 200px;
-		max-width: 100%;
-		display: flex;
-		overflow-x: auto;
-		overflow-y: auto;
-		-webkit-overflow-scrolling: touch;
-		margin-top: 100px;
-	}
+		#cont {
+			background-color: #fff;
+			min-height: 200px;
+			max-width: 100%;
+			-webkit-overflow-scrolling: touch;
+			margin-top: 100px;
+		}
 
-	.ft {
-		background-color: darkgray;
-		border: solid 1px;
-	}
+		#content {
+			background-color: #fff;
+			min-height: 200px;
+			max-width: 100%;
+			display: flex;
+			overflow-x: auto;
+			overflow-y: auto;
+			-webkit-overflow-scrolling: touch;
+			margin-top: 100px;
+		}
 
-	tr {
-		height: 30px;
-		border-bottom: solid 1px;
-	}
+		.ft {
+			background-color: darkgray;
+			border: solid 1px;
+		}
 
-	th {
-		min-width: 20px;
-		border-left: solid 1px;
-		border-right: solid 1px;
-		text-align: center;
-	}
-</style>
+		tr {
+			height: 30px;
+			border-bottom: solid 1px;
+		}
 
-<link href="~/css/site.css" rel="stylesheet">
+		th {
+			min-width: 20px;
+			border-left: solid 1px;
+			border-right: solid 1px;
+			text-align: center;
+		}
+	</style>
 
-<div style="float: none; clear: both"></div>
+	<link href="~/css/site.css" rel="stylesheet">
 
-<div>
-	<h2>
-		Обозначение действий:
-	</h2>
-	<p>
-		У — усилиться </br>
-		О — обучиться </br>
-		Т — добыть топливо </br>
-		Д — дарить </br>
-		АГ — атаковать группу </br>
-		АР — атаковать ракету </br>
-		Р — сесть в ракету </br>
-	</p>
-	<p>
-		Обозначение команд: </br>
-		Кс — красные </br>
-		Зл — зеленые </br>
-		Сн — синие </br>
-		Жт — желтые </br>
-		Фв — фиолетовые </br>
-	</p>
-	<p>
-		Обозначения результатов: </br>
-		Д-Кс:V — подарил красной команде, успешно </br>
-		Д-Зл:X — подарил зеленой команде, провал </br>
-		АГ-Сн:W — атаковал синих, победа </br>
-		АГ-Жт:L — атаковал желтых, поражение </br>
-		АР-Фв:W — атаковал ракету фиолетовых, победа </br>
-		АР-Кс:L — атаковал ракету красных, поражение </br>
-		Р:В — сел в ракету, но был выбит </br>
-		Р:П — сел в ракету и победил </br>
-	</p>
-</div>
+	<div style="float: none; clear: both"></div>
 
-<script type="text/javascript">
-	var move = "s";
-	var opt = "";
-	var team = "0";
-	var checkk = true;
+	<div>
+		<h2>
+			Обозначение действий:
+		</h2>
+		<p>
+			У — усилиться </br>
+			О — обучиться </br>
+			Т — добыть топливо </br>
+			Д — дарить </br>
+			АГ — атаковать группу </br>
+			АР — атаковать ракету </br>
+			Р — сесть в ракету </br>
+		</p>
+		<p>
+			Обозначение команд: </br>
+			Кс — красные </br>
+			Зл — зеленые </br>
+			Сн — синие </br>
+			Жт — желтые </br>
+			Фв — фиолетовые </br>
+		</p>
+		<p>
+			Обозначения результатов: </br>
+			Д-Кс:V — подарил красной команде, успешно </br>
+			Д-Зл:X — подарил зеленой команде, провал </br>
+			АГ-Сн:W — атаковал синих, победа </br>
+			АГ-Жт:L — атаковал желтых, поражение </br>
+			АР-Фв:W — атаковал ракету фиолетовых, победа </br>
+			АР-Кс:L — атаковал ракету красных, поражение </br>
+			Р:В — сел в ракету, но был выбит </br>
+			Р:П — сел в ракету и победил </br>
+		</p>
+	</div>
 
-	var proces = true;
-	$('#kk').hide();
-	$("#moves").hide();
-	$("#teams").hide();
-	$("#msg").empty();
-	$("#msg").append("Игра еще не началась");
+	<script type="text/javascript">
+		var move = "s";
+		var opt = "";
+		var team = "0";
+		var checkk = true;
 
-	setInterval(check, 5000);
+		var proces = true;
+		$('#kk').hide();
+		$("#moves").hide();
+		$("#teams").hide();
+		$("#msg").empty();
+		$("#msg").append("Игра еще не началась");
 
-	var chk = true;
+		setInterval(check, 5000);
 
-	function check() {
-		$.ajax({
-			type: "GET",
-			url: "/Game/TimeCheck",
+		var chk = true;
 
-			success: function (result) {
-			}
-		});
+		function check() {
+			$.ajax({
+				type: "GET",
+				url: "/Game/TimeCheck",
 
-		$.ajax({
-			type: "GET",
-			url: "/Game/LastTickCheck",
-
-			success: function (result) {
-				if (result && chk) {
-					$("#warning").append("ПОСЛЕДНИЙ ТАКТ");
-					chk = false;
+				success: function (result) {
 				}
-			}
-		});
+			});
 
-		$.ajax({
-			type: "GET",
-			url: "/Game/KeyCheck",
-			data: { Key: $("#k").val() },
+			$.ajax({
+				type: "GET",
+				url: "/Game/LastTickCheck",
 
-			success: function (result) {
-				if (result) {
-
-					if (!checkk) return;
-					$.ajax({
-						type: "GET",
-						url: "/Game/RocketCheck",
-						data: { Key: $("#k").val() },
-
-						success: function (result) {
-							if (result) {
-								$("#getinrocket").show();
-							}
-							else {
-								$("#getinrocket").hide();
-							}
-						}
-					});
-
-					$.ajax({
-						type: "GET",
-						url: "/Game/MoveCheck",
-						data: { Key: $("#k").val() },
-
-						success: function (result) {
-							if (result == "Ход не сделан") {
-								$("#msg").hide();
-								$("#teams").hide();
-								$("#moves").show();
-							}
-							else {
-								$("#msg").empty();
-								$("#msg").append(result);
-								$("#msg").show();
-								$("#teams").hide();
-								$("#moves").hide();
-							}
-						}
-					});
+				success: function (result) {
+					if (result && chk) {
+						$("#warning").append("ПОСЛЕДНИЙ ТАКТ");
+						chk = false;
+					}
 				}
-				else {
-					$("#teams").hide();
+			});
+
+			$.ajax({
+				type: "GET",
+				url: "/Game/KeyCheck",
+				data: { Key: $("#k").val() },
+
+				success: function (result) {
+					if (result) {
+
+						if (!checkk) return;
+						$.ajax({
+							type: "GET",
+							url: "/Game/RocketCheck",
+							data: { Key: $("#k").val() },
+
+							success: function (result) {
+								if (result) {
+									$("#getinrocket").show();
+								}
+								else {
+									$("#getinrocket").hide();
+								}
+							}
+						});
+
+						$.ajax({
+							type: "GET",
+							url: "/Game/MoveCheck",
+							data: { Key: $("#k").val() },
+
+							success: function (result) {
+								if (result == "Ход не сделан") {
+									$("#msg").hide();
+									$("#teams").hide();
+									$("#moves").show();
+								}
+								else {
+									$("#msg").empty();
+									$("#msg").append(result);
+									$("#msg").show();
+									$("#teams").hide();
+									$("#moves").hide();
+								}
+							}
+						});
+					}
+					else {
+						$("#teams").hide();
+						$("#moves").hide();
+						$("#msg").empty();
+						$("#msg").show();
+						$("#msg").append("Неверный код");
+					}
+				}
+			});
+		}
+
+		function selectTeam() {
+			$.ajax({
+				type: "GET",
+				url: "/Game/TeamList",
+				data: { Key: $("#k").val() },
+
+				success: function (result) {
+					checkk = false;
 					$("#moves").hide();
+					$("#msg").hide();
+
+					$("#teams").empty();
+					$("#teams").show();
+					//$("#teams").append(result);
+
+					//alert(result[1].teamId);
+
+					var i = 0;
+					for (var item in result) {
+						$("#teams").append("<span class='btn' onclick='team = " + result[i].teamId + "; checkk = true; makeMove()'>" + result[i].name + "</span></br></br>");
+						i++;
+					}
+				}
+			});
+		}
+
+		function makeMove() {
+			$("#k").hide();
+			$('#kk').show();
+			$.ajax({
+				type: "GET",
+				url: "/Game/Make",
+				data: { Type: move, Key: $("#k").val(), TeamId: team },
+
+				success: function (result) {
+					$("#moves").hide();
+					$("#teams").hide();
+
 					$("#msg").empty();
 					$("#msg").show();
-					$("#msg").append("Неверный код");
+					$("#msg").append(result);
 				}
-			}
-		});
-	}
+			});
+		}
+	</script>
 
-	function selectTeam() {
-		$.ajax({
-			type: "GET",
-			url: "/Game/TeamList",
-			data: { Key: $("#k").val() },
-
-			success: function (result) {
-				checkk = false;
-				$("#moves").hide();
-				$("#msg").hide();
-
-				$("#teams").empty();
-				$("#teams").show();
-				//$("#teams").append(result);
-
-				//alert(result[1].teamId);
-
-				var i = 0;
-				for (var item in result) {
-					$("#teams").append("<span class='btn' onclick='team = " + result[i].teamId + "; checkk = true; makeMove()'>" + result[i].name + "</span></br></br>");
-					i++;
-				}
-			}
-		});
-	}
-
-	function makeMove() {
-		$("#k").hide();
-		$('#kk').show();
-		$.ajax({
-			type: "GET",
-			url: "/Game/Make",
-			data: { Type: move, Key: $("#k").val(), TeamId: team },
-
-			success: function (result) {
-				$("#moves").hide();
-				$("#teams").hide();
-
-				$("#msg").empty();
-				$("#msg").show();
-				$("#msg").append(result);
-			}
-		});
-	}
-</script>
-
-<style type="text/css">
-	.btn {
-		min-width: 20%;
-		min-height: 20px;
-		background-color: gray;
-		border-radius: 200px;
-		padding: 5px;
-		float: left;
-		color: white;
-	}
-</style>
+	<style type="text/css">
+		.btn {
+			min-width: 20%;
+			min-height: 20px;
+			background-color: gray;
+			border-radius: 200px;
+			padding: 5px;
+			float: left;
+			color: white;
+		}
+	</style>
