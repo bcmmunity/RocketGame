@@ -32,13 +32,14 @@ namespace RocketGame.Controllers
 		public void Unit()
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
 		}
 
 		TableCreator tc = new TableCreator();
+		TickController transl = new TickController();
 
 		public void Make(Move Move, string Key, int TeamId)
         {
@@ -89,12 +90,12 @@ namespace RocketGame.Controllers
 					AddTick();
 				}
 			}
-		}
+		} 
 
 		public bool LastTickCheck()
 		{
-			if (db.Ticks.Last().Finish.AddMinutes(db.Settings.Last().TimeTick)
-				>= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame))
+			if (DateTime.Now >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame)
+				&& DateTime.Now >= db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick))
 			{
 				return true;
 			}
@@ -187,7 +188,7 @@ namespace RocketGame.Controllers
 			{
 				foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(b => b.UserId).ToList())
 				{
-					stats[i, 0] = team.Name + "-" + team.Fuel.ToString();
+					stats[i, 0] = transl.GroupTranslator(team.Name) + " (" + team.Fuel.ToString() + ")" ;
 					stats[i, 1] = user.Power.ToString() + "/" + user.Intellect.ToString();
 					i++;
 				}
@@ -266,6 +267,7 @@ namespace RocketGame.Controllers
             db.Logs.Add(new Log { Msg = "FinishGame Done" });
             db.SaveChanges();
 
+			Update();
             db.Ticks.Last().Finish = DateTime.Now;
             db.Settings.Last().IsFinished = true;
             db.SaveChanges();
