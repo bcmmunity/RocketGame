@@ -64,6 +64,7 @@ namespace RocketGame.Controllers
 
 					if (DateTime.Now >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame))
 					{
+						Update();
 						FinishGame();
 					}
 					else
@@ -94,8 +95,7 @@ namespace RocketGame.Controllers
 
 		public bool LastTickCheck()
 		{
-			if (DateTime.Now >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame)
-				&& DateTime.Now >= db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick))
+			if (db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick) >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame))
 			{
 				return true;
 			}
@@ -267,10 +267,9 @@ namespace RocketGame.Controllers
             db.Logs.Add(new Log { Msg = "FinishGame Done" });
             db.SaveChanges();
 
-			Update();
-            db.Ticks.Last().Finish = DateTime.Now;
-            db.Settings.Last().IsFinished = true;
-            db.SaveChanges();
+			db.Ticks.Last().Finish = DateTime.Now;
+			db.Settings.Last().IsFinished = true;
+			db.SaveChanges();
 
 			db.Logs.Add(new Log { Msg = "Запуск таблицы" });
 			db.SaveChanges();
@@ -341,13 +340,12 @@ namespace RocketGame.Controllers
     
             if ((power[attacker] - defender) > 0)
             {
-                db1.Logs.Add(new Log { Msg = "If = true " });
                 foreach (User user in db.Users.Where(n => n.InRocket == true))
                 {
                     db1.Logs.Add(new Log { Msg = "user = " + user.InRocket.ToString() });
 
                     db1.Users.Find(user.UserId).InRocket = false;
-                    db1.Moves.Where(m => m.User == user).FirstOrDefault().Result = "Выбиты";
+                    db1.Moves.Where(m => m.User == user).FirstOrDefault().Result = "Выбит";
                     db1.SaveChanges();
                 }
 
@@ -459,10 +457,6 @@ namespace RocketGame.Controllers
                 }
             }
 
-			db1.Logs.Add(new Log { Msg = "Teams trying to get = " + count.ToString() });
-			db1.Logs.Add(new Log { Msg = "isdone =  " + isdone.ToString() });
-			db1.SaveChanges();
-
 			if (isdone)
 			{
 				db1.Logs.Add(new Log { Msg = "Начало Гет_Ин_Да_Факин_Рокет" });
@@ -513,10 +507,7 @@ namespace RocketGame.Controllers
 						{
 							powint[countwinner] += move.User.Power + move.User.Intellect;
 							userid[countwinner] = move.User.UserId;
-
-							db1.Logs.Add(new Log { Msg = "powint[" + countwinner + "] = " + powint[countwinner] });
-							db1.SaveChanges();
-
+						
 							countwinner++;
 						}
 
@@ -544,9 +535,6 @@ namespace RocketGame.Controllers
 						int borders = index - 1;
 						int borderf = index;
 						bool g = true;
-
-						db1.Logs.Add(new Log { Msg = "Начало проверки конкцренции" });
-						db1.SaveChanges();
 
 						if (powint[index - 1] != powint[index])
 						{

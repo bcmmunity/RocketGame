@@ -149,7 +149,7 @@ namespace RocketGame.Controllers
 				{
 					result = "Р:П";
 				}
-				else if (move.User.InRocket == false && move.Result == "Выбиты")
+				else if (move.Result == "Выбит")
 				{
 
 					result = "Р:В";
