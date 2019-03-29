@@ -292,7 +292,7 @@ namespace RocketGame.Controllers
 				return View("Index");   
 			}
 
-            if (db.Settings.FirstOrDefault().TeamCount * db.Settings.FirstOrDefault().TeamSize == db.Users.Count())
+            if ((db.Settings.Last().TeamCount * db.Settings.Last().TeamSize) == db.Users.Count())
             {
                 ViewBag.msg = "Все места заняты";
                 return View("Index");
