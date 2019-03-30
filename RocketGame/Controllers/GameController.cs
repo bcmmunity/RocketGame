@@ -32,8 +32,8 @@ namespace RocketGame.Controllers
 		public void Unit()
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
 		}
@@ -86,7 +86,7 @@ namespace RocketGame.Controllers
 				{
 					FinishGame();
 				}
-				else if (DateTime.Now >= db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick))
+				else if (DateTime.Now >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame))
 				{
 					AddTick();
 				}
@@ -95,7 +95,7 @@ namespace RocketGame.Controllers
 
 		public bool LastTickCheck()
 		{
-			if (db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick) >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame))
+			if (DateTime.Now >= db.Settings.Last().)
 			{
 				return true;
 			}
@@ -411,7 +411,7 @@ namespace RocketGame.Controllers
             {
                 foreach (Team target in db1.Teams.ToList())
                 {
-                    if (Moves.Where(n => n.User.Team == item).Where(b => b.To == target).Count() == db1.Settings.FirstOrDefault().TeamSize)
+                    if (Moves.Where(n => n.User.Team == item).Where(b => b.To == target).Count() == db1.Settings.Last().TeamSize)
                     {
                         db1.Teams.Find(target.TeamId).Fuel += db1.Teams.Find(item.TeamId).Fuel;
                         db1.Teams.Find(item.TeamId).Fuel = 0;
@@ -423,7 +423,7 @@ namespace RocketGame.Controllers
                     }
                     else
                     {
-                        foreach (Move move in db1.Moves.Where(x => x.Type == "gift").Where(c => c.User.Team == item).ToList())
+                        foreach (Move move in db1.Moves.Where(x => x.Type == "gift").Where(c => c.User.Team == item).Where(g => g.User.Team == item).ToList())
                         {
                             db1.Moves.Find(move.MoveId).Result = "Неудача";
                         }
