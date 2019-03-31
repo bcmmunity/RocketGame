@@ -95,7 +95,7 @@ namespace RocketGame.Controllers
 
 		public bool LastTickCheck()
 		{
-			if (DateTime.Now >= db.Settings.Last().)
+			if (DateTime.Now >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame))
 			{
 				return true;
 			}
