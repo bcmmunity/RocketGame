@@ -35,14 +35,15 @@
 	<h1 id="msg">@ViewBag.key</h1>
 </div>
 
-<input id="k" type="text" value="@ViewBag.key" />
+<input id="k" type="text" value="@ViewBag.key" oninput="io()"/>
 
 <a href="/Home/Game?Key=" id="ag">Подтвердите ключ (если вы его изменяли)</a>
 <script>
 
-	$("#k").oninput = function () {
+	function io() {
 		document.getElementById("ag").href = "/Home/Game?Key=" + $("#k").val(); 
-	};
+	}
+	
 </script>
 
 <span id="kk" onclick="$('#kk').hide(); $('#k').show()">Показать ключ</span>
