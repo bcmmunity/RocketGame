@@ -1,23 +1,35 @@
 ﻿@{
-    ViewData["Title"] = "Войти в игру";
+	ViewData["Title"] = "Войти в игру";
 }
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <div class="container">
 	<div class="row">
 		<col-6>
 			<h1>@ViewBag.msg</h1>
 			<form asp-controller="Home" asp-action="Index" method="post">
 				<label>Ваш код:</label><br />
-				<input type="text" name="Promo" /><br /><br />
+				<input type="text" name="Promo" id="Promo"/><br /><br />
 				<label>Ваш псевдоним в игре:</label><br />
-				<input type="text" name="Name" /><br /><br />
+				<input type="text" name="Name" id="Name"/><br /><br />
 				<label>Ваше имя:</label><br />
-				<input type="text" name="RealName" /><br /><br />
+				<input type="text" name="RealName" id="RealName"/><br /><br />
 				<label>Ваша почта:</label><br />
-				<input type="text" name="Mail" /><br /><br />
+				<input type="text" name="Mail" id="Mail"/><br /><br />
 				<input type="submit" value="Войти в игру" class="btn" />
 			</form>
 		</col-6>
 	</div>
 	<a href="/Home/Game?Key=Введите ключ">Присоединиться</a>
 </div>
+
+<script>
+	if ("1" != '@ViewBag.Name')
+		document.getElementById("Name").value = '@ViewBag.Name';
+	if ("1" != '@ViewBag.RealName')
+		document.getElementById("RealName").value = '@ViewBag.RealName';
+	if ("1" != '@ViewBag.Mail')
+		document.getElementById("Mail").value = '@ViewBag.Mail';
+	if ("1" != '@ViewBag.Promo')
+		document.getElementById("Promo").value = '@ViewBag.Promo';
+</script>
