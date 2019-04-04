@@ -36,13 +36,17 @@
 </div>
 
 
-<span id="kk" class="btn" onclick="$('#kk').hide(); $('#k').show()">Показать ключ</span></br>
+<span id="kk" class="btn" onclick="$('#kk').hide(); $('#k').show()">Показать поле ввода ключа</span></br>
+
+<h3>Ключ игрока: </h3>
 
 <input id="k" type="text" value="@ViewBag.key" oninput="io()" /></br>
 
-<p class="info">Если поле пустое, введите ключ игрока (из Email) и нажмите 'Подтвердить'</p>
+<a href="/Home/Game?Key=" id="ag" class="btn">Подтвердить</a></br>
 
-<a href="/Home/Game?Key=" id="ag" class="btn">Подтвердите ключ (если вы его изменяли)</a>
+<p class="info">Если поле пустое, введите ключ игрока (из Email) и нажмите "Подтвердить"</p>
+
+<h3>Таблица результатов:</h3>
 
 <script>
 
@@ -120,6 +124,7 @@
 		});
 	}
 </script>
+
 <style>
 
 	.stst {
