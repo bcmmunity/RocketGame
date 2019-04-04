@@ -421,9 +421,9 @@ namespace RocketGame.Controllers
                         }
                         
                     }
-                    else
+                    else if (Moves.Where(n => n.User.Team == item).Where(b => b.To == target).Count() != db1.Settings.Last().TeamSize)
                     {
-                        foreach (Move move in db1.Moves.Where(x => x.Type == "gift").Where(c => c.User.Team == item).Where(g => g.User.Team == item).ToList())
+                        foreach (Move move in db1.Moves.Where(x => x.Type == "gift").Where(c => c.User.Team == item).ToList())
                         {
                             db1.Moves.Find(move.MoveId).Result = "Неудача";
                         }

@@ -164,11 +164,11 @@ namespace RocketGame.Controllers
             {
                 if (move.Result == "Победа")
                 {
-                    result = "АГ-" + GroupTranslator(move.To.Name) + ":W";
+                    result = "А" + GroupTranslator(move.To.Name) + ":W";
                 }
                 else
                 {
-                    result = "АГ-" + GroupTranslator(move.To.Name) + ":L";
+                    result = "А" + GroupTranslator(move.To.Name) + ":L";
                 }
             }
 
