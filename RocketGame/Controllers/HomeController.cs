@@ -30,6 +30,12 @@ namespace RocketGame.Controllers
 		[HttpPost]
 		public IActionResult Admin(AdminView data, string Type)
 		{
+			if (Type == "")
+			{
+				ViewBag.msg = "Выбирете тип игры";
+				return View();
+			}
+
 			if (db.Admins.Where(a => a.Mail == data.Mail).FirstOrDefault() != null && Type == "Old")
 			{
 				if (db.Admins.Where(a => a.Mail == data.Mail).FirstOrDefault().Password == data.Password)
@@ -155,7 +161,7 @@ namespace RocketGame.Controllers
 			ViewBag.Names = Names;
 			ViewBag.Promos = Promos;
 
-			return View(db.Users.Include(n => n.Team).ToList());
+			return View(db.Users.Include(n => n.Team).OrderBy(l => l.Team.Name).ToList());
 		}
 		
 		public string EditUserKey(string Key, string UserId)
@@ -277,6 +283,32 @@ namespace RocketGame.Controllers
 		[HttpPost]
 		public IActionResult Index(string Promo, string Name, string RealName, string Mail)
 		{
+			if (Name != "")
+				ViewBag.Name = Name;
+			else
+				ViewBag.Name = "1";
+
+			if (Promo != "")
+				ViewBag.Promo = Promo;
+			else
+				ViewBag.Promo = "1";
+
+			if (Mail != "")
+				ViewBag.Mail = Mail;
+			else
+				ViewBag.Mail = "1";
+
+			if (RealName != "")
+				ViewBag.RealName = RealName;
+			else
+				ViewBag.RealName = "1";
+
+			if (Name == "" || RealName == "")
+			{
+				ViewBag.msg = "Заполните все поля";
+				return View("Index");
+			}
+
 			foreach (User item in db.Users.ToList())
 			{
 				if (item.Name == Name)
