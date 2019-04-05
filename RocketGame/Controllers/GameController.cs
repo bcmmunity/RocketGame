@@ -32,8 +32,8 @@ namespace RocketGame.Controllers
 		public void Unit()
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-//			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
 		}
@@ -134,7 +134,7 @@ namespace RocketGame.Controllers
 		{
 			if (db.Settings.FirstOrDefault().IsFinished)
 			{
-				return "Игра окончена";
+				return "Игра завершена";
 			}
 
 			if (db.Settings.FirstOrDefault().IsStarted == false)
@@ -421,9 +421,9 @@ namespace RocketGame.Controllers
                         }
                         
                     }
-                    else
+                    else if (Moves.Where(n => n.User.Team == item).Where(b => b.To == target).Count() != db1.Settings.Last().TeamSize)
                     {
-                        foreach (Move move in db1.Moves.Where(x => x.Type == "gift").Where(c => c.User.Team == item).Where(g => g.User.Team == item).ToList())
+                        foreach (Move move in db1.Moves.Where(x => x.Type == "gift").Where(c => c.User.Team == item).ToList())
                         {
                             db1.Moves.Find(move.MoveId).Result = "Неудача";
                         }

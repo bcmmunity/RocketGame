@@ -4,24 +4,25 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <div class="container">
-	<div class="row">
-		<col-6>
-			<h1>@ViewBag.msg</h1>
-			<form asp-controller="Home" asp-action="Index" method="post">
-				<label>Ваш код:</label><br />
-				<input type="text" name="Promo" id="Promo" /><br /><br />
-				<label>Ваш псевдоним в игре:</label><br />
-				<input type="text" name="Name" id="Name" /><br /><br />
-				<label>Ваше имя:</label><br />
-				<input type="text" name="RealName" id="RealName" /><br /><br />
-				<label>Ваша почта:</label><br />
-				<input type="text" name="Mail" id="Mail" /><br /><br />
-				<input type="submit" value="Войти в игру" class="btn" />
-			</form>
-		</col-6>
-	</div>
-	<br>
-	<a href="/Home/Game?Key=Введите ключ" class="btn">Присоединиться</a>
+    <div class="row">
+        <col-6>
+            <h1>@ViewBag.msg</h1>
+            <form asp-controller="Home" asp-action="Index" method="post">
+                <label>Ваш код-приглашение (из email):</label><br />
+                <input type="text" name="Promo" id="Promo" /><br /><br />
+                <label>Придумайте себе псевдоним:</label><br />
+                <input type="text" name="Name" id="Name" /><br /><br />
+                <label>Ваше имя (видит только администратор):</label><br />
+                <input type="text" name="RealName" id="RealName" /><br /><br />
+                <label>Ваша почта:</label><br />
+                <input type="text" name="Mail" id="Mail" /><br /><br />
+                <input type="submit" value="Войти в игру" class="btn" />
+                <p class="info">Захожу в первый раз</p>
+            </form>
+        </col-6>
+    </div>
+    <a href="/Home/Game?Key=Введите ключ">Вернуться в игру</a>
+    <p class="info">Я уже получил ключ игрока</p>
 </div>
 
 <script>

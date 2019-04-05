@@ -27,8 +27,8 @@ namespace RocketGame.Controllers
 		public void Unit()
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-//			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
 		}
@@ -164,11 +164,11 @@ namespace RocketGame.Controllers
             {
                 if (move.Result == "Победа")
                 {
-                    result = "АГ-" + GroupTranslator(move.To.Name) + ":W";
+                    result = "А" + GroupTranslator(move.To.Name) + ":W";
                 }
                 else
                 {
-                    result = "АГ-" + GroupTranslator(move.To.Name) + ":L";
+                    result = "А" + GroupTranslator(move.To.Name) + ":L";
                 }
             }
 

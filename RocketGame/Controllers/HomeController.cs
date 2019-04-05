@@ -32,7 +32,7 @@ namespace RocketGame.Controllers
 		{
 			if (Type == null)
 			{
-				ViewBag.msg = "Выбирете тип игры";
+				ViewBag.msg = "Выберете способ входа";
 				return View();
 			}
 
@@ -313,7 +313,7 @@ namespace RocketGame.Controllers
 			{
 				if (item.Name == Name)
 				{
-					ViewBag.msg = "Псевдоним занят";
+					ViewBag.msg = "Такой псевдоним уже кем-то занят, придумайте другой";
 					return View("Index");
 				}
 			}
@@ -326,7 +326,7 @@ namespace RocketGame.Controllers
 
             if ((db.Settings.Last().TeamCount * db.Settings.Last().TeamSize) == db.Users.Count())
             {
-                ViewBag.msg = "Все места заняты";
+                ViewBag.msg = "Мест в игре больше нет";
                 return View("Index");
             }
 
@@ -344,7 +344,7 @@ namespace RocketGame.Controllers
 
 			if (!VerifyMail(Mail))
 			{
-				ViewBag.msg = "Неправильная почта";
+				ViewBag.msg = "Проверьте корректность адреса почты";
 				return View("Index");
 			}
 
@@ -415,7 +415,7 @@ namespace RocketGame.Controllers
 				return RedirectToAction("Game", new { key = userKey });
 			}
 
-			ViewBag.msg = "Неверный код";
+			ViewBag.msg = "Неверный ключ игрока";
 			return View("Index");
 		}
 

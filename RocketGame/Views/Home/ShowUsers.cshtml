@@ -7,7 +7,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
 <div id="main">
-	<h2>Секретный код - @ViewBag.Promo</h2>
+	<h2>Код-приглашение: @ViewBag.Promo</h2>
 
 	<a asp-area="" asp-controller="Tick" asp-action="Game" target="_blank" class="navbar-brand">Открыть таблицу результатов</a>
 
@@ -120,7 +120,7 @@
 </table>
 
 <script>
-	var end = "Игра окончена - <a href='..//Test.xlsx' download>Скачать таблицу</a>"
+	var end = "Игра окончена - <a href='..//Test.xlsx' download>Скачать таблицу результатов игры</a>"
 
 	$("#users").hide();
 
