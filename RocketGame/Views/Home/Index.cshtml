@@ -9,18 +9,19 @@
 			<h1>@ViewBag.msg</h1>
 			<form asp-controller="Home" asp-action="Index" method="post">
 				<label>Ваш код:</label><br />
-				<input type="text" name="Promo" id="Promo"/><br /><br />
+				<input type="text" name="Promo" id="Promo" /><br /><br />
 				<label>Ваш псевдоним в игре:</label><br />
-				<input type="text" name="Name" id="Name"/><br /><br />
+				<input type="text" name="Name" id="Name" /><br /><br />
 				<label>Ваше имя:</label><br />
-				<input type="text" name="RealName" id="RealName"/><br /><br />
+				<input type="text" name="RealName" id="RealName" /><br /><br />
 				<label>Ваша почта:</label><br />
-				<input type="text" name="Mail" id="Mail"/><br /><br />
+				<input type="text" name="Mail" id="Mail" /><br /><br />
 				<input type="submit" value="Войти в игру" class="btn" />
 			</form>
 		</col-6>
 	</div>
-	<a href="/Home/Game?Key=Введите ключ">Присоединиться</a>
+	<br>
+	<a href="/Home/Game?Key=Введите ключ" class="btn">Присоединиться</a>
 </div>
 
 <script>
@@ -33,3 +34,20 @@
 	if ("1" != '@ViewBag.Promo')
 		document.getElementById("Promo").value = '@ViewBag.Promo';
 </script>
+
+
+<style type="text/css">
+	.btn {
+		min-width: 20%;
+		min-height: 20px;
+		background-color: gray;
+		border-radius: 200px;
+		padding: 5px;
+		float: left;
+		color: white;
+	}
+
+	.info {
+		color: gray;
+	}
+</style>
