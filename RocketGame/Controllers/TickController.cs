@@ -135,11 +135,11 @@ namespace RocketGame.Controllers
             {
                 if (move.Result == "Подарили")
                 {
-                    result = "Д-" + GroupTranslator(move.To.Name) + ":V";
+                    result = "Д" + GroupTranslator(move.To.Name) + ":V";
                 }
                 else
                 {
-                    result = "Д-" + GroupTranslator(move.To.Name) + ":X";
+                    result = "Д" + GroupTranslator(move.To.Name) + ":X";
                 }
             }
 
