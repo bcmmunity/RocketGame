@@ -30,7 +30,7 @@ namespace RocketGame.Controllers
 		[HttpPost]
 		public IActionResult Admin(AdminView data, string Type)
 		{
-			if (Type == "")
+			if (Type == null)
 			{
 				ViewBag.msg = "Выберете способ входа";
 				return View();

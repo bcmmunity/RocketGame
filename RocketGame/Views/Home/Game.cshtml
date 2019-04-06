@@ -36,27 +36,30 @@
 </div>
 
 
-<span id="kk" class="btn" onclick="$('#kk').hide(); $('#k').show()">Показать поле ввода ключа</span></br>
+<span id="kk" class="btn" onclick="$('#kk').hide(); $('#k').show(); $('#k2').show(); $('#k1').show()">Показать поле ввода ключа</span></br>
 
-<h3>Ключ игрока: </h3>
+<h3 id="kp">Ключ игрока: </h3>
 
 <input id="k" type="text" value="@ViewBag.key" oninput="io()" /></br>
 
-<a href="/Home/Game?Key=" id="ag" class="btn">Подтвердить</a></br>
+<a id="k1" href="/Home/Game?Key=" id="ag" class="btn">Подтвердить</a></br></br>
 
-<p class="info">Если поле пустое, введите ключ игрока (из Email) и нажмите "Подтвердить"</p>
-
-<h3>Таблица результатов:</h3>
+<p id="k2" class="info">Если поле пустое, введите ключ игрока (из Email) и нажмите "Подтвердить"</p>
 
 <script>
+	$("#kp").empty();
+	$("#kp").append("Ключ игрока: " + $("#k").val());
 
 	function io() {
 		document.getElementById("ag").href = "/Home/Game?Key=" + $("#k").val();
+		$("#kp").empty();
+		$("#kp").append("Ключ игрока: " + $("#k").val());
 	}
 
 </script>
 
-<div id="cont">
+<h3>Таблица результатов:</h3>
+<div id="cont" style="margin-top: 0px;">
 	<table class="card stst" id="table1" style="background-color: darkgray">
 		<thead>
 			<tr>
@@ -151,7 +154,7 @@
 		min-height: 200px;
 		max-width: 100%;
 		-webkit-overflow-scrolling: touch;
-		margin-top: 100px;
+		margin-top: 0px;
 	}
 
 	#content {
@@ -162,7 +165,7 @@
 		overflow-x: auto;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
-		margin-top: 100px;
+		margin-top: 0px;
 	}
 
 	.ft {
@@ -344,6 +347,8 @@
 
 	function makeMove() {
 		$("#k").hide();
+		$("#k1").hide();
+		$("#k2").hide();
 		$('#kk').show();
 		$.ajax({
 			type: "GET",

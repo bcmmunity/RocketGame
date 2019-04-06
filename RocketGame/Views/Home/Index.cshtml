@@ -21,7 +21,8 @@
             </form>
         </col-6>
     </div>
-    <a href="/Home/Game?Key=Введите ключ">Вернуться в игру</a>
+	<br>
+    <a href="/Home/Game?Key=Введите ключ" class="btn">Вернуться в игру</a>
     <p class="info">Я уже получил ключ игрока</p>
 </div>
 
@@ -35,3 +36,20 @@
 	if ("1" != '@ViewBag.Promo')
 		document.getElementById("Promo").value = '@ViewBag.Promo';
 </script>
+
+
+<style type="text/css">
+	.btn {
+		min-width: 20%;
+		min-height: 20px;
+		background-color: gray;
+		border-radius: 200px;
+		padding: 5px;
+		float: left;
+		color: white;
+	}
+
+	.info {
+		color: gray;
+	}
+</style>
