@@ -283,7 +283,7 @@ namespace RocketGame.Controllers
 		[HttpPost]
 		public IActionResult Index(string Promo, string Name, string RealName, string Mail)
 		{
-			if (Name != "")
+			if (Name != "" || Name != " " || Name != null)
 				ViewBag.Name = Name;
 			else
 				ViewBag.Name = "1";
@@ -298,12 +298,12 @@ namespace RocketGame.Controllers
 			else
 				ViewBag.Mail = "1";
 
-			if (RealName != "")
+			if (RealName != "" || RealName != " " || RealName != null)
 				ViewBag.RealName = RealName;
 			else
 				ViewBag.RealName = "1";
 
-			if (Name == "" || RealName == "")
+			if (Name == "" || Name == " " || Name == null || RealName == " " || RealName == "" || RealName == null)
 			{
 				ViewBag.msg = "Заполните все поля";
 				return View("Index");
