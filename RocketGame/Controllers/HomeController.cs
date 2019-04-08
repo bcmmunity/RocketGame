@@ -309,6 +309,11 @@ namespace RocketGame.Controllers
 				return View("Index");
 			}
 
+			if (Promo == null || Promo == "")
+			{
+				ViewBag.msg = "Заполните все поля";
+				return View("Index");
+			}
 			foreach (User item in db.Users.ToList())
 			{
 				if (item.Name == Name)

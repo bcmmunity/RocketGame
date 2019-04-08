@@ -36,13 +36,13 @@
 </div>
 
 
-<span id="kk" class="btn" onclick="$('#kk').hide(); $('#k').show(); $('#k2').show(); $('#k1').show()">Показать поле ввода ключа</span></br>
+<span id="kk" class="btn" onclick="$('#kk').hide(); $('#k').show(); $('#k2').show(); $('#k1').show(); $('#kp').show()">Показать поле ввода ключа</span></br>
 
 <h3 id="kp">Ключ игрока: </h3>
 
 <input id="k" type="text" value="@ViewBag.key" oninput="io()" /></br>
 
-<a id="k1" href="/Home/Game?Key=" id="ag" class="btn">Подтвердить</a></br></br>
+<a id="k1" href="/Home/Game?Key=" class="btn">Подтвердить</a></br></br>
 
 <p id="k2" class="info">Если поле пустое, введите ключ игрока (из Email) и нажмите "Подтвердить"</p>
 
@@ -51,7 +51,7 @@
 	$("#kp").append("Ключ игрока: " + $("#k").val());
 
 	function io() {
-		document.getElementById("ag").href = "/Home/Game?Key=" + $("#k").val();
+		document.getElementById("k1").href = "/Home/Game?Key=" + $("#k").val();
 		$("#kp").empty();
 		$("#kp").append("Ключ игрока: " + $("#k").val());
 	}
@@ -271,7 +271,22 @@
 			success: function (result) {
 				if (result) {
 
-					if (!checkk) return;
+					if (!checkk) {
+						$("#kk").hide();
+
+						$("#kp").show();
+						$("#k1").show();
+						$("#k2").show();
+						$('#k').show();
+						return;
+					}
+					$("#kk").show();
+
+					$("#kp").hide();
+					$("#k1").hide();
+					$("#k2").hide();
+					$('#k').hide();
+
 					$.ajax({
 						type: "GET",
 						url: "/Game/RocketCheck",
@@ -346,10 +361,6 @@
 	}
 
 	function makeMove() {
-		$("#k").hide();
-		$("#k1").hide();
-		$("#k2").hide();
-		$('#kk').show();
 		$.ajax({
 			type: "GET",
 			url: "/Game/Make",
