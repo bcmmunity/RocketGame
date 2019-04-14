@@ -93,7 +93,7 @@
 <script>
 	var number = 1;
 
-	setInterval(metod, 2000);
+	//setInterval(metod, 5000);
 
 	function metod() {
 		$.ajax({
@@ -230,6 +230,7 @@
 	var opt = "";
 	var team = "0";
 	var checkk = true;
+	var table = true;
 
 	var proces = true;
 	$('#kk').hide();
@@ -238,7 +239,7 @@
 	$("#msg").empty();
 	$("#msg").append("Игра еще не началась");
 
-	setInterval(check, 5000);
+	setInterval(check, 7000);
 
 	var chk = true;
 
@@ -309,11 +310,20 @@
 
 						success: function (result) {
 							if (result == "Ход не сделан") {
+
+								if (table) {
+									metod();
+								}
+
+
 								$("#msg").hide();
 								$("#teams").hide();
 								$("#moves").show();
+
+								table = false;
 							}
 							else {
+								table = true;
 								$("#msg").empty();
 								$("#msg").append(result);
 								$("#msg").show();
@@ -367,6 +377,7 @@
 			data: { Type: move, Key: $("#k").val(), TeamId: team },
 
 			success: function (result) {
+
 				$("#moves").hide();
 				$("#teams").hide();
 
