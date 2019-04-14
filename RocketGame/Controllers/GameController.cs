@@ -86,7 +86,7 @@ namespace RocketGame.Controllers
 				{
 					FinishGame();
 				}
-				else if (DateTime.Now >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame))
+				else if (DateTime.Now >= db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick))
 				{
 					AddTick();
 				}
