@@ -73,7 +73,7 @@ using RocketGame.Models;
             WriteLiteral("</h1>\r\n            ");
             EndContext();
             BeginContext(249, 777, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "b21bf78fdcea4a7db4c67442cc443fc7", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "cb7da5057b08487f97eb7e8ecfe67abb", async() => {
                 BeginContext(310, 709, true);
                 WriteLiteral(@"
                 <label>Ваш код-приглашение (из email):</label><br />
