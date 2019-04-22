@@ -297,7 +297,7 @@ namespace RocketGame.Controllers
                     db1.Logs.Add(new Log { Msg = "AttackGroup result = " + (result*2).ToString() });
 
                     db1.Teams.Where(m => m.TeamId == target.TeamId).FirstOrDefault().Fuel = target.Fuel - result * 2;
-                    foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).ToList())
+                    foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).Where(y => y.To == target).ToList())
                     {
                         db1.Moves.Find(move.MoveId).Result = "Победа";
                         db1.SaveChanges();
@@ -306,7 +306,7 @@ namespace RocketGame.Controllers
                 }
                 else
                 {
-					foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).ToList())
+					foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).Where(y => y.To == target).ToList())
 					{
 						db1.Moves.Find(move.MoveId).Result = "Победа";
 						db1.SaveChanges();
@@ -318,7 +318,7 @@ namespace RocketGame.Controllers
             }
             else
             {
-                foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).ToList())
+                foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).Where(y => y.To == target).ToList())
                 {
                     db1.Moves.Find(move.MoveId).Result = "Проигрыш";
                 }
@@ -421,9 +421,10 @@ namespace RocketGame.Controllers
                         }
                         
                     }
-                    else if (Moves.Where(n => n.User.Team == item).Where(b => b.To == target).Count() != db1.Settings.Last().TeamSize)
+
+                    if (Moves.Where(n => n.User.Team == item).Where(b => b.To == target).Count() != db1.Settings.Last().TeamSize)
                     {
-                        foreach (Move move in db1.Moves.Where(x => x.Type == "gift").Where(c => c.User.Team == item).ToList())
+                        foreach (Move move in db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(x => x.Type == "gift").Where(c => c.User.Team == item).ToList())
                         {
                             db1.Moves.Find(move.MoveId).Result = "Неудача";
                         }
