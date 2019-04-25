@@ -415,7 +415,7 @@ namespace RocketGame.Controllers
                     {
                         db1.Teams.Find(target.TeamId).Fuel += db1.Teams.Find(item.TeamId).Fuel;
                         db1.Teams.Find(item.TeamId).Fuel = 0;
-                        foreach (Move move in db1.Moves.Where(x => x.Type == "gift").Where(c => c.User.Team == item).ToList())
+                        foreach (Move move in db1.Moves.Where(x => x.Type == "gift").Where(c => c.User.Team == item).Where(b => b.To == target).Where(n => n.Tick == db1.Ticks.Last()).ToList())
                         {
                             db1.Moves.Find(move.MoveId).Result = "Подарили";
                         }
@@ -424,7 +424,7 @@ namespace RocketGame.Controllers
 
                     if (Moves.Where(n => n.User.Team == item).Where(b => b.To == target).Count() != db1.Settings.Last().TeamSize)
                     {
-                        foreach (Move move in db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(x => x.Type == "gift").Where(c => c.User.Team == item).ToList())
+                        foreach (Move move in db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(x => x.Type == "gift").Where(c => c.User.Team == item).Where(b => b.To == target).ToList())
                         {
                             db1.Moves.Find(move.MoveId).Result = "Неудача";
                         }
@@ -466,6 +466,7 @@ namespace RocketGame.Controllers
 				{
 					int winner = 0;
 					bool fl = false;
+
 					foreach (Move move in Moves.OrderBy(n => n.Time).ToList())
 					{
 						for (int f = 0; f < count; f++)
