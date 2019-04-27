@@ -14,8 +14,10 @@ namespace RocketGame.Models
         public int RocketFuel { get; set; }
         public int TeamCount { get; set; }
         public int TeamSize { get; set; }
+		public int TickPause { get; set; }
         public string Promo { get; set; }
         public bool IsStarted { get; set; }
+		public bool IsPaused { get; set; }
         public bool IsFinished { get; set; }
     }
 }

@@ -69,6 +69,7 @@ namespace RocketGame.Controllers
 					}
 					else
 					{
+						Update();
 						AddTick();
 					}
                 }
@@ -88,6 +89,7 @@ namespace RocketGame.Controllers
 				}
 				else if (DateTime.Now >= db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick))
 				{
+					Update();
 					AddTick();
 				}
 			}
@@ -197,6 +199,12 @@ namespace RocketGame.Controllers
 			return stats;
 		}
 
+		//public void Resume()
+		//{
+		//	TimeSpan diff = DateTime.Now - db.Ticks.Last().Finish;
+		//	db.Settings.Last().TimeGame = db.Settings.Last().TimeGame
+		//}
+
 		#endregion
 
 		[HttpGet]
@@ -241,7 +249,7 @@ namespace RocketGame.Controllers
             db.Logs.Add(new Log { Msg = "AddTick Start" });
             db.SaveChanges();
 
-            Update();
+            //Update();
 
             if (db.Settings.Last().IsFinished)
             {
@@ -251,15 +259,28 @@ namespace RocketGame.Controllers
             }
 
             db.Ticks.Last().Finish = DateTime.Now;
-            Tick Tick = new Tick();
-            Tick.Number = db.Ticks.Last().Number + 1;
-            Tick.Start = DateTime.Now;
-            db.Ticks.Add(Tick);
 
-            db.Logs.Add(new Log { Msg = "AddTick End" });
-            db.SaveChanges();
+			if (!db.Settings.Last().IsPaused && db.Settings.Last().TickPause != db.Ticks.Last().Number)
+			{
+				Tick Tick = new Tick();
+				Tick.Number = db.Ticks.Last().Number + 1;
+				Tick.Start = DateTime.Now;
+				db.Ticks.Add(Tick);
 
-            return "Начался новый такт";
+				db.Logs.Add(new Log { Msg = "AddTick End" });
+				db.SaveChanges();
+
+				return "Начался новый такт";
+			}
+			else
+			{
+				db.Settings.Last().IsPaused = true;
+
+				db.Logs.Add(new Log { Msg = "AddTick PAUSE" });
+				db.SaveChanges();
+
+				return "Пауза";
+			}
         }
 
         public void FinishGame()
