@@ -43,7 +43,8 @@ namespace RocketGame.Controllers
 
 		public void Make(Move Move, string Key, int TeamId)
         {
-            if (Move.Type == "powerup" || Move.Type == "intellectup" || Move.Type == "gather" || Move.Type == "gift" || Move.Type == "attackgroup" || Move.Type == "attackrocket" || Move.Type == "getinrocket")
+            if (Move.Type == "powerup" || Move.Type == "intellectup" || Move.Type == "gather" || Move.Type == "gift" 
+				|| Move.Type == "attackgroup" || Move.Type == "attackrocket" || Move.Type == "getinrocket")
             {
                 Move.User = db.Users.Where(n => n.Key == Key).FirstOrDefault();
                 Move.Tick = db.Ticks.Last();
@@ -62,7 +63,7 @@ namespace RocketGame.Controllers
                     db.Logs.Add(new Log { Msg = "Move check done" });
                     db.SaveChanges();
 
-					if (DateTime.Now >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame))
+					if (DateTime.Now >= db.Settings.Last().GameEnd)
 					{
 						Update();
 						FinishGame();
@@ -82,7 +83,7 @@ namespace RocketGame.Controllers
 		{
 			if (db.Settings.Last().IsFinished == false)
 			{
-				if (DateTime.Now >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame)
+				if (DateTime.Now >= db.Settings.Last().GameEnd
 					&& DateTime.Now >= db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick))
 				{
 					FinishGame();
@@ -97,7 +98,7 @@ namespace RocketGame.Controllers
 
 		public bool LastTickCheck()
 		{
-			if (DateTime.Now >= db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame))
+			if (DateTime.Now >= db.Settings.Last().GameEnd)
 			{
 				return true;
 			}
@@ -194,16 +195,16 @@ namespace RocketGame.Controllers
 					stats[i, 1] = user.Power.ToString() + "/" + user.Intellect.ToString();
 					i++;
 				}
-
 			}
 			return stats;
 		}
 
-		//public void Resume()
-		//{
-		//	TimeSpan diff = DateTime.Now - db.Ticks.Last().Finish;
-		//	db.Settings.Last().TimeGame = db.Settings.Last().TimeGame
-		//}
+		public void Resume()
+		{
+			TimeSpan diff = DateTime.Now - db.Ticks.Last().Finish;
+			db.Settings.Last().GameEnd = db.Settings.Last().GameEnd.Add(diff);
+			db.Settings.Last().IsPaused = false;
+		}
 
 		#endregion
 
@@ -235,8 +236,9 @@ namespace RocketGame.Controllers
                 Tick.Start = DateTime.Now;
                 db.Ticks.Add(Tick);
 
-                db.Logs.Add(new Log { Msg = "Start game end" });
-                db.Settings.FirstOrDefault().IsStarted = true;
+                db.Logs.Add(new Log { Msg = "StartGame end" });
+				db.Settings.Last().GameEnd = db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame);
+				db.Settings.FirstOrDefault().IsStarted = true;
                 db.SaveChanges();
 
                 return "Игра началась";
@@ -510,25 +512,46 @@ namespace RocketGame.Controllers
 						int winner = 0;
 						bool fl = false;
 
-						foreach (Move move in Moves.OrderBy(n => n.Time).ToList())
+						int counter = 0; //кол-во команд с равным кол-вом топлива
+						int fuel = 0; //наибольшее кол-во топлива у команды
+
+						foreach (Move move in Moves.ToList())
 						{
 							for (int f = 0; f < count; f++)
 							{
-								if (teamids[f] == move.User.Team.TeamId)
+								if (teamids[f] == move.User.Team.TeamId && move.User.Team.Fuel > fuel)
 								{
-									winner = move.User.Team.TeamId;
-									fl = true;
+									fuel = move.User.Team.Fuel;
+									counter++;
+								}
+							}
+						}
 
-									db1.Logs.Add(new Log { Msg = "fl = " + fl.ToString() });
-									db1.SaveChanges();
+						if (counter > 1)
+						{
+							foreach (Move move in Moves.Where(x => x.User.Team.Fuel == fuel).OrderBy(n => n.Time).ToList())
+							{
+								for (int f = 0; f < count; f++)
+								{
+									if (teamids[f] == move.User.Team.TeamId)
+									{
+										winner = move.User.Team.TeamId;
+										fl = true;
 
-									break;
+										db1.Logs.Add(new Log { Msg = "fl = " + fl.ToString() });
+										db1.SaveChanges();
+
+										break;
+									}
+
+									if (fl) break;
 								}
 
 								if (fl) break;
 							}
-							if (fl) break;
 						}
+
+//==================================================== СОРИТИРОВКА ИГРОКОВ В РАКЕТУ =============================================================
 
 						if (Moves.Where(m => m.User.Team.TeamId == winner).Count() == db1.Settings.FirstOrDefault().RocketSize) //Нет конкуренции в команде
 						{

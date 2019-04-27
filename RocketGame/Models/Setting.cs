@@ -10,6 +10,7 @@ namespace RocketGame.Models
 		public int SettingId { get; set; }
 		public int TimeTick { get; set; }
         public int TimeGame { get; set; }
+		public DateTime GameEnd { get; set; }
         public int RocketSize { get; set; }
         public int RocketFuel { get; set; }
         public int TeamCount { get; set; }
