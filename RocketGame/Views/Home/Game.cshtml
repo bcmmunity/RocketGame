@@ -366,6 +366,7 @@
 					$("#teams").append("<span class='btn' onclick='team = " + result[i].teamId + "; checkk = true; makeMove()'>" + result[i].name + "</span></br></br>");
 					i++;
 				}
+				$("#teams").append("<span class='btn' onclick='$(\"#moves\").show();$(\"#teams\").hide();'>" + Отменить + "</span></br></br>");
 			}
 		});
 	}

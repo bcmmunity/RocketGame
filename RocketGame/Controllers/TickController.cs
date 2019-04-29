@@ -27,8 +27,8 @@ namespace RocketGame.Controllers
 		public void Unit()
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
 		}
@@ -51,10 +51,12 @@ namespace RocketGame.Controllers
 
             }
 
+			ViewBag.time = db.Settings.FirstOrDefault().TimeTick;
 			ViewBag.i = i;
 			ViewBag.users = users;
+			ViewBag.Promo = db.Settings.FirstOrDefault().Promo;
 
-            return View();
+			return View();
         }
 
         public IActionResult GetTick(int number)
@@ -81,21 +83,26 @@ namespace RocketGame.Controllers
 			if (number <= db.Ticks.Last().Number - 1 || (number == db.Ticks.Last().Number && db.Settings.FirstOrDefault().IsFinished))
 			{
 				ViewBag.number = number;
-				string[] moves = new string[db.Users.Count()];
+				ViewBag.movesJ = db.Ticks.Count();
+				ViewBag.movesI = db.Users.Count();
+				string[,] moves = new string[db.Ticks.Count(), db.Users.Count()];
 				string[] stats = new string[db.Users.Count()];
 				i = 0;
 
-				foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
+				for (int j = 0; j < number; j++)
 				{
-					foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(n => n.UserId).ToList())
+					foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
 					{
-						foreach (Move move in db.Moves.Where(n => n.User == user).Where(b => b.Tick.Number == number).Include(n => n.User).ToList())
-						if (move != null)
+						foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(n => n.UserId).ToList())
 						{
-							stats[i] = users[i, 2];
-							moves[i] = Translator(move);
+							foreach (Move move in db.Moves.Where(n => n.User == user).Where(b => b.Tick.Number == j + 1).Include(n => n.User).ToList())
+								if (move != null)
+								{
+									stats[i] = users[i, 2];
+									moves[j, i] = Translator(move);
+								}
+							i++;
 						}
-						i++;
 					}
 				}
 
