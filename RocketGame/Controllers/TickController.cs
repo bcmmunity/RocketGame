@@ -59,8 +59,9 @@ namespace RocketGame.Controllers
 			return View();
         }
 
-        public IActionResult GetTick(int number)
+        public IActionResult GetTick(int type)
 		{
+			ViewBag.type = type;
 			string[,] users = new string[db.Users.Count(), 4];
 			int i = 0;
 
@@ -80,41 +81,43 @@ namespace RocketGame.Controllers
 			ViewBag.i = i;
 			ViewBag.users = users;
 
-			if (number <= db.Ticks.Last().Number - 1 || (number == db.Ticks.Last().Number && db.Settings.FirstOrDefault().IsFinished))
+			int ticks = db.Ticks.Count();
+			if (!db.Settings.Last().IsFinished)
 			{
-				ViewBag.number = number;
-				ViewBag.movesJ = db.Ticks.Count();
-				ViewBag.movesI = db.Users.Count();
-				string[,] moves = new string[db.Ticks.Count(), db.Users.Count()];
-				string[] stats = new string[db.Users.Count()];
-				i = 0;
+				ticks--;
+			}
 
-				for (int j = 0; j < number; j++)
+			ViewBag.movesJ =  ticks;
+			ViewBag.movesI = db.Users.Count();
+			string[,] moves = new string[ticks, db.Users.Count()];
+			string[] stats = new string[db.Users.Count()];
+			
+			i = 0;
+
+			for (int j = 0; j < ticks; j++)
+			{
+				foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
 				{
-					foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
+					foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(n => n.UserId).ToList())
 					{
-						foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(n => n.UserId).ToList())
+						foreach (Move move in db.Moves.Where(n => n.User == user).Where(b => b.Tick.Number == j + 1).Include(n => n.User).ToList())
 						{
-							foreach (Move move in db.Moves.Where(n => n.User == user).Where(b => b.Tick.Number == j + 1).Include(n => n.User).ToList())
-								if (move != null)
-								{
-									stats[i] = users[i, 2];
-									moves[j, i] = Translator(move);
-								}
-							i++;
+							if (move != null)
+							{
+								stats[i] = users[i, 2];
+								moves[j, i] = Translator(move);
+							}
 						}
+						i++;
 					}
 				}
-
-				ViewBag.stats = stats;
-				ViewBag.moves = moves;
-
-				return View();
+				i = 0;
 			}
-			else
-			{
-				return new EmptyResult();
-			}
+
+			ViewBag.stats = stats;
+			ViewBag.moves = moves;
+
+			return View();
         }
 
         #region Переводчик

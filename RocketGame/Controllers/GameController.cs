@@ -237,7 +237,7 @@ namespace RocketGame.Controllers
                 db.Ticks.Add(Tick);
 
                 db.Logs.Add(new Log { Msg = "StartGame end" });
-				db.Settings.Last().GameEnd = db.Ticks.Where(n => n.Number == 1).FirstOrDefault().Start.AddMinutes(db.Settings.Last().TimeGame);
+				db.Settings.Last().GameEnd = Tick.Start.AddMinutes(db.Settings.Last().TimeGame);
 				db.Settings.FirstOrDefault().IsStarted = true;
                 db.SaveChanges();
 
@@ -403,7 +403,7 @@ namespace RocketGame.Controllers
 
 			#region PowerUp
 
-			if (db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "powerup").Count() == 0)
+			if (db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "powerup").Count() != 0)
 			{
 				Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "powerup").Include(f => f.User).Include(a => a.User.Team).ToList();
 				foreach (Move item in Moves)
@@ -418,7 +418,7 @@ namespace RocketGame.Controllers
 
 			#region IntellectUp
 
-			if (db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "intellectup").Count() == 0)
+			if (db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "intellectup").Count() != 0)
 			{
 				Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "intellectup").Include(f => f.User).ToList();
 				foreach (Move item in Moves)
@@ -432,7 +432,7 @@ namespace RocketGame.Controllers
 
 			#region Gather
 
-			if (db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "gather").Count() == 0)
+			if (db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "gather").Count() != 0)
 			{
 				Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "gather").Include(f => f.User.Team).ToList();
 				foreach (Move item in Moves)
@@ -446,7 +446,7 @@ namespace RocketGame.Controllers
 
 			#region Gift
 
-			if (db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "gift").Count() == 0)
+			if (db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "gift").Count() != 0)
 			{
 				Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "gift").Include(f => f.User).Include(a => a.User.Team).Include(g => g.To).ToList();
 				foreach (Team item in db1.Teams.ToList())
@@ -480,7 +480,7 @@ namespace RocketGame.Controllers
 
 			#region GetInRocket
 
-			if (db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "getinrocket").Count() == 0)
+			if (db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "getinrocket").Count() != 0)
 			{
 				Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "getinrocket").Include(f => f.User).Include(a => a.User.Team).ToList();
 				int count = 0;
@@ -704,7 +704,7 @@ namespace RocketGame.Controllers
 
 			#region AttackGroup
 
-			if (db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "attackgroup").Count() == 0)
+			if (db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "attackgroup").Count() != 0)
 			{
 				Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "attackgroup").Include(f => f.User).Include(a => a.User.Team).Include(g => g.To).ToList();
 				foreach (Team target in db1.Teams.ToList())
@@ -898,7 +898,7 @@ namespace RocketGame.Controllers
 
 			#region AttackRocket
 
-			if (db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "attackrocket").Count() == 0)
+			if (db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "attackrocket").Count() != 0)
 			{
 				Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(a => a.Type == "attackrocket").Include(f => f.User).Include(a => a.User.Team).Include(d => d.To).ToList(); //Можно сократить
 				db1.Logs.Add(new Log { Msg = "AttackRocket запустилось" });

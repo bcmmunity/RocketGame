@@ -2,6 +2,8 @@
 	Layout = null;
 }
 
+@if (ViewBag.type == 1)
+{
 <table class="card" id="table2" style="background-color: darkgray">
 	<thead>
 		<tr>
@@ -27,12 +29,13 @@
 		}
 	</tbody>
 </table>
-@for (int j = 0; j < ViewBag.movesJ; j++)
+}
+@for (int j = 1; j <= ViewBag.movesJ; j++)
 {
 	<table class="card">
 		<thead>
 			<tr>
-				<th>@j++</th>
+				<th>@j</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -40,7 +43,7 @@
 			{
 				<tr>
 					<th>
-						@ViewBag.moves[j, i]
+						@ViewBag.moves[j - 1, i]
 					</th>
 				</tr>
 			}

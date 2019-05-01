@@ -91,9 +91,8 @@
 </div>
 
 <script>
-	var number = 1;
 
-	setInterval(metod, 15000);
+	setInterval(metod, 7000);
 
 	function metod() {
 		$.ajax({
@@ -115,13 +114,13 @@
 		$.ajax({
 			type: "GET",
 			url: "/Tick/GetTick",
-			data: { number: number },
+			data: {type: 0},
 
 			success: function (result) {
 
 				if (result != "") {
+					$("#content").empty();
 					$("#content").append(result);
-					number++;
 				}
 			}
 		});

@@ -7,6 +7,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
 <h3>Код для входа в игру - @ViewBag.Promo</h3>
+<h3 id="tickn"></h3>
 
 <div id="content">
 	<table class="card" id="table2" style="background-color: darkgray">
@@ -37,7 +38,6 @@
 </div>
 
 <script>
-	var number = 1;
 
 	//var total = 60 * @ViewBag.time;
 	
@@ -49,8 +49,6 @@
 
 		setTimeout(updateTime, 1000);
 	}
-
-	@ViewBag.time
 
 	setInterval(metod, 5000);
 
@@ -78,13 +76,13 @@
 		$.ajax({
 			type: "GET",
 			url: "/Tick/GetTick",
-			data: { number: number },
+			data: { type: 1 },
 
 			success: function (result) {
 
 				if (result != "") {
+					$("#content").empty();
 					$("#content").append(result);
-					number++;
 				}
 			}
 		});
