@@ -495,7 +495,8 @@ namespace RocketGame.Controllers
 
 				foreach (Team team in db1.Teams.ToList())
 				{
-					if (Moves.Where(n => n.User.Team == team).FirstOrDefault() != null && Moves.Where(n => n.User.Team == team).Count() == db1.Settings.FirstOrDefault().TeamSize)
+					if (Moves.Where(n => n.User.Team == team).FirstOrDefault() != null && 
+						Moves.Where(n => n.User.Team == team).Count() == db1.Settings.FirstOrDefault().TeamSize)
 					{
 						isdone = true;
 						teamids[count] = team.TeamId;
@@ -507,12 +508,13 @@ namespace RocketGame.Controllers
 				{
 					db1.Logs.Add(new Log { Msg = "Начало Гет_Ин_Да_Факин_Рокет" });
 					db1.SaveChanges();
+
 					if (count > 0)
 					{
 						int winner = 0;
 						bool fl = false;
 
-						int counter = 0; //кол-во команд с равным кол-вом топлива
+						//int teams = 0; //кол-во команд с равным кол-вом топлива
 						int fuel = 0; //наибольшее кол-во топлива у команды
 
 						foreach (Move move in Moves.ToList())
@@ -522,14 +524,17 @@ namespace RocketGame.Controllers
 								if (teamids[f] == move.User.Team.TeamId && move.User.Team.Fuel > fuel)
 								{
 									fuel = move.User.Team.Fuel;
-									counter++;
+									//teams++;
 								}
 							}
 						}
 
-						if (counter > 1)
-						{
-							foreach (Move move in Moves.Where(x => x.User.Team.Fuel == fuel).OrderBy(n => n.Time).ToList())
+						db1.Logs.Add(new Log { Msg = "Наибольшее топливо = " + fuel });
+						db1.SaveChanges();
+
+						//if (teams > 1)
+						//{
+							foreach (Move move in Moves.Where(x => x.User.Team.Fuel == fuel).OrderBy(n => n.Time).ToList()) //ОШИБКА
 							{
 								for (int f = 0; f < count; f++)
 								{
@@ -549,7 +554,7 @@ namespace RocketGame.Controllers
 
 								if (fl) break;
 							}
-						}
+						//}
 
 //==================================================== СОРИТИРОВКА ИГРОКОВ В РАКЕТУ =============================================================
 
@@ -571,6 +576,7 @@ namespace RocketGame.Controllers
 
 							int countwinner = 0; //кол-во игроков в команде победивших
 							int c = db1.Settings.FirstOrDefault().RocketSize;
+
 							foreach (Move move in Moves.Where(m => m.User.Team.TeamId == winner).OrderBy(k => k.Time).ToList())
 							{
 								powint[countwinner] += move.User.Power + move.User.Intellect;
