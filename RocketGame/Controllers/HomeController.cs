@@ -27,6 +27,14 @@ namespace RocketGame.Controllers
 			return View();
 		}
 
+		public IActionResult DeleteUser(int id, string Key)
+		{
+			if (!db.Settings.FirstOrDefault().IsStarted)
+				db.Users.Remove(db.Users.Find(id));
+
+			return RedirectToAction("ShowUsers", new { Key = Key });
+		}
+
 		[HttpPost]
 		public IActionResult Admin(AdminView data, string Type)
 		{
@@ -158,6 +166,7 @@ namespace RocketGame.Controllers
 				Names.Add(item.Name);
 			}
 
+			ViewBag.UserCount = db.Users.Count();
 			ViewBag.Names = Names;
 			ViewBag.Promos = Promos;
 

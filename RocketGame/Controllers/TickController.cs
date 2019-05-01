@@ -27,8 +27,8 @@ namespace RocketGame.Controllers
 		public void Unit()
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
 		}
@@ -51,14 +51,17 @@ namespace RocketGame.Controllers
 
             }
 
+			ViewBag.time = db.Settings.FirstOrDefault().TimeTick;
 			ViewBag.i = i;
 			ViewBag.users = users;
+			ViewBag.Promo = db.Settings.FirstOrDefault().Promo;
 
-            return View();
+			return View();
         }
 
-        public IActionResult GetTick(int number)
+        public IActionResult GetTick(int type)
 		{
+			ViewBag.type = type;
 			string[,] users = new string[db.Users.Count(), 4];
 			int i = 0;
 
@@ -78,36 +81,43 @@ namespace RocketGame.Controllers
 			ViewBag.i = i;
 			ViewBag.users = users;
 
-			if (number <= db.Ticks.Last().Number - 1 || (number == db.Ticks.Last().Number && db.Settings.FirstOrDefault().IsFinished))
+			int ticks = db.Ticks.Count();
+			if (!db.Settings.Last().IsFinished)
 			{
-				ViewBag.number = number;
-				string[] moves = new string[db.Users.Count()];
-				string[] stats = new string[db.Users.Count()];
-				i = 0;
+				ticks--;
+			}
 
+			ViewBag.movesJ =  ticks;
+			ViewBag.movesI = db.Users.Count();
+			string[,] moves = new string[ticks, db.Users.Count()];
+			string[] stats = new string[db.Users.Count()];
+			
+			i = 0;
+
+			for (int j = 0; j < ticks; j++)
+			{
 				foreach (Team team in db.Teams.OrderBy(n => n.TeamId).ToList())
 				{
 					foreach (User user in db.Users.Where(n => n.Team == team).OrderBy(n => n.UserId).ToList())
 					{
-						foreach (Move move in db.Moves.Where(n => n.User == user).Where(b => b.Tick.Number == number).Include(n => n.User).ToList())
-						if (move != null)
+						foreach (Move move in db.Moves.Where(n => n.User == user).Where(b => b.Tick.Number == j + 1).Include(n => n.User).ToList())
 						{
-							stats[i] = users[i, 2];
-							moves[i] = Translator(move);
+							if (move != null)
+							{
+								stats[i] = users[i, 2];
+								moves[j, i] = Translator(move);
+							}
 						}
 						i++;
 					}
 				}
-
-				ViewBag.stats = stats;
-				ViewBag.moves = moves;
-
-				return View();
+				i = 0;
 			}
-			else
-			{
-				return new EmptyResult();
-			}
+
+			ViewBag.stats = stats;
+			ViewBag.moves = moves;
+
+			return View();
         }
 
         #region Переводчик

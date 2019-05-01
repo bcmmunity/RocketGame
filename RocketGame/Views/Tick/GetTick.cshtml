@@ -2,20 +2,51 @@
 	Layout = null;
 }
 
-<table class="card">
+@if (ViewBag.type == 1)
+{
+<table class="card" id="table2" style="background-color: darkgray">
 	<thead>
 		<tr>
-			<th>@ViewBag.number</th>
+			<th> Ком(Т) </th>
+			<th> Ник </th>
+			<th> С/И </th>
 		</tr>
 	</thead>
 	<tbody>
-		@for (int i = 0; i < ViewBag.moves.Length; i++)
+		@for (int i = 0; i < ViewBag.i; i++)
 		{
 			<tr>
+				<th id="0-@i">
+					@ViewBag.users[i, 0]
+				</th>
 				<th>
-					@ViewBag.moves[i]
+					@ViewBag.users[i, 2]
+				</th>
+				<th id="1-@i">
+					@ViewBag.users[i, 3]
 				</th>
 			</tr>
 		}
 	</tbody>
 </table>
+}
+@for (int j = 1; j <= ViewBag.movesJ; j++)
+{
+	<table class="card">
+		<thead>
+			<tr>
+				<th>@j</th>
+			</tr>
+		</thead>
+		<tbody>
+			@for (int i = 0; i < ViewBag.movesI; i++)
+			{
+				<tr>
+					<th>
+						@ViewBag.moves[j - 1, i]
+					</th>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
