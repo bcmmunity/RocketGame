@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<RocketGame.Models.User>
-
 @{
 	ViewData["Title"] = "ShowUsers";
 }
@@ -10,6 +9,7 @@
 	<h2>Код-приглашение: @ViewBag.Promo</h2>
 
 	<a asp-area="" asp-controller="Tick" asp-action="Game" target="_blank" class="navbar-brand">Открыть таблицу результатов</a>
+	<span class="btn" onclick="resume()">Продолжить игру</span>
 
 	<table>
 		<thead>
@@ -59,19 +59,19 @@
 	<thead>
 		<tr>
 			<!--
-	<th>
-		@Html.DisplayNameFor(model => model.Name)
-	</th>
-	<th>
-		@Html.DisplayNameFor(model => model.Intellect)
-	</th>
-	<th>
-		@Html.DisplayNameFor(model => model.Power)
-	</th>
-	<th>
-		@Html.DisplayNameFor(model => model.InRocket)
-	</th>
-		-->
+			<th>
+				@Html.DisplayNameFor(model => model.Name)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Intellect)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Power)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.InRocket)
+			</th>
+				-->
 			<th>
 				Команда
 			</th>
@@ -92,39 +92,39 @@
 	<tbody>
 		@foreach (var item in Model)
 		{
-		<tr>
-			<td>
-				@item.Team.Name
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.Name)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.RealName)
-			</td>
-			<!--
-			<td>
-				@Html.DisplayFor(modelItem => item.Power)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.InRocket)
-			</td>
-	-->
-			<td>
-				@Html.DisplayFor(modelItem => item.Key)
-			</td>
-			<td id="k-@item.Key">
-				<span class="btn" onclick="selectOwner('@item.Key')">Сделать дублем</span>
-			</td>
-			<td id="t-@item.Key">
-				<span class="btn" onclick="selectTeam('@item.Key')">Изменить команду</span>
-			</td>
-			<td>
-				<a href="/Home/DeleteUser?Key=@ViewBag.Key&id=@item.UserId">
-					<span class="btn">Удалить</span>
-				</a>
-			</td>
-		</tr>
+			<tr>
+				<td>
+					@item.Team.Name
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Name)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.RealName)
+				</td>
+				<!--
+						<td>
+							@Html.DisplayFor(modelItem => item.Power)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.InRocket)
+						</td>
+				-->
+				<td>
+					@Html.DisplayFor(modelItem => item.Key)
+				</td>
+				<td id="k-@item.Key">
+					<span class="btn" onclick="selectOwner('@item.Key')">Сделать дублем</span>
+				</td>
+				<td id="t-@item.Key">
+					<span class="btn" onclick="selectTeam('@item.Key')">Изменить команду</span>
+				</td>
+				<td>
+					<a href="/Home/DeleteUser?Key=@ViewBag.Key&id=@item.UserId">
+						<span class="btn">Удалить</span>
+					</a>
+				</td>
+			</tr>
 		}
 	</tbody>
 </table>
@@ -133,6 +133,17 @@
 	var end = "Игра окончена - <a href='..//Test.xlsx' download>Скачать таблицу результатов игры</a>"
 
 	$("#users").hide();
+
+	function resume() {
+		$.ajax({
+			type: "GET",
+			url: "/Game/Resume",
+
+			success: function (result) {
+
+			}
+		});
+	}
 
 	function selectOwner(kkey) {
 		$.ajax({

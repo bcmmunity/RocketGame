@@ -145,6 +145,11 @@ namespace RocketGame.Controllers
 				return "Игра еще не началась";
 			}
 
+			if (db.Settings.FirstOrDefault().IsPaused == false)
+			{
+				return "Пауза";
+			}
+
 			if (db.Moves.Where(n => n.User.Key == Key).Where(l => l.Tick.Number == db.Ticks.Last().Number).FirstOrDefault() != null)
 			{
 				return "Ход сделан";

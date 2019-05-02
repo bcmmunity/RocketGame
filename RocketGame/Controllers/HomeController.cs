@@ -29,8 +29,18 @@ namespace RocketGame.Controllers
 
 		public IActionResult DeleteUser(int id, string Key)
 		{
+			if (db.Admins.FirstOrDefault(n => n.Key == Key) == null)
+				return RedirectToAction("Index");
+
+			foreach (Move item in db.Moves.Where(n => n.User.UserId == id).ToList())
+			{
+				db.Moves.Remove(item);
+			}
+			db.SaveChanges();
+
 			if (!db.Settings.FirstOrDefault().IsStarted)
 				db.Users.Remove(db.Users.Find(id));
+			db.SaveChanges();
 
 			return RedirectToAction("ShowUsers", new { Key = Key });
 		}
@@ -74,6 +84,38 @@ namespace RocketGame.Controllers
 		{
 			return View();
 		}
+
+		//public IActionResult ChangeSet(string Key)
+		//{
+		//	return View();
+		//}
+
+		//[HttpPost]
+		//public IActionResult ChangeSet(Setting settings, string Key)
+		//{
+		//	if (settings.TeamCount > 5)
+		//	{
+		//		ViewBag.msg = "Количество команд должно быть не больше 5";
+		//		return View();
+		//	}
+
+		//	if (settings.TeamCount * settings.TeamSize > 35)
+		//	{
+		//		ViewBag.msg = "Ошибка!</br>Должно быть не больше 35 игроков";
+		//		return View();
+		//	}
+
+		//	string[] colors = { "Красные", "Синие", "Желтые", "Зеленые", "Фиолетовые" };
+
+		//	if (db.Settings.Last().TeamCount < settings.TeamCount)
+		//	for (int i = 0; i < settings.TeamCount; i++)
+		//	{
+		//		Team team = new Team();
+		//		team.Name = colors[i];
+		//		team.Power = settings.TeamSize;
+		//		db.Teams.Add(team);
+		//	}
+		//}
 
 		[HttpPost]
         public IActionResult Setting(Setting settings, string Key)

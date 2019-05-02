@@ -4,29 +4,47 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <div class="container">
-    <div class="row">
-        <col-6>
-            <h1>@ViewBag.msg</h1>
-            <form asp-controller="Home" asp-action="Index" method="post">
-                <label>Ваш код-приглашение (из email):</label><br />
-                <input type="text" name="Promo" id="Promo" /><br /><br />
-                <label>Придумайте себе псевдоним:</label><br />
-                <input type="text" name="Name" id="Name" /><br /><br />
-                <label>Ваше имя (видит только администратор):</label><br />
-                <input type="text" name="RealName" id="RealName" /><br /><br />
-                <label>Ваша почта:</label><br />
-                <input type="text" name="Mail" id="Mail" /><br /><br />
-                <input type="submit" value="Войти в игру" class="btn" />
-                <p class="info">Захожу в первый раз</p>
-            </form>
-        </col-6>
-    </div>
+	<div class="row">
+		<col-6>
+			<h1>@ViewBag.msg</h1>
+			<form asp-controller="Home" asp-action="Index" method="post">
+				<label>Ваш код-приглашение (из email):</label><br />
+				<input type="text" name="Promo" id="Promo" /><br /><br />
+				<label>Придумайте себе псевдоним:</label><br />
+				<input type="text" name="Name" id="Name" /><br /><br />
+				<label>Ваше имя (видит только администратор):</label><br />
+				<input type="text" name="RealName" id="RealName" /><br /><br />
+				<label>Ваша почта:</label><br />
+				<input type="text" name="Mail" id="Mail" /><br /><br />
+				<input type="submit" value="Войти в игру" class="btn" />
+				<p class="info">Захожу в первый раз</p>
+			</form>
+		</col-6>
+	</div>
 	<br>
-    <a href="/Home/Game?Key=Введите ключ" class="btn">Вернуться в игру</a>
-    <p class="info">Я уже получил ключ игрока</p>
 </div>
 
-<script>
+<div class="container">
+	<div class="row">
+		<col-6>
+			<h1>@ViewBag.msg</h1>
+			<form asp-controller="Home" asp-action="Index" method="post">
+				<label>Ваш ключ:</label><br />
+				<input type="text" id="Key1" oninput="io()"/><br /><br />
+				<a href="/Home/Game?Key=" id="Key" class="btn">Вернуться в игру</a>
+				<p class="info">Я уже получил ключ игрока</p>
+			</form>
+		</col-6>
+	</div>
+	<br>
+</div>
+
+	<script>
+
+		function io() {
+			document.getElementById("Key").href = "/Home/Game?Key=" + $("#Key1").val();
+		}
+
 	if ("1" != '@ViewBag.Name')
 		document.getElementById("Name").value = '@ViewBag.Name';
 	if ("1" != '@ViewBag.RealName')
@@ -35,21 +53,21 @@
 		document.getElementById("Mail").value = '@ViewBag.Mail';
 	if ("1" != '@ViewBag.Promo')
 		document.getElementById("Promo").value = '@ViewBag.Promo';
-</script>
+	</script>
 
 
-<style type="text/css">
-	.btn {
-		min-width: 20%;
-		min-height: 20px;
-		background-color: gray;
-		border-radius: 200px;
-		padding: 5px;
-		float: left;
-		color: white;
-	}
+	<style type="text/css">
+		.btn {
+			min-width: 20%;
+			min-height: 20px;
+			background-color: gray;
+			border-radius: 200px;
+			padding: 5px;
+			float: left;
+			color: white;
+		}
 
-	.info {
-		color: gray;
-	}
-</style>
+		.info {
+			color: gray;
+		}
+	</style>

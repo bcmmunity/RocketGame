@@ -7,25 +7,25 @@
 <h2 id="warning"></h2>
 
 <div id="moves">
-	<span class="btn" onclick="move = 'powerup'; makeMove()">Усилиться</span>
+	<span class="btn" onclick="move = 'powerup'; Confirme()">Усилиться</span>
 	</br>
 	</br>
-	<span class="btn" onclick="move = 'intellectup'; makeMove()">Обучиться</span>
+	<span class="btn" onclick="move = 'intellectup'; Confirme()">Обучиться</span>
 	</br>
 	</br>
-	<span class="btn" onclick="move = 'gather'; makeMove()">Добыть</span>
+	<span class="btn" onclick="move = 'gather'; Confirme()">Добыть</span>
 	</br>
 	</br>
 	<span class="btn" onclick="move = 'attackgroup'; selectTeam()">Атаковать группу</span>
 	</br>
 	</br>
-	<span class="btn" onclick="move = 'attackrocket'; makeMove()">Атаковать ракету</span>
+	<span class="btn" onclick="move = 'attackrocket'; Confirme()">Атаковать ракету</span>
 	</br>
 	</br>
 	<span class="btn" onclick="move = 'gift'; selectTeam()">Дарить</span>
 	</br>
 	</br>
-	<span id="getinrocket" class='btn' onclick="move = 'getinrocket'; makeMove()">Сесть в ракету</span>
+	<span id="getinrocket" class='btn' onclick="move = 'getinrocket'; Confirme()">Сесть в ракету</span>
 	</br>
 	</br>
 </div>
@@ -36,19 +36,20 @@
 </div>
 
 
-<span id="kk" class="btn" onclick="$('#kk').hide(); $('#k').show(); $('#k2').show(); $('#k1').show(); $('#kp').show()">Показать поле ввода ключа</span></br>
+@*<span id="kk" class="btn" onclick="$('#kk').hide(); $('#k').show(); $('#k2').show(); $('#k1').show(); $('#kp').show()">Показать поле ввода ключа</span></br>*@
 
 <h3 id="kp">Ключ игрока: </h3>
 
-<input id="k" type="text" value="@ViewBag.key" oninput="io()" /></br>
+
+@*<input id="k" type="text" value="@ViewBag.key" oninput="io()" /></br>
 
 <a id="k1" href="/Home/Game?Key=" class="btn">Подтвердить</a></br></br>
 
-<p id="k2" class="info">Если поле пустое, введите ключ игрока (из Email) и нажмите "Подтвердить"</p>
+<p id="k2" class="info">Если поле пустое, введите ключ игрока (из Email) и нажмите "Подтвердить"</p>*@
 
 <script>
 	$("#kp").empty();
-	$("#kp").append("Ключ игрока: " + $("#k").val());
+	$("#kp").append("Ключ игрока: " + @ViewBag.key);
 
 	function io() {
 		document.getElementById("k1").href = "/Home/Game?Key=" + $("#k").val();
@@ -266,7 +267,7 @@
 		$.ajax({
 			type: "GET",
 			url: "/Game/KeyCheck",
-			data: { Key: $("#k").val() },
+			data: { Key: @ViewBag.key },
 
 			success: function (result) {
 				if (result) {
@@ -290,7 +291,7 @@
 					$.ajax({
 						type: "GET",
 						url: "/Game/RocketCheck",
-						data: { Key: $("#k").val() },
+						data: { Key: @ViewBag.key },
 
 						success: function (result) {
 							if (result) {
@@ -305,7 +306,7 @@
 					$.ajax({
 						type: "GET",
 						url: "/Game/MoveCheck",
-						data: { Key: $("#k").val() },
+						data: { Key: @ViewBag.key },
 
 						success: function (result) {
 							if (result == "Ход не сделан") {
@@ -337,7 +338,7 @@
 					$("#moves").hide();
 					$("#msg").empty();
 					$("#msg").show();
-					$("#msg").append("Неверный код");
+					$("#msg").append("Неверный ключ");
 				}
 			}
 		});
@@ -347,7 +348,7 @@
 		$.ajax({
 			type: "GET",
 			url: "/Game/TeamList",
-			data: { Key: $("#k").val() },
+			data: { Key: @ViewBag.key },
 
 			success: function (result) {
 				checkk = false;
@@ -362,10 +363,10 @@
 
 				var i = 0;
 				for (var item in result) {
-					$("#teams").append("<span class='btn' onclick='team = " + result[i].teamId + "; checkk = true; makeMove()'>" + result[i].name + "</span></br></br>");
+					$("#teams").append("<span class='btn' onclick='team = " + result[i].teamId + "; checkk = true; Confirme()'>" + result[i].name + "</span></br></br>");
 					i++;
 				}
-				$("#teams").append("<span class='btn' onclick='$(\"#moves\").show();$(\"#teams\").hide();'>" + Отменить + "</span></br></br>");
+				$("#teams").append("<span class='btn' onclick='checkk = true;$(\"#moves\").show();$(\"#teams\").hide();'>Отменить</span></br></br>");
 			}
 		});
 	}
@@ -374,7 +375,7 @@
 		$.ajax({
 			type: "GET",
 			url: "/Game/Make",
-			data: { Type: move, Key: $("#k").val(), TeamId: team },
+			data: { Type: move, Key: @ViewBag.key, TeamId: team },
 
 			success: function (result) {
 
@@ -387,6 +388,16 @@
 			}
 		});
 	}
+
+	function Confirme() {
+		checkk = false;
+		$("#moves").hide();
+		$("#teams").empty();
+		$("#teams").show();
+		$("#teams").append("<span class='btn' onclick='checkk = true;makeMove();$(\"#teams\").hide();'>Подтвердить</span></br></br>");
+		$("#teams").append("<span class='btn' onclick='checkk = true;$(\"#moves\").show();$(\"#teams\").hide();'>Отменить</span></br></br>");
+	}
+
 </script>
 
 <style type="text/css">
