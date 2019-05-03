@@ -11,5 +11,6 @@ namespace RocketGame.Models
         public int Number { get; set; }
         public DateTime Start { get; set; }
         public DateTime Finish { get; set; }
+		//public bool Updated { get; set; }
     }
 }

@@ -487,7 +487,7 @@ namespace RocketGame.Controllers
 			m.Body = Key;
 
 			SmtpClient smtp = new SmtpClient("wpl19.hosting.reg.ru", 587);
-			smtp.Credentials = new NetworkCredential("info@diffind.com", "SuperInfo123!");
+			smtp.Credentials = new NetworkCredential("info@diffind.com", "Diffind123!");
 			//smtp.EnableSsl = true;
 
 			smtp.SendAsync(m, "check");
