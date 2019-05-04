@@ -155,7 +155,7 @@ namespace RocketGame.Controllers
 
 			if (move.Type == "getinrocket")
 			{
-				if (move.User.InRocket == true)
+				if (move.Result == "Победа")
 				{
 					result = "Р:П";
 				}
