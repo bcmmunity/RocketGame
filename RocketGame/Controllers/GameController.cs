@@ -117,6 +117,15 @@ namespace RocketGame.Controllers
 			return false;
 		}
 
+		public bool PauseCheck(string Key)
+		{
+			if (db.Settings.Last().IsPaused)
+			{
+				return true;
+			}
+			return false;
+		}
+
 		public string GameCheck()
 		{
 
