@@ -420,13 +420,15 @@ namespace RocketGame.Controllers
 					}
 				}
 
+				Random rand = new Random();
+		
 				user.InRocket = false;
 				user.Intellect = 1;
 				user.Power = 1;
 				user.Name = Name;
 				user.RealName = RealName;
 				user.Mail = Mail;
-				user.Key = id.ToString() + count.ToString();
+				user.Key = id.ToString() + count.ToString() + rand.Next(10, 100).ToString();
 
 				string userKey = id.ToString() + count.ToString();
 				List<string> Names = new List<string>();

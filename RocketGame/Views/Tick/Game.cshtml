@@ -7,7 +7,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
 <h3>Код для входа в игру - @ViewBag.Promo</h3>
-<h3 id="tickn"></h3>
+<h3 id="msg"></h3>
+<h3 id="time"></h3>
+
 
 <div id="content">
 	<table class="card" id="table2" style="background-color: darkgray">
@@ -39,14 +41,48 @@
 
 <script>
 
-	//var total = 60 * @ViewBag.time;
-	
+	var total = 60 * @ViewBag.time - Math.floor(@ViewBag.timedif);
+
+	setInterval(check, 5000);
+
+	var ispause = false;
+
+	function check() {
+		$.ajax({
+			type: "GET",
+			url: "/Game/PauseCheck",
+
+			success: function (result) {
+
+				if (result) {
+					$("#msg").empty();
+					$("#msg").append("Пауза");
+					ispause = true;
+				}
+				else {
+					if (ispause)
+						$("#msg").empty();
+					ispause = false;
+				}
+			}
+		});
+	}
+
+	updateTime();
+
 	function updateTime() {
-		total -= 1;
+		if (total != 0) {
+			total -= 1;
 
-		$("#time").empty();
-		$("#time").append("Осталось " + total / 60 + ":" + total % 60);
+			$("#time").empty();
+			$("#time").append("Осталось " + Math.floor(total / 60) + ":" + total % 60);
+		}
+		else {
+			total = 60 * @ViewBag.time;
 
+			$("#time").empty();
+			$("#time").append("Осталось " + total / 60 + ":" + total % 60);
+		}
 		setTimeout(updateTime, 1000);
 	}
 

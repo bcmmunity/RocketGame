@@ -397,6 +397,85 @@
 		$("#teams").append("<span class='btn' onclick='checkk = true;makeMove();$(\"#teams\").hide();'>Подтвердить</span></br></br>");
 		$("#teams").append("<span class='btn' onclick='checkk = true;$(\"#moves\").show();$(\"#teams\").hide();'>Отменить</span></br></br>");
 	}
+	
+		$.ajax({
+			type: "GET",
+			url: "/Game/KeyCheck",
+			data: { Key: @ViewBag.key },
+
+			success: function (result) {
+				if (result) {
+
+					if (!checkk) {
+						$("#kk").hide();
+
+						$("#kp").show();
+						$("#k1").show();
+						$("#k2").show();
+						$('#k').show();
+						return;
+					}
+					$("#kk").show();
+
+					$("#kp").hide();
+					$("#k1").hide();
+					$("#k2").hide();
+					$('#k').hide();
+
+					$.ajax({
+						type: "GET",
+						url: "/Game/RocketCheck",
+						data: { Key: @ViewBag.key },
+
+						success: function (result) {
+							if (result) {
+								$("#getinrocket").show();
+							}
+							else {
+								$("#getinrocket").hide();
+							}
+						}
+					});
+
+					$.ajax({
+						type: "GET",
+						url: "/Game/MoveCheck",
+						data: { Key: @ViewBag.key },
+
+						success: function (result) {
+							if (result == "Ход не сделан") {
+
+								if (table) {
+									metod();
+								}
+
+
+								$("#msg").hide();
+								$("#teams").hide();
+								$("#moves").show();
+
+								table = false;
+							}
+							else {
+								table = true;
+								$("#msg").empty();
+								$("#msg").append(result);
+								$("#msg").show();
+								$("#teams").hide();
+								$("#moves").hide();
+							}
+						}
+					});
+				}
+				else {
+					$("#teams").hide();
+					$("#moves").hide();
+					$("#msg").empty();
+					$("#msg").show();
+					$("#msg").append("Неверный ключ");
+				}
+			}
+	});
 
 </script>
 
