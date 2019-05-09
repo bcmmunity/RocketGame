@@ -9,7 +9,7 @@
 	<h2>Код-приглашение: @ViewBag.Promo</h2>
 
 	<a asp-area="" asp-controller="Tick" asp-action="Game" target="_blank" class="navbar-brand">Открыть таблицу результатов</a>
-	<span class="btn" onclick="resume()">Продолжить игру</span>
+	<span id="resume" class="btn" onclick="resume()">Продолжить игру</span>
 
 	<table>
 		<thead>
@@ -167,6 +167,8 @@
 
 	setInterval(check, 5000);
 
+	$("#resume").hide();
+
 	var f = true;
 
 	function check() {
@@ -182,6 +184,17 @@
 						$("#main").append(end);
 						f = false;
 					}
+				}
+			}
+		});
+		$.ajax({
+			type: "GET",
+			url: "/Game/GameCheck",
+
+			success: function (result) {
+
+				if (result) {
+					$("#resume").show();
 				}
 			}
 		});
