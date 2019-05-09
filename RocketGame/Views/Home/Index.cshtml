@@ -11,9 +11,9 @@
 				<label>Ваш код-приглашение (из email):</label><br />
 				<input type="text" name="Promo" id="Promo" /><br /><br />
 				<label>Придумайте себе псевдоним:</label><br />
-				<input type="text" name="Name" id="Name" /><br /><br />
+				<input type="text" name="Name" id="Name"  value="@ViewBag.Name"/><br /><br />
 				<label>Ваше имя (видит только администратор):</label><br />
-				<input type="text" name="RealName" id="RealName" /><br /><br />
+				<input type="text" name="RealName" id="RealName" value="@ViewBag.RealName"/><br /><br />
 				<label>Ваша почта:</label><br />
 				<input type="text" name="Mail" id="Mail" /><br /><br />
 				<input type="submit" value="Войти в игру" class="btn" />
@@ -45,10 +45,10 @@
 			document.getElementById("Key").href = "/Home/Game?Key=" + $("#Key1").val();
 		}
 
-	if ("1" != '@ViewBag.Name')
-		document.getElementById("Name").value = '@ViewBag.Name';
-	if ("1" != '@ViewBag.RealName')
-		document.getElementById("RealName").value = '@ViewBag.RealName';
+//	if ("1" != '@ViewBag.Name')
+//		document.getElementById("Name").value = '@ViewBag.Name';
+//	if ("1" != '@ViewBag.RealName')
+//		document.getElementById("RealName").value = '@ViewBag.RealName';
 	if ("1" != '@ViewBag.Mail')
 		document.getElementById("Mail").value = '@ViewBag.Mail';
 	if ("1" != '@ViewBag.Promo')
