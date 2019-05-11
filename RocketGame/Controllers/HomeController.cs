@@ -428,15 +428,16 @@ namespace RocketGame.Controllers
 				user.Name = Name;
 				user.RealName = RealName;
 				user.Mail = Mail;
-				user.Key = id.ToString() + count.ToString() + rand.Next(10, 100).ToString();
+				int randkey = 123;
+				user.Key = id.ToString() + count.ToString() + rand.Next(10, 100).ToString() + randkey.ToString();
 
-				string userKey = id.ToString() + count.ToString();
+				string userKey = user.Key;
 				List<string> Names = new List<string>();
 				string ALF = "QWERTYUIOPASDFGHJKLZXCVBNM";
 
 				if (pr.Length == 2)
 				{
-						int j = 0, tId = 0;
+					int j = 0, tId = 0;
 
 					for (int i = 0; i < pr[1].Length; i++)
 					{
@@ -458,8 +459,8 @@ namespace RocketGame.Controllers
 					}
 
 					user.Team = db.Teams.Find(tId);
-					userKey = user.Team.TeamId + db.Users.Where(n => n.Team == user.Team).Count().ToString();
-					user.Key = user.Team.TeamId + db.Users.Where(n => n.Team == user.Team).Count().ToString();
+					userKey = user.Team.TeamId + db.Users.Where(n => n.Team == user.Team).Count().ToString() + randkey.ToString();
+					user.Key = user.Team.TeamId + db.Users.Where(n => n.Team == user.Team).Count().ToString() + randkey.ToString();
 				}
 				else
 				{
