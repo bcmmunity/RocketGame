@@ -51,6 +51,7 @@ namespace RocketGame.Controllers
 
             }
 
+			ViewBag.timeE = (db.Settings.FirstOrDefault().GameEnd - DateTime.Now).TotalSeconds;
 			ViewBag.time = db.Settings.FirstOrDefault().TimeTick;
 			if (db.Ticks.Last() != null)
 			{
@@ -102,6 +103,7 @@ namespace RocketGame.Controllers
 			}
 
 
+			ViewBag.timeE = (db.Settings.FirstOrDefault().GameEnd - DateTime.Now).TotalSeconds;
 			ViewBag.time = db.Settings.FirstOrDefault().TimeTick;
 			if (db.Ticks.Last() != null)
 			{

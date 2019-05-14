@@ -9,6 +9,7 @@
 <h3>Код для входа в игру - @ViewBag.Promo</h3>
 <h3 id="msg"></h3>
 <h3 id="time"></h3>
+<h3 id="timeE"></h3>
 
 
 <div id="content">
@@ -40,6 +41,8 @@
 </div>
 
 <script>
+	
+	var totalE = 60 * @ViewBag.timeE;
 
 	var total = 60 * @ViewBag.time - Math.floor(@ViewBag.timedif);
 
@@ -83,6 +86,20 @@
 			$("#time").empty();
 			$("#time").append("Осталось " + total / 60 + ":" + total % 60);
 		}
+
+		if (totalE != 0) {
+			totalE -= 1;
+
+			$("#timeE").empty();
+			$("#timeE").append("Осталось " + Math.floor(total / 60) + ":" + total % 60 + " до конца игры");
+		}
+		else {
+			totalE = 60 * @ViewBag.timeE;
+
+			$("#timeE").empty();
+			$("#timeE").append("Осталось " + total / 60 + ":" + total % 60 + " до конца игры");
+		}
+
 		setTimeout(updateTime, 1000);
 	}
 
