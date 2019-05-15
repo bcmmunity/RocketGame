@@ -42,7 +42,7 @@
 
 <script>
 	
-	var totalE = 60 * @ViewBag.timeE;
+	var totalE = 60 * Math.floor(@ViewBag.timeE);
 
 	var total = 60 * @ViewBag.time - Math.floor(@ViewBag.timedif);
 
@@ -94,7 +94,7 @@
 			$("#timeE").append("Осталось " + Math.floor(total / 60) + ":" + total % 60 + " до конца игры");
 		}
 		else {
-			totalE = 60 * @ViewBag.timeE;
+			totalE = 60 * Math.floor(@ViewBag.timeE);
 
 			$("#timeE").empty();
 			$("#timeE").append("Осталось " + total / 60 + ":" + total % 60 + " до конца игры");
