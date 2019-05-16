@@ -20,7 +20,7 @@
       <publishTime>05/14/2019 22:18:40</publishTime>
     </File>
     <File Include="dotnet-aspnet-codegenerator-design.dll">
-      <publishTime>07/06/2018 00:27:02</publishTime>
+      <publishTime>06/07/2018 00:27:02</publishTime>
     </File>
     <File Include="EPPlus.Core.dll">
       <publishTime>11/30/2017 09:51:26</publishTime>
@@ -47,46 +47,46 @@
       <publishTime>02/07/2019 16:53:12</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.Contracts.dll">
-      <publishTime>07/06/2018 00:27:00</publishTime>
+      <publishTime>06/07/2018 00:27:00</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.Core.dll">
-      <publishTime>07/06/2018 00:26:58</publishTime>
+      <publishTime>06/07/2018 00:26:58</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.dll">
-      <publishTime>07/06/2018 00:26:54</publishTime>
+      <publishTime>06/07/2018 00:26:54</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore.dll">
-      <publishTime>07/06/2018 00:26:56</publishTime>
+      <publishTime>06/07/2018 00:26:56</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.Templating.dll">
-      <publishTime>07/06/2018 00:27:02</publishTime>
+      <publishTime>06/07/2018 00:27:02</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.Utils.dll">
-      <publishTime>07/06/2018 00:27:02</publishTime>
+      <publishTime>06/07/2018 00:27:02</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll">
-      <publishTime>07/06/2018 00:26:58</publishTime>
+      <publishTime>06/07/2018 00:26:58</publishTime>
     </File>
     <File Include="NuGet.Frameworks.dll">
       <publishTime>02/07/2019 16:53:58</publishTime>
     </File>
     <File Include="RocketGame.deps.json">
-      <publishTime>05/15/2019 23:43:43</publishTime>
+      <publishTime>05/16/2019 22:04:14</publishTime>
     </File>
     <File Include="RocketGame.dll">
-      <publishTime>05/14/2019 22:23:44</publishTime>
+      <publishTime>05/16/2019 22:03:40</publishTime>
     </File>
     <File Include="RocketGame.pdb">
-      <publishTime>05/14/2019 22:23:44</publishTime>
+      <publishTime>05/16/2019 22:03:40</publishTime>
     </File>
     <File Include="RocketGame.runtimeconfig.json">
-      <publishTime>05/15/2019 23:43:43</publishTime>
+      <publishTime>05/16/2019 22:04:14</publishTime>
     </File>
     <File Include="RocketGame.Views.dll">
-      <publishTime>05/15/2019 23:38:57</publishTime>
+      <publishTime>05/16/2019 22:04:03</publishTime>
     </File>
     <File Include="RocketGame.Views.pdb">
-      <publishTime>05/15/2019 23:38:57</publishTime>
+      <publishTime>05/16/2019 22:04:03</publishTime>
     </File>
     <File Include="runtimes/unix/lib/netcoreapp2.0/System.Drawing.Common.dll">
       <publishTime>11/14/2017 15:14:46</publishTime>
@@ -113,10 +113,10 @@
       <publishTime>11/14/2017 15:14:46</publishTime>
     </File>
     <File Include="System.Xml.XPath.XmlDocument.dll">
-      <publishTime>05/11/2016 04:57:34</publishTime>
+      <publishTime>11/05/2016 04:57:34</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>05/15/2019 23:43:43</publishTime>
+      <publishTime>05/16/2019 22:04:14</publishTime>
     </File>
     <File Include="wwwroot/css/site.css">
       <publishTime>05/14/2019 22:18:40</publishTime>

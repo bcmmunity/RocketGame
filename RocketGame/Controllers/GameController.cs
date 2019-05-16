@@ -101,7 +101,8 @@ namespace RocketGame.Controllers
 
 		public bool LastTickCheck()
 		{
-			if (DateTime.Now >= db.Settings.Last().GameEnd && db.Settings.Last().GameEnd != DateTime.MinValue && !db.Settings.Last().IsFinished)
+			if (DateTime.Now >= db.Settings.Last().GameEnd && db.Settings.Last().GameEnd != DateTime.MinValue && !db.Settings.Last().IsFinished
+				&& !db.Settings.Last().IsFinished)
 			{
 				return true;
 			}
