@@ -74,7 +74,7 @@ using RocketGame.Models;
             WriteLiteral("</h2>\r\n\r\n\t");
             EndContext();
             BeginContext(243, 123, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "10f1ef388e074c10882d317c682cb167", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "99620975e22640dbb33bf9d9b906ef2b", async() => {
                 BeginContext(335, 27, true);
                 WriteLiteral("Открыть таблицу результатов");
                 EndContext();

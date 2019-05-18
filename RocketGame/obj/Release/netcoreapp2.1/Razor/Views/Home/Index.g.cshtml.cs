@@ -73,7 +73,7 @@ using RocketGame.Models;
             WriteLiteral("</h1>\r\n\t\t\t");
             EndContext();
             BeginContext(222, 695, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "1a418f10ee5a46e7adaefabdb3c0583f", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "4029cd8e1536484fadd88fcabb5cee61", async() => {
                 BeginContext(283, 220, true);
                 WriteLiteral("\r\n\t\t\t\t<label>Ваш код-приглашение (из email):</label><br />\r\n\t\t\t\t<input type=\"text\" name=\"Promo\" id=\"Promo\" /><br /><br />\r\n\t\t\t\t<label>Придумайте себе псевдоним:</label><br />\r\n\t\t\t\t<input type=\"text\" name=\"Name\" id=\"Name\"");
                 EndContext();
@@ -131,7 +131,7 @@ WriteAttributeValue("", 667, ViewBag.RealName, 667, 17, false);
             WriteLiteral("</h1>\r\n\t\t\t");
             EndContext();
             BeginContext(1042, 296, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "b82137bdbdf44d38b757f970a7b6c227", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "4572b564e1bc4ec3b8bd70a505dd43ef", async() => {
                 BeginContext(1103, 228, true);
                 WriteLiteral("\r\n\t\t\t\t<label>Ваш ключ:</label><br />\r\n\t\t\t\t<input type=\"text\" id=\"Key1\" oninput=\"io()\"/><br /><br />\r\n\t\t\t\t<a href=\"/Home/Game?Key=\" id=\"Key\" class=\"btn\">Вернуться в игру</a>\r\n\t\t\t\t<p class=\"info\">Я уже получил ключ игрока</p>\r\n\t\t\t");
                 EndContext();

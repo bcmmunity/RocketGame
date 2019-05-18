@@ -6,11 +6,12 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
-<h3>Код для входа в игру - @ViewBag.Promo</h3>
+<h3>
+    <span>Код-приглашение: @ViewBag.Promo</span>
+    <span id="time"></span>
+    <span id="timeE"></span>
+</h3>
 <h3 id="msg"></h3>
-<h3 id="time"></h3>
-<h3 id="timeE"></h3>
-
 
 <div id="content">
 	<table class="card" id="table2" style="background-color: darkgray">
@@ -78,26 +79,26 @@
 			total -= 1;
 
 			$("#time").empty();
-			$("#time").append("Осталось " + Math.floor(total / 60) + ":" + total % 60);
+			$("#time").append("| До конца такта: " + Math.floor(total / 60) + ":" + total % 60);
 		}
 		else {
 			total = 60 * @ViewBag.time;
 
 			$("#time").empty();
-			$("#time").append("Осталось " + total / 60 + ":" + total % 60);
+			$("#time").append("| До конца такта: " + total / 60 + ":" + total % 60);
 		}
 
 		if (totalE != 0) {
 			totalE -= 1;
 
 			$("#timeE").empty();
-			$("#timeE").append("Осталось " + Math.floor(totalE / 60) + ":" + totalE % 60 + " до конца игры");
+			$("#timeE").append("| До конца игры: " + Math.floor(totalE / 60) + ":" + totalE % 60);
 		}
 		else {
 			totalE = Math.floor(@ViewBag.timeE);
 
 			$("#timeE").empty();
-			$("#timeE").append("Осталось " + totalE / 60 + ":" + totalE % 60 + " до конца игры");
+			$("#timeE").append("| До конца игры: " + totalE / 60 + ":" + totalE % 60);
 		}
 
 		setTimeout(updateTime, 1000);

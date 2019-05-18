@@ -115,7 +115,6 @@ C:\Users\Никита\Desktop\RocketGame\RocketGame\bin\Release\netcoreapp2.1\Ro
 C:\Users\Никита\Desktop\RocketGame\RocketGame\bin\Release\netcoreapp2.1\RocketGame.pdb
 C:\Users\Никита\Desktop\RocketGame\RocketGame\bin\Release\netcoreapp2.1\RocketGame.Views.dll
 C:\Users\Никита\Desktop\RocketGame\RocketGame\bin\Release\netcoreapp2.1\RocketGame.Views.pdb
-C:\Users\Никита\Desktop\RocketGame\RocketGame\obj\Release\netcoreapp2.1\RocketGame.csprojAssemblyReference.cache
 C:\Users\Никита\Desktop\RocketGame\RocketGame\obj\Release\netcoreapp2.1\RocketGame.csproj.CoreCompileInputs.cache
 C:\Users\Никита\Desktop\RocketGame\RocketGame\obj\Release\netcoreapp2.1\RocketGame.RazorAssemblyInfo.cache
 C:\Users\Никита\Desktop\RocketGame\RocketGame\obj\Release\netcoreapp2.1\RocketGame.RazorAssemblyInfo.cs
@@ -144,3 +143,4 @@ C:\Users\Никита\Desktop\RocketGame\RocketGame\obj\Release\netcoreapp2.1\Ro
 C:\Users\Никита\Desktop\RocketGame\RocketGame\obj\Release\netcoreapp2.1\RocketGame.dll
 C:\Users\Никита\Desktop\RocketGame\RocketGame\obj\Release\netcoreapp2.1\RocketGame.pdb
 C:\Users\Никита\Desktop\RocketGame\RocketGame\obj\Release\netcoreapp2.1\RocketGame.csproj.CopyComplete
+C:\Users\Никита\Desktop\RocketGame\RocketGame\obj\Release\netcoreapp2.1\RocketGame.csprojAssemblyReference.cache

@@ -87,7 +87,7 @@ namespace RocketGame.Controllers
 			if (db.Settings.Last().IsFinished == false)
 			{
 				if (DateTime.Now >= db.Settings.Last().GameEnd
-					&& DateTime.Now >= db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick))
+					&& DateTime.Now >= db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick) && !db.Settings.Last().IsPaused)
 				{
 					FinishGame();
 				}
@@ -101,8 +101,7 @@ namespace RocketGame.Controllers
 
 		public bool LastTickCheck()
 		{
-			if (DateTime.Now >= db.Settings.Last().GameEnd && db.Settings.Last().GameEnd != DateTime.MinValue && !db.Settings.Last().IsFinished
-				&& !db.Settings.Last().IsFinished)
+			if (DateTime.Now >= db.Settings.Last().GameEnd && db.Settings.Last().GameEnd != DateTime.MinValue && !db.Settings.Last().IsFinished)
 			{
 				return true;
 			}
@@ -238,6 +237,7 @@ namespace RocketGame.Controllers
 			db.Settings.Last().GameEnd = db.Settings.Last().GameEnd.Add(diff);
 			db.Settings.Last().IsPaused = false;
 			db.SaveChanges();
+			AddTick();
 		}
 
 		#endregion
@@ -255,30 +255,37 @@ namespace RocketGame.Controllers
 				}
 			}
 
-            if (count == db.Settings.Last().TeamCount)
-            {
-                db.Logs.Add(new Log { Msg = "Game started" });
-                db.SaveChanges();
+			if (count == db.Settings.Last().TeamCount && !db.Settings.Last().IsStarted && !db.Settings.Last().IsFinished)
+			{
+				db.Logs.Add(new Log { Msg = "Game started" });
+				db.SaveChanges();
 
 				if (System.IO.File.Exists("Test.xlsx"))
 				{
 					System.IO.File.Delete("Test.xlsx");
 				}
 
-                Tick Tick = new Tick();
-                Tick.Number = 1;
+				Tick Tick = new Tick();
+				Tick.Number = 1;
 				//Tick.Updated = false;
 				Tick.Start = DateTime.Now;
-                db.Ticks.Add(Tick);
+				db.Ticks.Add(Tick);
 
-                db.Logs.Add(new Log { Msg = "StartGame end" });
+				db.Logs.Add(new Log { Msg = "StartGame end" });
 				db.Settings.Last().GameEnd = Tick.Start.AddMinutes(db.Settings.Last().TimeGame);
 				db.Settings.FirstOrDefault().IsStarted = true;
-                db.SaveChanges();
+				db.SaveChanges();
 
-                return "Игра началась";
-            }
-            return "Не все игроки вошли!";
+				return "Игра началась";
+			}
+			else if (db.Settings.Last().IsFinished)
+			{
+				return "Эта игра уже закончилась";
+			}
+			else
+			{
+				return "Не все игроки вошли!";
+			}
 		}
 
 		public string AddTick()
