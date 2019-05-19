@@ -129,14 +129,9 @@ namespace RocketGame.Controllers
 		public string GameCheck()
 		{
 
-			if (db.Settings.Last().IsFinished && db.Users.Where(n => n.InRocket == true).Count() == db.Settings.Last().RocketSize)
+			if (db.Settings.Last().IsFinished)
 			{
-				return "Выжившие улетели!";
-			}
-
-			if (db.Settings.Last().IsFinished && db.Users.Where(n => n.InRocket == true).Count() != db.Settings.Last().RocketSize)
-			{
-				return "Все погибли!";
+				return "Игра завершилась!";
 			}
 
 			if (!db.Settings.FirstOrDefault().IsStarted)
@@ -207,6 +202,42 @@ namespace RocketGame.Controllers
 		{
 			List<Team> teams = db.Teams.Where(n => n.TeamId != db.Users.Where(f => f.Key == Key).FirstOrDefault().Team.TeamId).ToList();
 			return teams;
+		}
+
+		public string GameResult()
+		{
+			string msg = " ";
+
+			if (db.Settings.Last().IsFinished && db.Users.Where(x => x.InRocket == true).Count() == db.Settings.Last().RocketSize)
+			{
+				string winners = "";
+				int i = 1; //Счетчик игроков
+
+				foreach (User user in db.Users.Where(x => x.InRocket == true).ToList())
+				{
+					if (i != db.Settings.Last().RocketSize)
+					{
+						winners += user.Name + ", ";
+						i++;
+					}
+					else
+					{
+						winners += user.Name;
+					}
+				}
+
+				msg = "Выжившие из команды " + db.Users.Where(x => x.InRocket == true).FirstOrDefault().Team.Name + " " + winners + "улетели!";
+			}
+			else if (db.Settings.Last().IsFinished && db.Users.Where(x => x.InRocket == true).Count() != db.Settings.Last().RocketSize)
+			{
+				msg = "Метеорит упал на землю, все погибли!";
+			}
+			else
+			{
+				msg = "NotFinished";
+			}
+
+			return msg;
 		}
 
 		public List<Team> GroupList()
@@ -447,7 +478,7 @@ namespace RocketGame.Controllers
 			{
 				//db1.Ticks.Last().Updated = true;
 
-				db1.Logs.Add(new Log { Msg = "Update Start" });
+				db1.Logs.Add(new Log { Msg = "Update Start. Tick: " + db1.Ticks.Last().Number.ToString() });
 				db1.SaveChanges();
 
 				List<Move> Moves;
@@ -547,7 +578,7 @@ namespace RocketGame.Controllers
 					foreach (Team team in db1.Teams.ToList())
 					{
 						if (Moves.Where(n => n.User.Team == team).FirstOrDefault() != null &&
-							Moves.Where(n => n.User.Team == team).Count() == db1.Settings.FirstOrDefault().TeamSize)
+							Moves.Where(n => n.User.Team == team).Count() == db1.Settings.Last().RocketSize)
 						{
 							isdone = true;
 							teamids[count] = team.TeamId;
@@ -583,9 +614,7 @@ namespace RocketGame.Controllers
 							db1.Logs.Add(new Log { Msg = "Наибольшее топливо = " + fuel });
 							db1.SaveChanges();
 
-							//if (teams > 1)
-							//{
-							foreach (Move move in Moves.Where(x => x.User.Team.Fuel == fuel).OrderBy(n => n.Time).ToList()) //ОШИБКА
+							foreach (Move move in Moves.Where(x => x.User.Team.Fuel == fuel).OrderBy(n => n.Time).ToList()) //Проверить
 							{
 								for (int f = 0; f < count; f++)
 								{
@@ -605,7 +634,6 @@ namespace RocketGame.Controllers
 
 								if (fl) break;
 							}
-							//}
 
 							//==================================================== СОРИТИРОВКА ИГРОКОВ В РАКЕТУ =============================================================
 
