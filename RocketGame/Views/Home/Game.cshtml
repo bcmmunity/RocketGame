@@ -7,25 +7,25 @@
 <h2 id="warning"></h2>
 
 <div id="moves">
-	<span class="btn" onclick="move = 'powerup'; Confirme()">Усилиться</span>
+	<span class="btn" onclick="move = 'powerup'; choose = 'Усилиться'; Confirme()">Усилиться</span>
 	</br>
 	</br>
-	<span class="btn" onclick="move = 'intellectup'; Confirme()">Обучиться</span>
+	<span class="btn" onclick="move = 'intellectup'; choose = 'Обучиться'; Confirme()">Обучиться</span>
 	</br>
 	</br>
-	<span class="btn" onclick="move = 'gather'; Confirme()">Добыть</span>
+	<span class="btn" onclick="move = 'gather'; choose = 'Добыть'; Confirme()">Добыть</span>
 	</br>
 	</br>
-	<span class="btn" onclick="move = 'attackgroup'; selectTeam()">Атаковать группу</span>
+	<span class="btn" onclick="move = 'attackgroup'; choose = 'Атаковать группу'; selectTeam()">Атаковать группу</span>
 	</br>
 	</br>
-	<span class="btn" onclick="move = 'attackrocket'; Confirme()">Атаковать ракету</span>
+	<span class="btn" onclick="move = 'attackrocket'; choose = 'Атаковать ракету'; Confirme()">Атаковать ракету</span>
 	</br>
 	</br>
-	<span class="btn" onclick="move = 'gift'; selectTeam()">Дарить</span>
+	<span class="btn" onclick="move = 'gift'; choose = 'Дарить'; selectTeam()">Дарить</span>
 	</br>
 	</br>
-	<span id="getinrocket" class='btn' onclick="move = 'getinrocket'; Confirme()">Сесть в ракету</span>
+	<span id="getinrocket" class='btn' onclick="move = 'getinrocket'; choose = 'Сесть в ракету'; Confirme()">Сесть в ракету</span>
 	</br>
 	</br>
 </div>
@@ -43,9 +43,9 @@
 
 @*<input id="k" type="text" value="@ViewBag.key" oninput="io()" /></br>
 
-<a id="k1" href="/Home/Game?Key=" class="btn">Подтвердить</a></br></br>
+	<a id="k1" href="/Home/Game?Key=" class="btn">Подтвердить</a></br></br>
 
-<p id="k2" class="info">Если поле пустое, введите ключ игрока (из Email) и нажмите "Подтвердить"</p>*@
+	<p id="k2" class="info">Если поле пустое, введите ключ игрока (из Email) и нажмите "Подтвердить"</p>*@
 
 <script>
 	$("#kp").empty();
@@ -225,14 +225,23 @@
 	</p>
 </div>
 
+<div id="modal">
+
+</div>
+
+<div class="modal-overlay" id="modal-overlay"></div>
+
 <script type="text/javascript">
 	var move = "s";
+	var choose = "s";
 	var opt = "";
 	var team = "0";
 	var checkk = true;
 	var table = true;
 
 	var proces = true;
+	$('#modal').hide();
+	$('#modal-overlay').hide();
 	$('#kk').hide();
 	$("#moves").hide();
 	$("#teams").hide();
@@ -322,6 +331,26 @@
 
 								table = false;
 							}
+							else if (result == "Выжившиые улетели!" || result == "Все погибли!") {
+								$.ajax({
+									type: "GET",
+									url: "/Game/GameResult",
+
+									success: function (result1) {
+										if (result1 != "NotFinished") {
+											alert(result1);
+
+											table = true;
+
+											$("#msg").empty();
+											$("#msg").append(result1);
+											$("#msg").show();
+											$("#teams").hide();
+											$("#moves").hide();
+										}
+									}
+								});
+							}
 							else {
 								table = true;
 								$("#msg").empty();
@@ -363,7 +392,7 @@
 
 				var i = 0;
 				for (var item in result) {
-					$("#teams").append("<span class='btn' onclick='team = " + result[i].teamId + "; checkk = true; Confirme()'>" + result[i].name + "</span></br></br>");
+					$("#teams").append("<span class='btn' onclick='team = " + result[i].teamId + "; checkk = true;choose += ' " + result[i].name + "'; Confirme()'>" + result[i].name + "</span></br></br>");
 					i++;
 				}
 				$("#teams").append("<span class='btn' onclick='checkk = true;$(\"#moves\").show();$(\"#teams\").hide();'>Отменить</span></br></br>");
@@ -394,10 +423,15 @@
 		$("#moves").hide();
 		$("#teams").empty();
 		$("#teams").show();
-		$("#teams").append("<span class='btn' onclick='checkk = true;makeMove();$(\"#teams\").hide();'>Подтвердить</span></br></br>");
-		$("#teams").append("<span class='btn' onclick='checkk = true;$(\"#moves\").show();$(\"#teams\").hide();'>Отменить</span></br></br>");
+		$("#modal").empty();
+		$("#modal").show();
+
+		$("#modal-overlay").show();
+
+		$("#modal").append("<a><span class='btnn' onclick='checkk = true;$(\"#moves\").show();$(\"#teams\").hide();$(\"#modal\").hide();$(\"#modal-overlay\").hide();' style='background-color: red'>Отменить</span></a>");
+		$("#modal").append("<a><span class='btnn' onclick='checkk = true;makeMove();$(\"#teams\").hide();$(\"#modal\").hide();$(\"#modal-overlay\").hide();' style='background-color: green'>Подтвердить</span></a></br></br>");
 	}
-	
+
 		$.ajax({
 			type: "GET",
 			url: "/Game/KeyCheck",
@@ -480,6 +514,18 @@
 </script>
 
 <style type="text/css">
+
+	.modal-overlay {
+		opacity: 0.5;
+		background-color: black;
+		z-index: 1000;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+
 	.btn {
 		min-width: 20%;
 		min-height: 20px;
@@ -490,7 +536,29 @@
 		color: white;
 	}
 
+	.btnn {
+		min-width: 20%;
+		min-height: 20px;
+		background-color: gray;
+		border-radius: 200px;
+		padding: 5px;
+		float: left;
+		color: white;
+		margin: 10px;
+	}
+
 	.info {
 		color: gray;
+	}
+
+	#modal {
+		margin-left: auto;
+		margin-right: auto;
+		padding: 15px;
+		z-index: 1010;
+		top: 25%;
+		display: block;
+		position: fixed;
+		background-color: white;
 	}
 </style>
