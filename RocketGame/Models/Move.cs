@@ -14,5 +14,6 @@ namespace RocketGame.Models
         public DateTime Time { get; set; }
         public Tick Tick { get; set; }
         public User User { get; set; }
+		public bool IsUpdated { get; set; }
     }
 }
