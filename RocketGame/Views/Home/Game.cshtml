@@ -427,7 +427,7 @@
 		$("#modal").show();
 
 		$("#modal-overlay").show();
-
+		$("#modal").append("Ваше действие: " + choose + "<br>")
 		$("#modal").append("<a><span class='btnn' onclick='checkk = true;$(\"#moves\").show();$(\"#teams\").hide();$(\"#modal\").hide();$(\"#modal-overlay\").hide();' style='background-color: red'>Отменить</span></a>");
 		$("#modal").append("<a><span class='btnn' onclick='checkk = true;makeMove();$(\"#teams\").hide();$(\"#modal\").hide();$(\"#modal-overlay\").hide();' style='background-color: green'>Подтвердить</span></a></br></br>");
 	}

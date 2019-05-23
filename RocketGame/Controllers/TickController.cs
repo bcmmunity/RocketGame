@@ -52,18 +52,25 @@ namespace RocketGame.Controllers
 
             }
 
-			if (db.Settings.Last().IsStarted)
+
+			if (db.Settings.Last() != null)
 			{
 				ViewBag.timeE = (db.Settings.FirstOrDefault().GameEnd - DateTime.Now).TotalSeconds;
 				ViewBag.time = db.Settings.FirstOrDefault().TimeTick;
-				if (db.Ticks.Last() != null)
-				{
-					ViewBag.timedif = (DateTime.Now - db.Ticks.Last().Start).TotalSeconds;
-				}
-				else
-				{
-					ViewBag.timedif = 0;
-				}
+			}
+			else
+			{
+				ViewBag.time = 0;
+				ViewBag.timeE = 0;
+			}
+
+			if (db.Ticks.Last() != null)
+			{
+				ViewBag.timedif = (DateTime.Now - db.Ticks.Last().Start).TotalSeconds;
+			}
+			else
+			{
+				ViewBag.timedif = 0;
 			}
 
 			ViewBag.i = i;
@@ -106,18 +113,24 @@ namespace RocketGame.Controllers
 				ticks++;
 			}
 
-			if (db.Settings.Last().IsStarted)
+			if (db.Settings.Last() != null)
 			{
 				ViewBag.timeE = (db.Settings.FirstOrDefault().GameEnd - DateTime.Now).TotalSeconds;
 				ViewBag.time = db.Settings.FirstOrDefault().TimeTick;
-				if (db.Ticks.Last() != null)
-				{
-					ViewBag.timedif = (DateTime.Now - db.Ticks.Last().Start).TotalSeconds;
-				}
-				else
-				{
-					ViewBag.timedif = 0;
-				}
+			}
+			else
+			{
+				ViewBag.time = 0;
+				ViewBag.timeE = 0;
+			}
+
+			if (db.Ticks.Last() != null)
+			{
+				ViewBag.timedif = (DateTime.Now - db.Ticks.Last().Start).TotalSeconds;
+			}
+			else
+			{
+				ViewBag.timedif = 0;
 			}
 
 			ViewBag.movesJ =  ticks;
