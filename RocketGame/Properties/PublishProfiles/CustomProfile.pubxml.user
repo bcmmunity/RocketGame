@@ -14,13 +14,13 @@
       <publishTime>05/14/2019 22:18:40</publishTime>
     </File>
     <File Include="appsettings.json">
-      <publishTime>05/20/2019 17:39:44</publishTime>
+      <publishTime>05/23/2019 22:25:04</publishTime>
     </File>
     <File Include="credentials.json">
       <publishTime>05/14/2019 22:18:40</publishTime>
     </File>
     <File Include="dotnet-aspnet-codegenerator-design.dll">
-      <publishTime>06/07/2018 00:27:02</publishTime>
+      <publishTime>07/06/2018 00:27:02</publishTime>
     </File>
     <File Include="EPPlus.Core.dll">
       <publishTime>11/30/2017 09:51:26</publishTime>
@@ -47,46 +47,46 @@
       <publishTime>02/07/2019 16:53:12</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.Contracts.dll">
-      <publishTime>06/07/2018 00:27:00</publishTime>
+      <publishTime>07/06/2018 00:27:00</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.Core.dll">
-      <publishTime>06/07/2018 00:26:58</publishTime>
+      <publishTime>07/06/2018 00:26:58</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.dll">
-      <publishTime>06/07/2018 00:26:54</publishTime>
+      <publishTime>07/06/2018 00:26:54</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore.dll">
-      <publishTime>06/07/2018 00:26:56</publishTime>
+      <publishTime>07/06/2018 00:26:56</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.Templating.dll">
-      <publishTime>06/07/2018 00:27:02</publishTime>
+      <publishTime>07/06/2018 00:27:02</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.Utils.dll">
-      <publishTime>06/07/2018 00:27:02</publishTime>
+      <publishTime>07/06/2018 00:27:02</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll">
-      <publishTime>06/07/2018 00:26:58</publishTime>
+      <publishTime>07/06/2018 00:26:58</publishTime>
     </File>
     <File Include="NuGet.Frameworks.dll">
       <publishTime>02/07/2019 16:53:58</publishTime>
     </File>
     <File Include="RocketGame.deps.json">
-      <publishTime>05/22/2019 19:45:51</publishTime>
+      <publishTime>05/24/2019 10:48:31</publishTime>
     </File>
     <File Include="RocketGame.dll">
-      <publishTime>05/20/2019 17:43:54</publishTime>
+      <publishTime>05/24/2019 10:38:24</publishTime>
     </File>
     <File Include="RocketGame.pdb">
-      <publishTime>05/20/2019 17:43:54</publishTime>
+      <publishTime>05/24/2019 10:38:24</publishTime>
     </File>
     <File Include="RocketGame.runtimeconfig.json">
-      <publishTime>05/22/2019 19:45:53</publishTime>
+      <publishTime>05/24/2019 10:48:31</publishTime>
     </File>
     <File Include="RocketGame.Views.dll">
-      <publishTime>05/22/2019 19:43:10</publishTime>
+      <publishTime>05/24/2019 10:38:34</publishTime>
     </File>
     <File Include="RocketGame.Views.pdb">
-      <publishTime>05/22/2019 19:43:10</publishTime>
+      <publishTime>05/24/2019 10:38:34</publishTime>
     </File>
     <File Include="runtimes/unix/lib/netcoreapp2.0/System.Drawing.Common.dll">
       <publishTime>11/14/2017 15:14:46</publishTime>
@@ -113,10 +113,10 @@
       <publishTime>11/14/2017 15:14:46</publishTime>
     </File>
     <File Include="System.Xml.XPath.XmlDocument.dll">
-      <publishTime>11/05/2016 04:57:34</publishTime>
+      <publishTime>05/11/2016 04:57:34</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>05/22/2019 19:45:53</publishTime>
+      <publishTime>05/24/2019 10:48:31</publishTime>
     </File>
     <File Include="wwwroot/css/site.css">
       <publishTime>05/14/2019 22:18:40</publishTime>
@@ -227,7 +227,7 @@
       <publishTime>05/14/2019 22:18:40</publishTime>
     </File>
     <File Include="wwwroot/Test.xlsx">
-      <publishTime>05/14/2019 22:18:40</publishTime>
+      <publishTime>05/23/2019 21:10:10</publishTime>
     </File>
   </ItemGroup>
 </Project>

@@ -52,8 +52,7 @@ namespace RocketGame.Controllers
 
             }
 
-
-			if (db.Settings.Last() != null)
+			if (db.Settings.Last().GameEnd != DateTime.MinValue)
 			{
 				ViewBag.timeE = (db.Settings.FirstOrDefault().GameEnd - DateTime.Now).TotalSeconds;
 				ViewBag.time = db.Settings.FirstOrDefault().TimeTick;
@@ -64,7 +63,7 @@ namespace RocketGame.Controllers
 				ViewBag.timeE = 0;
 			}
 
-			if (db.Ticks.Last() != null)
+			if (db.Ticks.FirstOrDefault() != null)
 			{
 				ViewBag.timedif = (DateTime.Now - db.Ticks.Last().Start).TotalSeconds;
 			}
@@ -113,7 +112,7 @@ namespace RocketGame.Controllers
 				ticks++;
 			}
 
-			if (db.Settings.Last() != null)
+			if (db.Settings.Last().GameEnd != DateTime.MinValue)
 			{
 				ViewBag.timeE = (db.Settings.FirstOrDefault().GameEnd - DateTime.Now).TotalSeconds;
 				ViewBag.time = db.Settings.FirstOrDefault().TimeTick;
@@ -124,7 +123,7 @@ namespace RocketGame.Controllers
 				ViewBag.timeE = 0;
 			}
 
-			if (db.Ticks.Last() != null)
+			if (db.Ticks.FirstOrDefault() != null)
 			{
 				ViewBag.timedif = (DateTime.Now - db.Ticks.Last().Start).TotalSeconds;
 			}

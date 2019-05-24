@@ -217,14 +217,17 @@ namespace RocketGame.Controllers
 
 		public string GameResult()
 		{
+			List<User> Users = db.Users.Where(x => x.InRocket == true).Include(g => g.Team).ToList();
+
 			string msg = " ";
 
-			if (db.Settings.Last().IsFinished && db.Users.Where(x => x.InRocket == true).Count() == db.Settings.Last().RocketSize)
+			if (db.Settings.Last().IsFinished && Users.Count() == db.Settings.Last().RocketSize)
 			{
 				string winners = "";
 				int i = 1; //Счетчик игроков
+				winners = Users.FirstOrDefault().Team.Name + " "; 
 
-				foreach (User user in db.Users.Where(x => x.InRocket == true).ToList())
+				foreach (User user in Users)
 				{
 					if (i != db.Settings.Last().RocketSize)
 					{
@@ -237,7 +240,7 @@ namespace RocketGame.Controllers
 					}
 				}
 
-				msg = "Выжившие из команды " + db.Users.Where(x => x.InRocket == true).FirstOrDefault().Team.Name + " " + winners + "улетели!";
+				msg = "Выжившие из команды " + winners + " улетели!";
 			}
 			else if (db.Settings.Last().IsFinished && db.Users.Where(x => x.InRocket == true).Count() != db.Settings.Last().RocketSize)
 			{
