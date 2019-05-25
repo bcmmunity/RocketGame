@@ -239,6 +239,7 @@
 	var team = "0";
 	var checkk = true;
 	var table = true;
+	var isfin = true;
 
 	var proces = true;
 	$('#modal').hide();
@@ -332,13 +333,13 @@
 
 								table = false;
 							}
-							else if (result == "Выжившиые улетели!" || result == "Все погибли!") {
+							else if (result == "Выжившие улетели!" || result == "Все погибли!") {
 								$.ajax({
 									type: "GET",
 									url: "/Game/GameResult",
 
 									success: function (result1) {
-										if (result1 != "NotFinished") {
+										if (result1 != "NotFinished" && isfin) {
 											alert(result1);
 
 											table = true;
@@ -348,6 +349,7 @@
 											$("#msg").show();
 											$("#teams").hide();
 											$("#moves").hide();
+											isfin = false;
 										}
 									}
 								});
