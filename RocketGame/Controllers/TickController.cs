@@ -27,8 +27,8 @@ namespace RocketGame.Controllers
 		public void Unit()
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
 		}
@@ -53,7 +53,7 @@ namespace RocketGame.Controllers
             }
 
 
-			if (db.Settings.Last() != null)
+			if (db.Settings.FirstOrDefault() != null)
 			{
 				ViewBag.timeE = (db.Settings.FirstOrDefault().GameEnd - DateTime.Now).TotalSeconds;
 				ViewBag.time = db.Settings.FirstOrDefault().TimeTick;
@@ -64,7 +64,7 @@ namespace RocketGame.Controllers
 				ViewBag.timeE = 0;
 			}
 
-			if (db.Ticks.Last() != null)
+			if (db.Ticks.FirstOrDefault() != null)
 			{
 				ViewBag.timedif = (DateTime.Now - db.Ticks.Last().Start).TotalSeconds;
 			}
@@ -113,7 +113,7 @@ namespace RocketGame.Controllers
 				ticks++;
 			}
 
-			if (db.Settings.Last() != null)
+			if (db.Settings.FirstOrDefault() != null)
 			{
 				ViewBag.timeE = (db.Settings.FirstOrDefault().GameEnd - DateTime.Now).TotalSeconds;
 				ViewBag.time = db.Settings.FirstOrDefault().TimeTick;
@@ -124,7 +124,7 @@ namespace RocketGame.Controllers
 				ViewBag.timeE = 0;
 			}
 
-			if (db.Ticks.Last() != null)
+			if (db.Ticks.FirstOrDefault() != null)
 			{
 				ViewBag.timedif = (DateTime.Now - db.Ticks.Last().Start).TotalSeconds;
 			}
