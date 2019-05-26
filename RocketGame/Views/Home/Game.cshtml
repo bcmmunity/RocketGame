@@ -395,7 +395,7 @@
 
 				var i = 0;
 				for (var item in result) {
-					$("#teams").append("<span class='btn' onclick='team = " + result[i].teamId + "; checkk = true;choose += ' " + result[i].name + "'; Confirme()'>" + result[i].name + "</span></br></br>");
+					$("#teams").append("<span class='btn' onclick=\"team = " + result[i].teamId + "; checkk = true;choose += '" + result[i].name + "'; Confirme()\">" + result[i].name + "</span></br></br>");
 					i++;
 				}
 				$("#teams").append("<span class='btn' onclick='checkk = true;$(\"#moves\").show();$(\"#teams\").hide();'>Отменить</span></br></br>");

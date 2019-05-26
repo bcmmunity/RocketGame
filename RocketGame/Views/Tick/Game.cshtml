@@ -78,6 +78,9 @@
 	updateTime();
 
 	function updateTime() {
+
+		if (!isfin) return;
+
 		if (total != 0) {
 			total -= 1;
 
@@ -137,6 +140,8 @@
 							$("#msg").empty();
 							$("#msg").append(result);
 							isfin = false;
+							$("#time").empty();
+							$("#timeE").empty();
 						}
 					}
 				}
@@ -166,6 +171,8 @@
 						$("#msg").empty();
 						$("#msg").append(result);
 						isfin = false;
+						$("#time").empty();
+						$("#timeE").empty();
 					}
 				}
 			}
