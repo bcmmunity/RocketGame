@@ -32,8 +32,8 @@ namespace RocketGame.Controllers
 		public void Unit()
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
 		}
@@ -43,8 +43,8 @@ namespace RocketGame.Controllers
 
 		public void Make(Move Move, string Key, int TeamId)
         {
-            if (Move.Type == "powerup" || Move.Type == "intellectup" || Move.Type == "gather" || Move.Type == "gift" 
-				|| Move.Type == "attackgroup" || Move.Type == "attackrocket" || Move.Type == "getinrocket")
+            if ((Move.Type == "powerup" || Move.Type == "intellectup" || Move.Type == "gather" || Move.Type == "gift" 
+				|| Move.Type == "attackgroup" || Move.Type == "attackrocket" || Move.Type == "getinrocket") && DateTime.Now < db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick)) 
             {
                 Move.User = db.Users.Where(n => n.Key == Key).FirstOrDefault();
                 Move.Tick = db.Ticks.Last();
