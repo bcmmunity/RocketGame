@@ -43,45 +43,49 @@ namespace RocketGame.Controllers
 
 		public void Make(Move Move, string Key, int TeamId)
         {
-            if ((Move.Type == "powerup" || Move.Type == "intellectup" || Move.Type == "gather" || Move.Type == "gift" 
-				|| Move.Type == "attackgroup" || Move.Type == "attackrocket" || Move.Type == "getinrocket") && DateTime.Now < db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick)) 
-            {
-                Move.User = db.Users.Where(n => n.Key == Key).FirstOrDefault();
-                Move.Tick = db.Ticks.Last();
-                Move.Time = DateTime.Now;
-                Move.To = db.Teams.Find(TeamId);
-				Move.IsUpdated = false;
-				db.Moves.Add(Move);
-                db.SaveChanges();
+			if (db.Moves.Where(n => n.Tick.Number == db.Ticks.Last().Number).Where(m => m.User.Key == Key).FirstOrDefault() == null 
+				&& db.Users.Where(x => x.Key == Key).FirstOrDefault() != null)
+			{
+				if ((Move.Type == "powerup" || Move.Type == "intellectup" || Move.Type == "gather" || Move.Type == "gift"
+					|| Move.Type == "attackgroup" || Move.Type == "attackrocket" || Move.Type == "getinrocket") && DateTime.Now < db.Ticks.Last().Start.AddMinutes(db.Settings.Last().TimeTick))
+				{
+					Move.User = db.Users.Where(n => n.Key == Key).FirstOrDefault();
+					Move.Tick = db.Ticks.Last();
+					Move.Time = DateTime.Now;
+					Move.To = db.Teams.Find(TeamId);
+					Move.IsUpdated = false;
+					db.Moves.Add(Move);
+					db.SaveChanges();
 
-                Tick LastTick = db.Ticks.Last();
+					Tick LastTick = db.Ticks.Last();
 
-                db.Logs.Add(new Log { Msg = Move.Type + " " + db.Users.Where(n => n.Key == Key).FirstOrDefault().Key });
-                db.SaveChanges();
+					db.Logs.Add(new Log { Msg = Move.Type + " " + db.Users.Where(n => n.Key == Key).FirstOrDefault().Key });
+					db.SaveChanges();
 
-                if (db.Settings.FirstOrDefault().TeamCount * db.Settings.FirstOrDefault().TeamSize == db.Moves.Where(n => n.Tick == LastTick).Count())
-                {
-                    db.Logs.Add(new Log { Msg = "Move check done" });
-                    db.SaveChanges();
-
-					if (DateTime.Now >= db.Settings.Last().GameEnd)
+					if (db.Settings.FirstOrDefault().TeamCount * db.Settings.FirstOrDefault().TeamSize == db.Moves.Where(n => n.Tick == LastTick).Count())
 					{
-						Update();
-						FinishGame();
-					}
-					else
-					{
-						if (!db.Settings.Last().IsPaused)
+						db.Logs.Add(new Log { Msg = "Move check done" });
+						db.SaveChanges();
+
+						if (DateTime.Now >= db.Settings.Last().GameEnd)
 						{
-							db.Logs.Add(new Log { Msg = "Move starts Update" });
-							db.SaveChanges();
-
 							Update();
-							AddTick();
+							FinishGame();
+						}
+						else
+						{
+							if (!db.Settings.Last().IsPaused)
+							{
+								db.Logs.Add(new Log { Msg = "Move starts Update" });
+								db.SaveChanges();
+
+								Update();
+								AddTick();
+							}
 						}
 					}
-                }
-            }
+				}
+			}
         }
 
 		#region Checks
@@ -591,7 +595,7 @@ namespace RocketGame.Controllers
 				foreach (Team team in db.Teams.ToList())
 				{
 					if (Moves.Where(n => n.User.Team == team).FirstOrDefault() != null &&
-						Moves.Where(n => n.User.Team == team).Count() == db.Settings.Last().RocketSize)
+						Moves.Where(n => n.User.Team == team).Count() >= db.Settings.Last().RocketSize)
 					{
 						isdone = true;
 						teamids[count] = team.TeamId;
@@ -661,12 +665,9 @@ namespace RocketGame.Controllers
 
 							foreach (Move winners in Moves.Where(m => m.User.Team.TeamId == winner).ToList())
 							{
-								if (!winners.IsUpdated)
-								{
-									db.Users.Find(winners.User.UserId).InRocket = true;
-									db.Moves.Find(winners.MoveId).IsUpdated = true;
-									db.SaveChanges();
-								}
+								db.Users.Find(winners.User.UserId).InRocket = true;
+								db.Moves.Find(winners.MoveId).IsUpdated = true;
+								db.SaveChanges();
 							}
 						}
 						else //Есть конкуренция в команде
@@ -682,6 +683,10 @@ namespace RocketGame.Controllers
 								powint[countwinner] += move.User.Power + move.User.Intellect;
 								userid[countwinner] = move.User.UserId;
 
+								db.Logs.Add(new Log { Msg = countwinner + ": " + powint[countwinner]});
+								db.Logs.Add(new Log { Msg = countwinner + ": " + userid[countwinner] });
+								db.SaveChanges();
+
 								countwinner++;
 							}
 
@@ -694,9 +699,15 @@ namespace RocketGame.Controllers
 								{
 									if (powint[k] < powint[p]) //Сортировка
 									{
+										db.Logs.Add(new Log { Msg = "powint " + k + " = " + powint[k] + " | " + "powint " + p + " = " + powint[p] });
+										db.SaveChanges();
+
 										int t = powint[p];
 										powint[p] = powint[k];
 										powint[k] = t;
+
+										db.Logs.Add(new Log { Msg = "userid " + k + " = " + userid[k] + " | " + "userid " + p + " = " + userid[p] });
+										db.SaveChanges();
 
 										t = userid[p];
 										userid[p] = userid[k];
@@ -715,12 +726,9 @@ namespace RocketGame.Controllers
 								g = false;
 								for (int s = 0; s < index; s++)
 								{
-									if (!db.Moves.Where(m => m.User.UserId == userid[s]).FirstOrDefault().IsUpdated)
-									{
-										db.Users.Where(m => m.UserId == userid[s]).FirstOrDefault().InRocket = true;
-										db.Moves.Where(m => m.User.UserId == userid[s]).FirstOrDefault().IsUpdated = true;
-										db.SaveChanges();
-									}
+									db.Users.Where(m => m.UserId == userid[s]).FirstOrDefault().InRocket = true;
+									db.Moves.Where(m => m.User.UserId == userid[s]).FirstOrDefault().IsUpdated = true;
+									db.SaveChanges();
 								}
 							}
 
@@ -757,12 +765,10 @@ namespace RocketGame.Controllers
 
 								for (int s = 0; s <= borders; s++)
 								{
-									if (!db.Moves.Where(m => m.User.UserId == userid[s]).FirstOrDefault().IsUpdated)
-									{
-										db.Users.Where(m => m.UserId == userid[s]).FirstOrDefault().InRocket = true;
-										db.Moves.Where(m => m.User.UserId == userid[s]).FirstOrDefault().IsUpdated = true;
-										db.SaveChanges();
-									}
+									db.Users.Where(m => m.UserId == userid[s]).FirstOrDefault().InRocket = true;
+									db.Moves.Where(m => m.User.UserId == userid[s]).FirstOrDefault().IsUpdated = true;
+									db.SaveChanges();
+
 								}
 
 								db.Logs.Add(new Log { Msg = "Прошел первый for для верхней границы" });
@@ -802,12 +808,10 @@ namespace RocketGame.Controllers
 
 								for (int b = 0; b < db.Settings.FirstOrDefault().RocketSize - borders; b++)
 								{
-									if (!db.Moves.Where(m => m.User.UserId == userid[b]).FirstOrDefault().IsUpdated)
-									{
-										db.Users.Where(m => m.UserId == userid[b]).FirstOrDefault().InRocket = true;
-										db.Moves.Where(m => m.User.UserId == userid[b]).FirstOrDefault().IsUpdated = true;
-										db.SaveChanges();
-									}
+									db.Users.Where(m => m.UserId == userid[b]).FirstOrDefault().InRocket = true;
+									db.Moves.Where(m => m.User.UserId == userid[b]).FirstOrDefault().IsUpdated = true;
+									db.SaveChanges();
+
 								}
 							}
 						}
