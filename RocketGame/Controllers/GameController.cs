@@ -833,6 +833,7 @@ namespace RocketGame.Controllers
 			if (db.Moves.Where(n => n.Tick == db.Ticks.Last()).Where(a => a.Type == "attackgroup").Count() != 0)
 			{
 				List<Move> Moves = db.Moves.Where(n => n.Tick == db.Ticks.Last()).Where(a => a.Type == "attackgroup").Include(f => f.User).Include(a => a.User.Team).Include(g => g.To).ToList();
+
 				foreach (Team target in db.Teams.ToList())
 				{
 					db.Logs.Add(new Log { Msg = "Атака на " + target.Name });
@@ -850,13 +851,13 @@ namespace RocketGame.Controllers
 							power[i] = 0;
 							earlyuserid[i] = DateTime.Now; //Moves.Where(n => n.User.Team == team).First().Time;
 
-							if (db.Moves.Where(n => n.Tick == db.Ticks.Last()).Where(a => a.Type == "attackgroup").Where(n => n.User.Team == team).Where(n => n.To == target).ToList() != null)
+							if (Moves.Where(n => n.User.Team == team).Where(n => n.To == target).FirstOrDefault() != null)
 							{
-								db.Logs.Add(new Log { Msg = "Прошел проверку. i = " + i });
+								db.Logs.Add(new Log { Msg = team.Name + " прошел проверку. i = " + i });
 
 								ids[i] = team.TeamId;
 
-								foreach (Move attacker in db.Moves.Where(n => n.Tick == db.Ticks.Last()).Where(a => a.Type == "attackgroup").Where(n => n.User.Team == team).Where(n => n.To == target).Include(c => c.User).ToList()) // 
+								foreach (Move attacker in Moves.Where(t => t.To == target).Where(n => n.User.Team == team).ToList()) //db.Moves.Where(n => n.Tick == db.Ticks.Last()).Where(a => a.Type == "attackgroup").Where(n => n.User.Team == team).Where(n => n.To == target).Include(c => c.User).ToList())
 								{
 									db.Logs.Add(new Log { Msg = "MoveId: " + attacker.MoveId });
 									db.SaveChanges();
@@ -884,125 +885,128 @@ namespace RocketGame.Controllers
 							}
 						}
 
-						for (int j = 1; j < i; j++)
+						if (i != 0)
 						{
-							for (int k = 0; k < j; k++)
+							for (int j = 1; j < i; j++)
 							{
-								if (power[k] < power[j])
+								for (int k = 0; k < j; k++)
 								{
-									int n = power[j];
-									power[j] = power[k];
-									power[k] = n;
+									if (power[k] < power[j])
+									{
+										int n = power[j];
+										power[j] = power[k];
+										power[k] = n;
 
-									n = ids[j];
-									ids[j] = ids[k];
-									ids[k] = n;
+										n = ids[j];
+										ids[j] = ids[k];
+										ids[k] = n;
 
-									DateTime t = earlyuserid[j];
-									earlyuserid[j] = earlyuserid[k];
-									earlyuserid[k] = t;
+										DateTime t = earlyuserid[j];
+										earlyuserid[j] = earlyuserid[k];
+										earlyuserid[k] = t;
+									}
 								}
 							}
-						}
 
-						int equalcount = 1; //Количество самых сильных
-						for (int j = 1; j < i; j++)
-						{
-							if (power[0] == power[j])
+							int equalcount = 1; //Количество самых сильных
+							for (int j = 1; j < i; j++)
 							{
-								equalcount++;
+								if (power[0] == power[j])
+								{
+									equalcount++;
+								}
 							}
-						}
 
-						db.Logs.Add(new Log { Msg = "Где-то тут запускается AttackGroupResult" });
-						db.SaveChanges();
-
-						if (equalcount == 1)
-						{
-							db.Logs.Add(new Log { Msg = "1) Тут" });
+							db.Logs.Add(new Log { Msg = "Где-то тут запускается AttackGroupResult" });
 							db.SaveChanges();
 
-							AttackGroupResult(0, ids, power, target);
-							db.SaveChanges();
-						}
-
-						if (equalcount == 2)
-						{
-
-							if (earlyuserid[0] < earlyuserid[1])
+							if (equalcount == 1)
 							{
-								db.Logs.Add(new Log { Msg = "2) Тут" });
+								db.Logs.Add(new Log { Msg = "1) Тут" });
 								db.SaveChanges();
 
 								AttackGroupResult(0, ids, power, target);
 								db.SaveChanges();
 							}
-							else
-							{
-								db.Logs.Add(new Log { Msg = "3) Тут" });
-								db.SaveChanges();
 
-								AttackGroupResult(1, ids, power, target);
-								db.SaveChanges();
-							}
-						}
-
-						if (equalcount == 3)
-						{
-							for (int j = 1; j < 3; j++) //Проверить (Сортировка на убывание времени)
+							if (equalcount == 2)
 							{
-								for (int k = 0; k < j; k++)
+
+								if (earlyuserid[0] < earlyuserid[1])
 								{
-									if (earlyuserid[k] > earlyuserid[j])
-									{
-										DateTime t = earlyuserid[j];
-										earlyuserid[j] = earlyuserid[k];
-										earlyuserid[k] = t;
+									db.Logs.Add(new Log { Msg = "2) Тут" });
+									db.SaveChanges();
 
-										int n = power[j];
-										power[j] = power[k];
-										power[k] = n;
+									AttackGroupResult(0, ids, power, target);
+									db.SaveChanges();
+								}
+								else
+								{
+									db.Logs.Add(new Log { Msg = "3) Тут" });
+									db.SaveChanges();
 
-										n = ids[j];
-										ids[j] = ids[k];
-										ids[k] = n;
-									}
+									AttackGroupResult(1, ids, power, target);
+									db.SaveChanges();
 								}
 							}
-							db.Logs.Add(new Log { Msg = "4) Тут?" });
-							db.SaveChanges();
 
-							AttackGroupResult(0, ids, power, target);
-							db.SaveChanges();
-						}
-
-						if (equalcount == 4)
-						{
-							for (int j = 1; j < 4; j++) //Проверить (Сортировка на убывание времени)
+							if (equalcount == 3)
 							{
-								for (int k = 0; k < j; k++)
+								for (int j = 1; j < 3; j++) //Проверить (Сортировка на убывание времени)
 								{
-									if (earlyuserid[k] > earlyuserid[j])
+									for (int k = 0; k < j; k++)
 									{
-										DateTime t = earlyuserid[j];
-										earlyuserid[j] = earlyuserid[k];
-										earlyuserid[k] = t;
+										if (earlyuserid[k] > earlyuserid[j])
+										{
+											DateTime t = earlyuserid[j];
+											earlyuserid[j] = earlyuserid[k];
+											earlyuserid[k] = t;
 
-										int n = power[j];
-										power[j] = power[k];
-										power[k] = n;
+											int n = power[j];
+											power[j] = power[k];
+											power[k] = n;
 
-										n = ids[j];
-										ids[j] = ids[k];
-										ids[k] = n;
+											n = ids[j];
+											ids[j] = ids[k];
+											ids[k] = n;
+										}
 									}
 								}
-							}
-							db.Logs.Add(new Log { Msg = "5) Тут" });
-							db.SaveChanges();
+								db.Logs.Add(new Log { Msg = "4) Тут?" });
+								db.SaveChanges();
 
-							AttackGroupResult(0, ids, power, target);
-							db.SaveChanges();
+								AttackGroupResult(0, ids, power, target);
+								db.SaveChanges();
+							}
+
+							if (equalcount == 4)
+							{
+								for (int j = 1; j < 4; j++) //Проверить (Сортировка на убывание времени)
+								{
+									for (int k = 0; k < j; k++)
+									{
+										if (earlyuserid[k] > earlyuserid[j])
+										{
+											DateTime t = earlyuserid[j];
+											earlyuserid[j] = earlyuserid[k];
+											earlyuserid[k] = t;
+
+											int n = power[j];
+											power[j] = power[k];
+											power[k] = n;
+
+											n = ids[j];
+											ids[j] = ids[k];
+											ids[k] = n;
+										}
+									}
+								}
+								db.Logs.Add(new Log { Msg = "5) Тут" });
+								db.SaveChanges();
+
+								AttackGroupResult(0, ids, power, target);
+								db.SaveChanges();
+							}
 						}
 					}
 
@@ -1022,35 +1026,33 @@ namespace RocketGame.Controllers
 
 			db1.Logs.Add(new Log { Msg = "AttackGroupResult Start" });
 			db1.Logs.Add(new Log { Msg = "AttackGroup result = " + result.ToString() });
+			db1.Logs.Add(new Log { Msg = "ids = " + ids[attacker].ToString() });
+			db1.SaveChanges();
 
-			if (!db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).Where(n => n.Tick == db1.Ticks.Last()).Where(y => y.To == target).FirstOrDefault().IsUpdated)
+			//List<Move> Moves = db1.Moves.Where(n => n.Tick == db1.Ticks.Last()).Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).Where(y => y.To == target).Include(g => g.IsUpdated).ToList();
+			//List<Move> Moves = db1.Moves.Where(n => n.Tick == db.Ticks.Last()).Where(a => a.Type == "attackgroup").Include(f => f.User).Include(a => a.User.Team).Include(g => g.To).ToList();
+
+			db1.Logs.Add(new Log { Msg = "Прошли" });
+			db1.SaveChanges();
+
+			//if (Moves.Where(y => y.IsUpdated == false).Count() == Moves.Count())
+			//{
+			if (result > 0)
 			{
-				if (result > 0)
+				db1.Logs.Add(new Log { Msg = "Вошли" });
+				db1.SaveChanges();
+
+				if (target.Fuel >= result * 2)
 				{
-					if (target.Fuel >= result * 2)
-					{
-						db1.Teams.Where(n => n.TeamId == ids[attacker]).FirstOrDefault().Fuel += result * 2;
-						db1.Logs.Add(new Log { Msg = "AttackGroup result = " + (result * 2).ToString() });
+					db1.Teams.Where(n => n.TeamId == ids[attacker]).FirstOrDefault().Fuel += result * 2;
+					db1.Logs.Add(new Log { Msg = "AttackGroup result = " + (result * 2).ToString() });
 
-						db1.Teams.Where(m => m.TeamId == target.TeamId).FirstOrDefault().Fuel = target.Fuel - result * 2;
+					db1.Teams.Where(m => m.TeamId == target.TeamId).FirstOrDefault().Fuel = target.Fuel - result * 2;
 
-						foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).Where(n => n.Tick == db1.Ticks.Last()).Where(y => y.To == target).ToList())
-						{
-							db1.Moves.Find(move.MoveId).Result = "Победа";
-							db1.Moves.Find(move.MoveId).IsUpdated = true;
-							db1.SaveChanges();
-						}
-					}
-					else
+					foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).Where(n => n.Tick == db1.Ticks.Last()).Where(y => y.To == target).ToList()) //Moves.Where(c => c.User.Team.TeamId == ids[attacker]).Where(y => y.To == target).ToList()) 
 					{
-						foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).Where(n => n.Tick == db1.Ticks.Last()).Where(y => y.To == target).ToList())
-						{
-							db1.Moves.Find(move.MoveId).Result = "Победа";
-							db1.Moves.Find(move.MoveId).IsUpdated = true;
-							db1.SaveChanges();
-						}
-						db1.Teams.Where(n => n.TeamId == ids[attacker]).FirstOrDefault().Fuel += target.Fuel;
-						db1.Teams.Find(target.TeamId).Fuel = 0;
+						db1.Moves.Find(move.MoveId).Result = "Победа";
+						db1.Moves.Find(move.MoveId).IsUpdated = true;
 						db1.SaveChanges();
 					}
 				}
@@ -1058,11 +1060,24 @@ namespace RocketGame.Controllers
 				{
 					foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).Where(n => n.Tick == db1.Ticks.Last()).Where(y => y.To == target).ToList())
 					{
-						db1.Moves.Find(move.MoveId).Result = "Проигрыш";
+						db1.Moves.Find(move.MoveId).Result = "Победа";
 						db1.Moves.Find(move.MoveId).IsUpdated = true;
+						db1.SaveChanges();
 					}
+					db1.Teams.Where(n => n.TeamId == ids[attacker]).FirstOrDefault().Fuel += target.Fuel;
+					db1.Teams.Find(target.TeamId).Fuel = 0;
+					db1.SaveChanges();
 				}
 			}
+			else
+			{
+				foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).Where(n => n.Tick == db1.Ticks.Last()).Where(y => y.To == target).ToList())
+				{
+					db1.Moves.Find(move.MoveId).Result = "Проигрыш";
+					db1.Moves.Find(move.MoveId).IsUpdated = true;
+				}
+			}
+			//}
 
 			db1.Logs.Add(new Log { Msg = "AttackGroupResult Finish" });
 			db1.SaveChanges();
