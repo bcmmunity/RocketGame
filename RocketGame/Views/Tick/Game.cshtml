@@ -81,7 +81,12 @@
 
 	function updateTime() {
 
-		if (!isfin || ispause) return;
+        if (!isfin || ispause) {
+            $("#timeE").empty();
+            $("#time").empty();
+            setTimeout(updateTime, 1000);
+            return;
+        }
 
 		if (total != 0) {
 			total -= 1;
