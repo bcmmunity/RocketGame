@@ -81,28 +81,41 @@
 
 	function updateTime() {
 
-		if (!isfin || ispause) return;
+		if (!isfin || ispause) {
+			$("#timeE").empty();
+			$("#time").empty();
+			setTimeout(updateTime, 1000);
+			return;
+		}
 
 		if (total != 0) {
 			total -= 1;
 
-			if (total > 0 && totalE > 0) {
+			if (total > 0) {
 				$("#time").empty();
 				if (total % 60 > 9)
 					$("#time").append("| До конца такта: " + Math.floor(total / 60) + ":" + total % 60);
 				else
 					$("#time").append("| До конца такта: " + Math.floor(total / 60) + ":0" + total % 60);
 			}
+			else {
+				$("#time").empty();
+				$("#time").append("| До конца такта: 00:00");
+			}
 		}
 		else {
 			total = 60 * @ViewBag.time;
 
-			if (total > 0 && totalE > 0) {
+			if (total > 0) {
 				$("#time").empty();
 				if (total % 60 > 9)
 					$("#time").append("| До конца такта: " + Math.floor(total / 60) + ":" + total % 60);
 				else
 					$("#time").append("| До конца такта: " + Math.floor(total / 60) + ":0" + total % 60);
+			}
+			else {
+				$("#time").empty();
+				$("#time").append("| До конца такта: 00:00");
 			}
 		}
 
@@ -116,6 +129,10 @@
 				else
 					$("#timeE").append("| До конца игры: " + Math.floor(totalE / 60) + ":0" + totalE % 60);
 			}
+			else {
+				$("#timeE").empty();
+				$("#timeE").append("| До конца игры: 00:00");
+			}
 		}
 		else {
 			totalE = Math.floor(@ViewBag.timeE);
@@ -126,6 +143,10 @@
 					$("#timeE").append("| До конца игры: " + Math.floor(totalE / 60) + ":" + totalE % 60);
 				else
 					$("#timeE").append("| До конца игры: " + Math.floor(totalE / 60) + ":0" + totalE % 60);
+			}
+			else {
+				$("#timeE").empty();
+				$("#timeE").append("| До конца игры: 00:00");
 			}
 		}
 		if (totalE < 0) {
