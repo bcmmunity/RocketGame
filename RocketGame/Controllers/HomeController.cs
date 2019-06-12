@@ -292,6 +292,8 @@ namespace RocketGame.Controllers
 
 			}
 
+			ViewBag.nickname = db.Users.Where(n => n.Key == key).FirstOrDefault().Name;
+
 			ViewBag.i = i;
 			ViewBag.users = users;
 			ViewBag.key = key;
