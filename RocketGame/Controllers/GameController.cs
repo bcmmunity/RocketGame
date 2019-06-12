@@ -32,8 +32,8 @@ namespace RocketGame.Controllers
 		public void Unit()
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
-			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
-			//optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
+			//optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=usersstoredb;Trusted_Connection=True;MultipleActiveResultSets=true");
+			optionsBuilder.UseSqlServer("Server=localhost;Database=u0641156_rocketbot;User Id = u0641156_rocketbot; Password = Rocketbot1!");
 
 			db1 = new MyContext(optionsBuilder.Options);
 		}
@@ -1023,21 +1023,34 @@ namespace RocketGame.Controllers
 			db1.Logs.Add(new Log { Msg = "AttackGroupResult Start" });
 			db1.Logs.Add(new Log { Msg = "AttackGroup result = " + result.ToString() });
 
-			if (result > 0 &&
-				db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).Where(n => n.Tick == db1.Ticks.Last()).Where(y => y.To == target).Where(a => a.IsUpdated == false).Count()
-				== db1.Users.Where(c => c.Team.TeamId == ids[attacker]).Count())
+			if (!db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).Where(n => n.Tick == db1.Ticks.Last()).Where(y => y.To == target).FirstOrDefault().IsUpdated)
 			{
-				if (target.Fuel >= result * 2)
+				if (result > 0)
 				{
-					db1.Teams.Where(n => n.TeamId == ids[attacker]).FirstOrDefault().Fuel += result * 2;
-					db1.Logs.Add(new Log { Msg = "AttackGroup result = " + (result * 2).ToString() });
-
-					db1.Teams.Where(m => m.TeamId == target.TeamId).FirstOrDefault().Fuel = target.Fuel - result * 2;
-
-					foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).Where(n => n.Tick == db1.Ticks.Last()).Where(y => y.To == target).ToList())
+					if (target.Fuel >= result * 2)
 					{
-						db1.Moves.Find(move.MoveId).Result = "Победа";
-						db1.Moves.Find(move.MoveId).IsUpdated = true;
+						db1.Teams.Where(n => n.TeamId == ids[attacker]).FirstOrDefault().Fuel += result * 2;
+						db1.Logs.Add(new Log { Msg = "AttackGroup result = " + (result * 2).ToString() });
+
+						db1.Teams.Where(m => m.TeamId == target.TeamId).FirstOrDefault().Fuel = target.Fuel - result * 2;
+
+						foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).Where(n => n.Tick == db1.Ticks.Last()).Where(y => y.To == target).ToList())
+						{
+							db1.Moves.Find(move.MoveId).Result = "Победа";
+							db1.Moves.Find(move.MoveId).IsUpdated = true;
+							db1.SaveChanges();
+						}
+					}
+					else
+					{
+						foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).Where(n => n.Tick == db1.Ticks.Last()).Where(y => y.To == target).ToList())
+						{
+							db1.Moves.Find(move.MoveId).Result = "Победа";
+							db1.Moves.Find(move.MoveId).IsUpdated = true;
+							db1.SaveChanges();
+						}
+						db1.Teams.Where(n => n.TeamId == ids[attacker]).FirstOrDefault().Fuel += target.Fuel;
+						db1.Teams.Find(target.TeamId).Fuel = 0;
 						db1.SaveChanges();
 					}
 				}
@@ -1045,21 +1058,9 @@ namespace RocketGame.Controllers
 				{
 					foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).Where(n => n.Tick == db1.Ticks.Last()).Where(y => y.To == target).ToList())
 					{
-						db1.Moves.Find(move.MoveId).Result = "Победа";
+						db1.Moves.Find(move.MoveId).Result = "Проигрыш";
 						db1.Moves.Find(move.MoveId).IsUpdated = true;
-						db1.SaveChanges();
 					}
-					db1.Teams.Where(n => n.TeamId == ids[attacker]).FirstOrDefault().Fuel += target.Fuel;
-					db1.Teams.Find(target.TeamId).Fuel = 0;
-					db1.SaveChanges();
-				}
-			}
-			else
-			{
-				foreach (Move move in db1.Moves.Where(x => x.Type == "attackgroup").Where(c => c.User.Team.TeamId == ids[attacker]).Where(n => n.Tick == db1.Ticks.Last()).Where(y => y.To == target).ToList())
-				{
-					db1.Moves.Find(move.MoveId).Result = "Проигрыш";
-					db1.Moves.Find(move.MoveId).IsUpdated = true;
 				}
 			}
 
